@@ -1,5 +1,7 @@
 package es.JIPF_Digital.library.persistencia;
 
+import java.sql.ResultSet;
+
 public class GestorBaseDatos {
 
 	GestorBaseDatos gestorBD;
@@ -18,7 +20,7 @@ public class GestorBaseDatos {
 	 * 
 	 * @param sql
 	 */
-	private int inser(String sql) {
+	private int insert(String sql) {
 		// TODO - implement GestorBaseDatos.inser
 		throw new UnsupportedOperationException();
 	}

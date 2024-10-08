@@ -2,11 +2,11 @@ package es.JIPF_Digital.library.dominio.entidades;
 
 import java.util.*;
 
+// Definición del enum con constantes válidas
 public enum CodigoPostal {
-	45600,
-	28000,
-	...;
+    CP_45600,   // Los nombres de constantes deben ser válidos
+    CP_28000;   // Punto y coma al final si hay atributos o métodos adicionales
 
-	Collection<Repartidor> repartidores;
-
+    // Atributo del enum
+    Collection<Repartidor> repartidores;
 }

@@ -1,6 +1,6 @@
 package es.JIPF_Digital.library.persistencia;
 
-public abstract class EntityDAO {
+public abstract class EntityDAO<E> {
 
 	/**
 	 * 

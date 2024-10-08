@@ -1,6 +1,6 @@
 package es.JIPF_Digital.library.persistencia;
 
-import dominio.entidades.*;
+import es.JIPF_Digital.library.dominio.entidades.*;
 
 public class RestauranteDAO extends EntityDAO {
 

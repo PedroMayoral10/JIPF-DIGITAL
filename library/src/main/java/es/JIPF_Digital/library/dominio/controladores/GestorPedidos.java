@@ -1,7 +1,8 @@
 package es.JIPF_Digital.library.dominio.controladores;
 
-import persistencia.*;
-import dominio.entidades.*;
+import es.JIPF_Digital.library.persistencia.*;
+import es.JIPF_Digital.library.dominio.entidades.*;
+import java.util.List;
 
 public class GestorPedidos {
 
@@ -43,8 +44,8 @@ public class GestorPedidos {
 	 * 
 	 * @param item
 	 */
-	public void a�adirItemMenu(itemMenu item) {
-		// TODO - implement GestorPedidos.a�adirItemMenu
+	public void addItemMenu(ItemMenu item) {
+		// TODO - implement GestorPedidos.addItemMenu
 		throw new UnsupportedOperationException();
 	}
 
@@ -52,7 +53,7 @@ public class GestorPedidos {
 	 * 
 	 * @param item
 	 */
-	public void eliminarItemMenu(itemMenu item) {
+	public void eliminarItemMenu(ItemMenu item) {
 		// TODO - implement GestorPedidos.eliminarItemMenu
 		throw new UnsupportedOperationException();
 	}

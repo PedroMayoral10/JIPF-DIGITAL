@@ -1,6 +1,6 @@
 package es.JIPF_Digital.library.presentacion;
 
-import dominio.entidades.*;
+import es.JIPF_Digital.library.dominio.entidades.*;
 
 public class IUPedido {
 
@@ -9,7 +9,7 @@ public class IUPedido {
 	 * @param pedido
 	 * @param item
 	 */
-	public void a�adirItemMenu(Pedido pedido, ItemMenu item) {
+	public void addItemMenu(Pedido pedido, ItemMenu item) {
 		// TODO - implement IUPedido.a�adirItemMenu
 		throw new UnsupportedOperationException();
 	}
@@ -19,7 +19,7 @@ public class IUPedido {
 	 * @param pedido
 	 * @param item
 	 */
-	public void eliinarItemMenu(Pedido pedido, ItemMenu item) {
+	public void eliminarItemMenu(Pedido pedido, ItemMenu item) {
 		// TODO - implement IUPedido.eliinarItemMenu
 		throw new UnsupportedOperationException();
 	}

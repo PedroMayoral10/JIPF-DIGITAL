@@ -1,6 +1,7 @@
 package es.JIPF_Digital.library.dominio.controladores;
 
-import dominio.entidades.*;
+import es.JIPF_Digital.library.dominio.entidades.*;
+import java.util.List;
 
 public class GestorRestaurantes {
 
