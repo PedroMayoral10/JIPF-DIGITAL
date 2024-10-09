@@ -1,4 +1,4 @@
-package dominio.entidades;
+package es.JIPF_Digital.library.dominio.entidades;
 
 public class ItemMenu2 {
 
