@@ -7,7 +7,7 @@ public class PedidoDAO extends EntityDAO {
 
 
 
-//Probando el otro merge
+//Probando el otro merge.
 
 
 }
