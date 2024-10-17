@@ -1,5 +1,8 @@
 /target/
 
+library/database/log/
+
+library/database/*
 
 derby.log
 
