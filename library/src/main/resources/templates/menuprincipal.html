@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<title>Menu Principal</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>Menu Principal</h1>
+<p th:text="'Hola ' + ${usuario.nombre}"> </p>
+<input type="submit" value="Submit" />
+<a href="/login">Volver al login</a>
+</body>
+</html>
