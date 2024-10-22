@@ -1,66 +1,74 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Login</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-            display: flex; /* Centrar el cuadro */
-            justify-content: center; /* Centra horizontalmente */
-            align-items: center; /* Centra verticalmente */
-            height: 100vh; /* Ocupa toda la altura de la ventana */
-            margin: 0; /* Elimina el margen por defecto */
-        }
-        form {
-            background-color: #fff; /* Color de fondo del formulario */
-            padding: 20px; /* Espaciado interno */
-            border-radius: 5px; /* Bordes redondeados */
-            max-width: 300px; /* Ancho máximo */
-            width: 100%; /* Asegura que el formulario no exceda el ancho máximo */
-            text-align: center; /* Centra el texto dentro del formulario */
-        }
-        h1 {
-            color: #333; 
-            margin-bottom: 20px; 
-        }
-        p {
-            margin: 10px 0; /* Espaciado vertical entre párrafos */
-        }
-        input[type="text"],
-        input[type="password"] {
-            width: 90%; /* Ancho completo */
-            padding: 10px; /* Espaciado interno */
-            margin: 5px 0; /* Margen entre los campos */
-            border: 1px solid #ccc; /* Borde */
-            border-radius: 4px; /* Bordes redondeados */
-        }
-        input[type="submit"],
-        input[type="reset"] {
-            background-color: #5cb85c; /* Color de fondo */
-            color: white; /* Color del texto */
-            padding: 10px; /* Espaciado interno */
-            border: none; /* Sin borde */
-            border-radius: 4px; /* Bordes redondeados */
-            width: 48%; /* Ancho del boton */
-        }
+<title>Login</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+body {
+	font-family:  sans-serif;
+	background-color:  #e0f7df;
+	padding: 20px;
+	display: flex; /* Centrar el cuadro */
+	justify-content: center; /* Centra horizontalmente */
+	align-items: center; /* Centra verticalmente */
+	height: 100vh; 
+	margin: 0; 
+}
 
-        input[type="reset"] {
-            background-color: #d9534f; /* Fondo del reset */
-        }
-    </style>
+form {
+	background-color: #fff; 
+	padding: 20px; 
+	border-radius: 5px; 
+	max-width: 300px; 
+	width: 100%; 
+	text-align: center; /* Centra el texto dentro del formulario */
+}
+
+h1 {
+	color: #333;
+	margin-bottom: 20px;
+}
+
+p {
+	margin: 10px 0; /* Espaciado vertical entre párrafos */
+}
+
+input[type="text"], input[type="password"] {
+	width: 90%; 
+	padding: 10px;
+	margin: 5px 0; 
+	border: 1px solid #ccc;
+	border-radius: 4px; 
+}
+
+input[type="submit"], input[type="reset"] {
+	background-color: #5cb85c; 
+	color: white; 
+	padding: 10px; /* Espaciado interno */
+	border: none; /* Sin borde */
+	border-radius: 4px; /* Bordes redondeados */
+	width: 48%; /* Ancho del boton */
+}
+
+input[type="reset"] {
+	background-color: #d9534f; /* Fondo del reset */
+}
+</style>
 </head>
 <body>
-    <form action="#" th:action="@{/login}" th:object="${usuario}" method="post">
-        <h1>Inicio de sesión</h1>
-        <p>Usuario: <input type="text" th:field="*{idUsuario}" /></p>
-        <p>Contraseña: <input type="password" th:field="*{pass}" /></p>
-        <p>
-            <input type="submit" value="Iniciar" /> 
-            <input type="reset" value="Cancelar" />
-        </p>
-    </form>
+	<form action="#" th:action="@{/login}" th:object="${usuario}"
+		method="post">
+		<h1>Inicio de sesión</h1>
+		<p>
+			Usuario: <input type="text" th:field="*{idUsuario}" />
+		</p>
+		<p>
+			Contraseña: <input type="password" th:field="*{pass}" />
+		</p>
+		<p>
+			<input type="submit" value="Iniciar" /> <input type="reset"
+				value="Cancelar" />
+		</p>
+	</form>
 </body>
 </html>
