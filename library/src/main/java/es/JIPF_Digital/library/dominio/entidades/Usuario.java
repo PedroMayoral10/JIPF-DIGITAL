@@ -1,7 +1,8 @@
 package es.JIPF_Digital.library.dominio.entidades;
 
-public class Usuario {
 
+public class Usuario {
+	
 	private String idUsuario;
 	private String nombre;
 	private String pass;
@@ -37,6 +38,11 @@ public class Usuario {
 	
 	public void setAtribute(int attribute) {
 		this.attribute = attribute;
+	}
+	
+	@Override
+	public String toString() {
+	return String.format("Greeting [id=%s, person=%s, content=%d]", idUsuario, nombre, attribute);
 	}
 
 }
