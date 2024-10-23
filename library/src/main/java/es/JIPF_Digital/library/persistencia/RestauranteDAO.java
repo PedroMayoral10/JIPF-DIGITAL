@@ -8,7 +8,7 @@ public class RestauranteDAO {
 	 * 
 	 * @param codigoPostal
 	 */
-	public void selectPorCodigoPostal(CodigoPostal codigoPostal) {
+	public void selectPorCodigoPostal(String codigoPostal) {
 		// TODO - implement RestauranteDAO.selectPorCodigoPostal
 		throw new UnsupportedOperationException();
 	}
@@ -18,7 +18,7 @@ public class RestauranteDAO {
 	 * @param codigoPostal
 	 * @param texto
 	 */
-	public void selectPorCodigoPostalYTextoLibre(CodigoPostal codigoPostal, String texto) {
+	public void selectPorCodigoPostalYTextoLibre(String codigoPostal, String texto) {
 		// TODO - implement RestauranteDAO.selectPorCodigoPostalYTextoLibre
 		throw new UnsupportedOperationException();
 	}

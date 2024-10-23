@@ -9,7 +9,7 @@ public class IUBusqueda {
 	 * 
 	 * @param zona
 	 */
-	public List<Restaurante> buscar(CodigoPostal zona) {
+	public List<Restaurante> buscar(String zona) {
 		// TODO - implement IUBusqueda.buscar
 		throw new UnsupportedOperationException();
 	}
@@ -19,7 +19,7 @@ public class IUBusqueda {
 	 * @param zona
 	 * @param textoBusqueda
 	 */
-	public List<Restaurante> buscar(CodigoPostal zona, String textoBusqueda) {
+	public List<Restaurante> buscar(String zona, String textoBusqueda) {
 		// TODO - implement IUBusqueda.buscar
 		throw new UnsupportedOperationException();
 	}

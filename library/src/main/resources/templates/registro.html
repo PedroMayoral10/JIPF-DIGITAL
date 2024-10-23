@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Registro</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #e0f7df;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 300px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        input[type="text"], input[type="password"], select {
+            width: 90%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"], input[type="reset"] {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            width: 48%;
+        }
+
+        input[type="reset"] {
+            background-color: #d9534f;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <script>
+        function mostrarCamposAdicionales() {
+            const tipoUsuario = document.getElementById('tipoUsuario').value;
+            
+            // Ocultar todos los campos adicionales primero
+            document.getElementById('camposCliente').classList.add('hidden');
+            document.getElementById('camposRestaurante').classList.add('hidden');
+            document.getElementById('camposRepartidor').classList.add('hidden');
+            
+            // Mostrar los campos correspondientes según el valor de rol
+            if (tipoUsuario == '1') { // Cliente
+                document.getElementById('camposCliente').classList.remove('hidden');
+            } else if (tipoUsuario == '2') { // Restaurante
+                document.getElementById('camposRestaurante').classList.remove('hidden');
+            } else if (tipoUsuario == '3') { // Repartidor
+                document.getElementById('camposRepartidor').classList.remove('hidden');
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <form action="#" th:action="@{/registro}" th:object="${usuario}" method="post">
+        <h1>Registro</h1>
+
+        <!-- Campo de selección para el tipo de usuario -->
+        <p>
+            Tipo de usuario:
+            <select id="tipoUsuario" name="rol" onchange="mostrarCamposAdicionales()">
+                <option value="0">Selecciona un tipo</option>
+                <option value="1">Cliente</option>
+                <option value="2">Restaurante</option>
+                <option value="3">Repartidor</option>
+            </select>
+        </p>
+
+        <p>
+            Usuario: <input type="text" th:field="*{idUsuario}" />
+        </p>
+        <p>
+            Nombre: <input type="text" th:field="*{nombre}" />
+        </p>
+        <p>
+            Contraseña: <input type="password" th:field="*{pass}" />
+        </p>
+
+        <!-- Campos adicionales para cliente -->
+        <div id="camposCliente" class="hidden">
+            <p>
+                Apellidos: <input type="text" name="apellidosCliente" />
+            </p>
+            <p>
+                DNI: <input type="text" name="dniCliente" />
+            </p>
+        </div>
+
+        <!-- Campos adicionales para restaurante -->
+        <div id="camposRestaurante" class="hidden">
+            <p>
+                CIF: <input type="text" name="cifRestaurante" />
+            </p>
+            <p>
+                Código Postal: <input type="text" name="codigoPostalRestaurante" />
+            </p>
+            <p>
+                Calle: <input type="text" name="calleRestaurante" />
+            </p>
+            <p>
+                Número: <input type="text" name="numeroRestaurante" />
+            </p>
+            <p>
+                Complemento: <input type="text" name="complementoRestaurante" />
+            </p>
+            <p>
+                Municipio: <input type="text" name="municipioRestaurante" />
+            </p>
+        </div>
+
+        <!-- Campos adicionales para repartidor -->
+        <div id="camposRepartidor" class="hidden">
+            <p>
+                Apellidos: <input type="text" name="apellidosRepartidor" />
+            </p>
+            <p>
+                NIF: <input type="text" name="nifRepartidor" />
+            </p>
+        </div>
+
+        <p>
+            <input type="submit" value="Registrar" />
+            <input type="reset" value="Cancelar" />
+        </p>
+    </form>
+    <button onclick="location.href='/login'">Volver al login</button>
+</body>
+</html>
+

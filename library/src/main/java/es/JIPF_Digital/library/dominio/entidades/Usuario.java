@@ -3,10 +3,11 @@ package es.JIPF_Digital.library.dominio.entidades;
 
 public class Usuario {
 	
-	private String idUsuario;
-	private String nombre;
-	private String pass;
+	protected String idUsuario;
+	protected String nombre;
+	protected String pass;
 	private int attribute;
+	
 	
 	public String getIdUsuario() {
 		return idUsuario;
