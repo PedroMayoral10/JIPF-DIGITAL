@@ -11,6 +11,14 @@ import es.JIPF_Digital.library.dominio.entidades.*;
 
 @Controller
 public class GestorUsuario {
+	
+	/*@Autowired
+	private ClienteDAO clienteDAO;
+	@Autowired
+	private RestauranteDAO restauranteDAO;
+	@Autowired
+	private RepartidorDAO repartidorDAO;*/
+	
 	@GetMapping("/login")
 		public String loginForm(Model model) {
 			model.addAttribute("usuario", new Usuario());

@@ -1,9 +1,16 @@
 package es.JIPF_Digital.library.dominio.entidades;
 
-public class ItemMenu {
+import java.util.*;
+import jakarta.persistence.*;
 
-	TipoItemMenu tipo;
+@Entity
+public class ItemMenu {
+	@Id
 	private String nombre;
+	@Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+	private TipoItemMenu tipo;
+	@Column
 	private double precio;
 
 }

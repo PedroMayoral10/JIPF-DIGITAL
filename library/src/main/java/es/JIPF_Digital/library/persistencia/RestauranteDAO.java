@@ -1,26 +1,22 @@
 package es.JIPF_Digital.library.persistencia;
 
 import es.JIPF_Digital.library.dominio.entidades.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public class RestauranteDAO {
+public interface RestauranteDAO extends JpaRepository<Restaurante,String>{
 
-	/**
-	 * 
-	 * @param codigoPostal
-	 */
+	
+	/*
 	public void selectPorCodigoPostal(String codigoPostal) {
-		// TODO - implement RestauranteDAO.selectPorCodigoPostal
+		
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * 
-	 * @param codigoPostal
-	 * @param texto
-	 */
+	
 	public void selectPorCodigoPostalYTextoLibre(String codigoPostal, String texto) {
-		// TODO - implement RestauranteDAO.selectPorCodigoPostalYTextoLibre
+		
 		throw new UnsupportedOperationException();
 	}
-
+	*/
 }

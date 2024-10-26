@@ -1,4 +1,9 @@
 package es.JIPF_Digital.library.persistencia;
 
-public class ItemMenuDAO {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import es.JIPF_Digital.library.dominio.entidades.*;
+
+public interface ItemMenuDAO extends JpaRepository<ItemMenu,String>{
+	
 }

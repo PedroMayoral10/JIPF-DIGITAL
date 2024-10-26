@@ -1,13 +1,9 @@
 package es.JIPF_Digital.library.persistencia;
 
-// Probando merge
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import es.JIPF_Digital.library.dominio.entidades.*;
 
-public class PedidoDAO {
-
-
-
-
-//Probando el otro merge definitivo
-
-
+public interface PedidoDAO extends JpaRepository<Pedido,Long>{
+	
 }
