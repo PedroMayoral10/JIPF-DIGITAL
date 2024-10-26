@@ -8,12 +8,12 @@ public class Pedido {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long id_pedido;
 	@ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
 	private Cliente cliente;
 	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "pago_id", referencedColumnName = "id")
+    @JoinColumn(name = "pago_id", referencedColumnName = "idTransaccion")
 	private Pago pago;
 	@ManyToMany
 	@JoinTable(
@@ -25,8 +25,7 @@ public class Pedido {
 	@ManyToOne
     @JoinColumn(name = "restaurante_id", nullable = false)
 	private Restaurante restaurante;
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "entrega_id", referencedColumnName = "id")
+	@OneToOne(mappedBy="pedido",cascade = CascadeType.ALL)
 	private ServicioEntrega entrega;
 	@Enumerated(EnumType.STRING)
     private EstadoPedido estado;
@@ -34,6 +33,11 @@ public class Pedido {
     @Temporal(TemporalType.TIMESTAMP)
 	private Date fecha;
 
+	public Pedido() {
+		
+	}
+	
+	
 	/*
 	public void add(ItemMenu itemMenu) {
 		// TODO - implement Pedido.add

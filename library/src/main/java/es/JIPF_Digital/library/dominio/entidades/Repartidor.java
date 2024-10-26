@@ -8,7 +8,7 @@ public class Repartidor extends Usuario {
 	
 	@Id
 	String idUsuario;
-	@Column
+	@OneToMany(mappedBy = "repartidor", cascade = CascadeType.ALL, orphanRemoval = true)
 	Collection<ServicioEntrega> servicios;
 	@Column
 	Collection<String> zonas;
@@ -22,6 +22,11 @@ public class Repartidor extends Usuario {
 	String nombre;
 	@Column
 	String pass;
+	
+	public Repartidor() {
+		
+	}
+	
 	
 	public Repartidor(String idUsuario, String nombre, String pass, String apellidos, String nif) {
 		this.idUsuario = idUsuario;

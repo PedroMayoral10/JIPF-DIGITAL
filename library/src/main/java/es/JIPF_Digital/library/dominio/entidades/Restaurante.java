@@ -8,7 +8,7 @@ public class Restaurante {
 	
 	@Id
 	String idUsuario;
-	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
 	Collection<Pedido> pedidos;
 	@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
 	Collection<CartaMenu> cartasMenu;

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Direccion {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_direccion;
 	@Column
 	private String codigoPostal;
 	@Column
@@ -17,6 +17,9 @@ public class Direccion {
 	private String complemento;
 	@Column
 	private String municipio;
+	
+	public Direccion() {
+    }
 	
 	
 	public Direccion(String codigoPostal, String calle, String numero, String complemento, String municipio) {

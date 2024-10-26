@@ -11,7 +11,8 @@ public class CartaMenu {
 	@ManyToOne
     @JoinColumn(name = "restaurante_id", nullable = false)
 	private Restaurante restaurante;
-	@OneToMany(mappedBy = "cartaMenu", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "carta_menu_id")
 	private Collection<ItemMenu> items;
 	@Column
 	private String nombre;
