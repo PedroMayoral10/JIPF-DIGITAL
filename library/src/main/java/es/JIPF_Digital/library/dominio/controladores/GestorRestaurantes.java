@@ -1,7 +1,7 @@
 package es.JIPF_Digital.library.dominio.controladores;
 
 import es.JIPF_Digital.library.dominio.entidades.*;
-import es.JIPF_Digital.library.persistencia.RestauranteDAO; // Importa tu repositorio
+import es.JIPF_Digital.library.persistencia.*; // Importa tu repositorio
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Controller;
@@ -18,6 +18,9 @@ public class GestorRestaurantes {
 
     @Autowired
     private RestauranteDAO restauranteDAO; // Declarar el repositorio
+    @Autowired
+    private ClienteDAO clienteDAO;
+    
 
     
   

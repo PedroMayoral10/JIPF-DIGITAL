@@ -35,7 +35,7 @@
             justify-content: space-between; /* Espacio entre el nombre y el botón */
         }
 
-        .view-button {
+        .view-button, .favorite-button {
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -44,7 +44,7 @@
             cursor: pointer;
         }
 
-        .view-button:hover {
+        .view-button:hover, .favorite-button:hover {
             background-color: #e0a800;
         }
 
@@ -65,10 +65,14 @@
     <ul class="restaurant-list" th:each="restaurante : ${restaurantes}">
         <li class="restaurant-item">
             <span th:text="${restaurante.nombre}"></span>
-            <button class="view-button" onclick="location.href='@{/restaurante/{idUsuario}(idUsuario=${restaurante.idUsuario})}'">Ver</button>
+            <div>
+                <button class="view-button" onclick="location.href='@{/restaurante/{idUsuario}(idUsuario=${restaurante.idUsuario})}'">Ver</button>
+                <button class="favorite-button" onclick="location.href='@{/favorito(idUsuario=${restaurante.idUsuario}, clienteId=${clienteId})}'">Añadir a Favoritos</button>
+            </div>
         </li>
     </ul>
 
     <a href="/menucliente">Volver al menú cliente</a>
 </body>
 </html>
+
