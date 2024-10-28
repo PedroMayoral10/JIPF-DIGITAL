@@ -12,12 +12,17 @@ public class ServicioEntrega {
     @OneToOne
     @JoinColumn(name = "id_pedido", referencedColumnName = "id_pedido")
     private Pedido pedido;
-    @JoinColumn(name = "id_direccion",  referencedColumnName = "id_direccion") 
-    private Direccion direccion;
+    @OneToOne
+    @JoinColumn(name = "id_direccion", referencedColumnName = "id_direccion")
+    private Direccion direccion; 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idUsuario") 
     private Repartidor repartidor;
 	private LocalDateTime fechaRecepcion;
 	private LocalDateTime fechaEntrega;
-
+	
+	public ServicioEntrega() {
+		
+	}
+	
 }

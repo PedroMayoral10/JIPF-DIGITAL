@@ -16,8 +16,9 @@ public class Restaurante {
 	String nombre;
 	@Column
 	String pass;
-	@Column
-	Direccion direccion;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "direccion_id", referencedColumnName = "id_direccion")
+	private Direccion direccion;
 	@Column
 	private String cif;
 

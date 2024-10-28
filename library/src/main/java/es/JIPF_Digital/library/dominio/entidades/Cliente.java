@@ -15,13 +15,9 @@ public class Cliente {
     )
 	private Collection<Restaurante> favoritos;
 
-	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Collection<Pedido> pedidos;
-	
-	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "cliente_id")
-	private Collection<Direccion> direcciones;
+    @JoinColumn(name = "cliente_id") // Agrega una columna cliente_id en la tabla Direccion
+    private Collection<Direccion> direcciones;
 	@Column
 	private String nombre;
 	@Column

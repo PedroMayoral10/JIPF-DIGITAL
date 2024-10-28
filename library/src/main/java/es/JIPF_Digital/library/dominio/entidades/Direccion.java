@@ -7,15 +7,15 @@ public class Direccion {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_direccion;
-	@Column
+	@Column(nullable = false)
 	private String codigoPostal;
-	@Column
+	@Column(nullable = false)
 	private String calle;
-	@Column
+	@Column(nullable = false)
 	private String numero;
-	@Column
+	@Column(nullable = false)
 	private String complemento;
-	@Column
+	@Column(nullable = false)
 	private String municipio;
 	
 	public Direccion() {
