@@ -51,6 +51,10 @@ public class Cliente {
 		return nombre;
 	}
 	
+	public String getPass() {
+		return pass;
+	}
+	
 	public String toString() {
 	    return "Cliente{" +
 	            "idUsuario='" + idUsuario + '\'' +

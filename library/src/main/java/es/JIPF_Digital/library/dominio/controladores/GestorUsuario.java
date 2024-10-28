@@ -30,8 +30,35 @@ public class GestorUsuario {
 	@PostMapping("/login")
 	public String loginSubmit(@ModelAttribute Usuario usuario, Model model) {
 		model.addAttribute("usuario", usuario);
+		Cliente cliente = clienteDAO.findById(usuario.getIdUsuario()).orElse(null);
+	    Restaurante restaurante = restauranteDAO.findById(usuario.getIdUsuario()).orElse(null);
+	    Repartidor repartidor = repartidorDAO.findById(usuario.getIdUsuario()).orElse(null);
 		
-		return "menucliente";
+		if(cliente != null) {
+			if(cliente.getPass().equals(usuario.getPass())) {
+				return "menucliente";
+			}else {
+				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
+				 return "login";
+			}
+		}else if(restaurante != null) {
+			if(restaurante.getPass().equals(usuario.getPass())) {
+				return "menurestaurante";
+			}else {
+				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
+				 return "login";
+			}
+		}else if(repartidor!=null) {
+			if(repartidor.getPass().equals(usuario.getPass())) {
+				return "menurepartidor";
+			}else {
+				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
+				 return "login";
+			}
+		}else {
+			model.addAttribute("error", "El usuario no existe, pruebe otra vez");
+			return "login";
+		}
 	}
 	
 	@GetMapping("/registro")

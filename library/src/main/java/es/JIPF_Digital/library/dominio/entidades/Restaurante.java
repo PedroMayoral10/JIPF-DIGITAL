@@ -26,6 +26,8 @@ public class Restaurante {
 		
 	}
 	
+	
+	
 	public Restaurante(String idUsuario, String nombre, String pass, Direccion direccion, String cif) {
 		this.idUsuario = idUsuario;
         this.nombre = nombre;
@@ -34,6 +36,9 @@ public class Restaurante {
         this.direccion = direccion;
 	}
 	
+	public String getPass() {
+		return pass;
+	}
 	/*
 	public List<ItemMenu> listarMenu(String idRestaurante) {
 		// TODO - implement Restaurante.listarMenu

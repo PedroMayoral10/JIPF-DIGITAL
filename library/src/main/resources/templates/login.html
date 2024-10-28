@@ -1,75 +1,87 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
-<title>Login</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<style>
-body {
-	font-family:  sans-serif;
-	background-color:  #e0f7df;
-	padding: 20px;
-	display: flex; /* Centrar el cuadro */
-	justify-content: center; /* Centra horizontalmente */
-	align-items: center; /* Centra verticalmente */
-	height: 100vh; 
-	margin: 0; 
-}
+    <title>Login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #e0f7df;
+            padding: 20px;
+            display: flex; /* Centrar el cuadro */
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center; /* Centra verticalmente */
+            height: 100vh; 
+            margin: 0; 
+        }
 
-form {
-	background-color: #fff; 
-	padding: 20px; 
-	border-radius: 5px; 
-	max-width: 300px; 
-	width: 100%; 
-	text-align: center; /* Centra el texto dentro del formulario */
-}
+        form {
+            background-color: #fff; 
+            padding: 20px; 
+            border-radius: 5px; 
+            max-width: 300px; 
+            width: 100%; 
+            text-align: center; /* Centra el texto dentro del formulario */
+        }
 
-h1 {
-	color: #333;
-	margin-bottom: 20px;
-}
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
 
-p {
-	margin: 10px 0; /* Espaciado vertical entre párrafos */
-}
+        p {
+            margin: 10px 0; /* Espaciado vertical entre párrafos */
+        }
 
-input[type="text"], input[type="password"] {
-	width: 90%; 
-	padding: 10px;
-	margin: 5px 0; 
-	border: 1px solid #ccc;
-	border-radius: 4px; 
-}
+        .error-message {
+            color: red; /* Mensaje en color rojo */
+            margin-bottom: 15px;
+            font-size: 0.9em; /* Tamaño más pequeño */
+        }
 
-input[type="submit"], input[type="reset"] {
-	background-color: #5cb85c; 
-	color: white; 
-	padding: 10px; /* Espaciado interno */
-	border: none; /* Sin borde */
-	border-radius: 4px; /* Bordes redondeados */
-	width: 48%; /* Ancho del boton */
-}
+        input[type="text"], input[type="password"] {
+            width: 90%; 
+            padding: 10px;
+            margin: 5px 0; 
+            border: 1px solid #ccc;
+            border-radius: 4px; 
+        }
 
-input[type="reset"] {
-	background-color: #d9534f; /* Fondo del reset */
-}
-</style>
+        input[type="submit"], input[type="reset"] {
+            background-color: #5cb85c; 
+            color: white; 
+            padding: 10px; /* Espaciado interno */
+            border: none; /* Sin borde */
+            border-radius: 4px; /* Bordes redondeados */
+            width: 48%; /* Ancho del boton */
+        }
+
+        input[type="reset"] {
+            background-color: #d9534f; /* Fondo del reset */
+        }
+    </style>
 </head>
 <body>
-	<form action="#" th:action="@{/login}" th:object="${usuario}"
-		method="post">
-		<h1>Inicio de sesión</h1>
-		<p>
-			Usuario: <input type="text" th:field="*{idUsuario}" />
-		</p>
-		<p>
-			Contraseña: <input type="password" th:field="*{pass}" />
-		</p>
-		<p>
-			<input type="submit" value="Iniciar" /> <input type="reset"
-				value="Cancelar" />
-		</p>
-	</form>
-	<a href="/registro">¿No tienes cuenta?</a>
+    <form action="#" th:action="@{/login}" th:object="${usuario}" method="post">
+        <h1>Inicio de sesión</h1>
+        
+        <!-- Mostrar mensaje de error si está presente -->
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+        
+        <p>
+            Usuario: <input type="text" th:field="*{idUsuario}" />
+        </p>
+        <p>
+            Contraseña: <input type="password" th:field="*{pass}" />
+        </p>
+        <p>
+            <input type="submit" value="Iniciar" /> 
+            <input type="reset" value="Cancelar" />
+        </p>
+    </form>
+    
+    <a href="/registro">¿No tienes cuenta?</a>
 </body>
 </html>

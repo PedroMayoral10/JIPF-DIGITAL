@@ -45,4 +45,8 @@ public class Repartidor extends Usuario {
 		this.idUsuario = idUsuario;
 	}
 	
+	public String getPass() {
+		return pass;
+	}
+	
 }
