@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<title>Menu Principal</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+body {
+	font-family: sans-serif;
+	margin: 0;
+	padding-top: 5px;
+	background-color: #e0f7df; /* Fondo verde aclarado */
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	text-align: center;
+}
+
+h1 {
+	padding-top: 5px;
+	font-size: 48px;
+	color: #333;
+	margin-bottom: 40px;
+}
+
+.button-container {
+	display: flex;
+	flex-direction: column;
+	gap: 30px; /* Espacio entre los botones */
+}
+
+button {
+	padding: 15px 30px;
+	background-color: #4CAF50;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 20px;
+	color: #e0f7df;
+	width: 250px;
+}
+
+button:hover {
+	background-color: #e0a800;
+}
+
+a {
+	display: block;
+	padding: 15px 30px;
+	background-color: #4CAF50;
+	color: white;
+	text-decoration: none;
+	border-radius: 8px;
+	font-size: 20px;
+	width: 150px;
+	text-align: center;
+}
+
+a:hover {
+	background-color: #d9534f;
+}
+</style>
+</head>
+<body>
+	<h1>Menu Principal</h1>
+	<!--<p th:text="'Hola ' + ${usuario.nombre}"> </p>-->
+	<button onclick="location.href='/pedidos'">Realizar un pedido</button>
+	<br>
+	<br>
+	<a href="/login">Volver al login</a>
+</body>
+</html>

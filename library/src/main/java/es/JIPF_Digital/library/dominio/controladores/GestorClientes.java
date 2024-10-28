@@ -3,10 +3,26 @@ package es.JIPF_Digital.library.dominio.controladores;
 import es.JIPF_Digital.library.persistencia.*;
 import es.JIPF_Digital.library.dominio.entidades.*;
 import java.util.List;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public class GestorClientes {
 
 	RestauranteDAO restauranteDAO;
+
+	@GetMapping("/menucliente")
+	public String MenuCliente(Model model) {
+		return "menucliente";
+	}
+
+	@GetMapping("/listarestaurantes")
+	public String ListaRestaurante(Model model) {
+		return "listarestaurantes";
+	}
 
 	/**
 	 * 
@@ -16,7 +32,6 @@ public class GestorClientes {
 		// TODO - implement GestorClientes.buscarRestaurante
 		throw new UnsupportedOperationException();
 	}
-
 
 	/**
 	 * 

@@ -5,44 +5,106 @@ import jakarta.persistence.*;
 
 @Entity
 public class Restaurante {
-	
-	@Id
-	String idUsuario;
-	@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
-	Collection<Pedido> pedidos;
-	@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
-	Collection<CartaMenu> cartasMenu;
-	@Column
-	String nombre;
-	@Column
-	String pass;
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "direccion_id", referencedColumnName = "id_direccion")
-	private Direccion direccion;
-	@Column
-	private String cif;
-	
-	public Restaurante() {
-		
-	}
-	
-	
-	
-	public Restaurante(String idUsuario, String nombre, String pass, Direccion direccion, String cif) {
-		this.idUsuario = idUsuario;
+
+    @Id
+    private String idUsuario;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<Pedido> pedidos;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<CartaMenu> cartasMenu = new ArrayList<>();
+
+    @Column
+    private String nombre;
+
+    @Column
+    private String pass;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "direccion_id", referencedColumnName = "id_direccion")
+    private Direccion direccion;
+
+    @Column
+    private String cif;
+
+    public Restaurante() {
+    }
+
+    public Restaurante(String idUsuario, String nombre, String pass, Direccion direccion, String cif) {
+        this.idUsuario = idUsuario;
         this.nombre = nombre;
-        this.pass = pass; // Llamada al constructor de Usuario
+        this.pass = pass;
         this.cif = cif;
         this.direccion = direccion;
-	}
-	
-	public String getPass() {
-		return pass;
-	}
-	/*
-	public List<ItemMenu> listarMenu(String idRestaurante) {
-		// TODO - implement Restaurante.listarMenu
-		throw new UnsupportedOperationException();
-	}*/
+    }
 
+    // Getter y Setter para `cartasMenu`
+    public Collection<CartaMenu> getCartasMenu() {
+        return cartasMenu;
+    }
+
+    public void setCartasMenu(Collection<CartaMenu> cartasMenu) {
+        this.cartasMenu.clear();
+        if (cartasMenu != null) {
+            this.cartasMenu.addAll(cartasMenu);
+        }
+    }
+
+    // Método para obtener el primer menú (asumiendo que un restaurante tiene una sola carta principal)
+    public CartaMenu getMenuPrincipal() {
+        return cartasMenu.isEmpty() ? null : cartasMenu.iterator().next();
+    }
+
+
+    // Otros getters y setters para los atributos restantes
+    public String getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public Direccion getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(Direccion direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getCif() {
+        return cif;
+    }
+
+    public void setCif(String cif) {
+        this.cif = cif;
+    }
+
+    @Override
+    public String toString() {
+        return "Restaurante{" +
+                "idUsuario='" + idUsuario + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", cif='" + cif + '\'' +
+                ", direccion=" + direccion +
+                '}';
+    }
 }

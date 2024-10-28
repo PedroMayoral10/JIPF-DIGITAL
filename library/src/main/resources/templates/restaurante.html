@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Menú del Restaurante</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #e0f7df;
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* Cambia la dirección a columna */
+            align-items: center; /* Centra horizontalmente */
+            margin: 0; 
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .menu-item {
+            background-color: #fff;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between; /* Espacio entre elementos */
+            align-items: center; /* Alinea verticalmente */
+        }
+
+        input[type="checkbox"] {
+            margin-left: 10px;
+        }
+
+        input[type="submit"] {
+            background-color: #5cb85c; 
+            color: white; 
+            padding: 10px; /* Espaciado interno */
+            border: none; /* Sin borde */
+            border-radius: 4px; /* Bordes redondeados */
+            width: 100%; /* Ancho del botón */
+            margin-top: 20px; /* Espacio encima del botón */
+        }
+
+        .favorito {
+            color: gold; /* Color para indicar que es favorito */
+        }
+    </style>
+</head>
+<body>
+    <h1>Menú de <span th:text="${restaurante.nombre}"></span></h1>
+
+    <form action="#" th:action="@{/restaurante/favoritos}" method="post">
+        <div th:each="itemMenu : ${restaurante.cartasMenu}">
+            <div class="menu-item">
+                <span th:text="${itemMenu.nombre}"></span>
+                <span th:text="${itemMenu.precio} + ' €'"></span>
+                <label>
+                    <input type="checkbox" th:field="*{favoritos[itemMenu.id]}" />
+                    Favorito
+                </label>
+            </div>
+        </div>
+
+        <input type="submit" value="Guardar Favoritos" />
+    </form>
+
+    <a href="/restaurantes">Volver a la lista de restaurantes</a>
+</body>
+</html>
