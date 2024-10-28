@@ -21,10 +21,15 @@ public class GestorUsuario {
 	@Autowired
 	private RepartidorDAO repartidorDAO;
 	
+	@GetMapping("/")
+	public String redirigirLogin(Model model) {
+		return "redirect:/login";
+	}
+	
 	@GetMapping("/login")
-		public String loginForm(Model model) {
-			model.addAttribute("usuario", new Usuario());
-			return "login";
+	public String loginForm(Model model) {
+		model.addAttribute("usuario", new Usuario());
+		return "login";
 	}
 	
 	@PostMapping("/login")
