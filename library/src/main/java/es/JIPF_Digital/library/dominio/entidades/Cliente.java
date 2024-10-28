@@ -27,6 +27,10 @@ public class Cliente {
 	@Column
 	private String dni;
 	
+	public Cliente() {
+		
+	}
+	
 	public Cliente(String idUsuario, String nombre, String pass, String apellidos, String dni) {
 		this.idUsuario = idUsuario;
         this.nombre = nombre;

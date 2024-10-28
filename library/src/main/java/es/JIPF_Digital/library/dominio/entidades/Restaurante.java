@@ -21,7 +21,11 @@ public class Restaurante {
 	private Direccion direccion;
 	@Column
 	private String cif;
-
+	
+	public Restaurante() {
+		
+	}
+	
 	public Restaurante(String idUsuario, String nombre, String pass, Direccion direccion, String cif) {
 		this.idUsuario = idUsuario;
         this.nombre = nombre;

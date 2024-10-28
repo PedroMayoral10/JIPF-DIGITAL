@@ -8,16 +8,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import es.JIPF_Digital.library.dominio.entidades.*;
+import es.JIPF_Digital.library.persistencia.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Controller
 public class GestorUsuario {
 	
-	/*@Autowired
+	@Autowired
 	private ClienteDAO clienteDAO;
 	@Autowired
 	private RestauranteDAO restauranteDAO;
 	@Autowired
-	private RepartidorDAO repartidorDAO;*/
+	private RepartidorDAO repartidorDAO;
 	
 	@GetMapping("/login")
 		public String loginForm(Model model) {
@@ -57,13 +59,16 @@ public class GestorUsuario {
 			switch(rol) {
 			case 1:
 				Cliente cliente = new Cliente(usuario.getIdUsuario(), usuario.getNombre(), usuario.getPass(), apellidosCliente, dniCliente);
+				clienteDAO.save(cliente);
 				break;
 			case 2:
 				Direccion dir = new Direccion(codigoPostalRestaurante, calleRestaurante, numeroRestaurante, complementoRestaurante, municipioRestaurante);
 				Restaurante restaurante = new Restaurante(usuario.getIdUsuario(), usuario.getNombre(), usuario.getPass(), dir, cifRestaurante);
+				restauranteDAO.save(restaurante);
 				break;
 			case 3:
 				Repartidor repartidor = new Repartidor(usuario.getIdUsuario(), usuario.getNombre(), usuario.getPass(), apellidosRepartidor, nifRepartidor);
+				repartidorDAO.save(repartidor);
 				break;
 			}
 		
