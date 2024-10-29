@@ -21,6 +21,11 @@ public class GestorRestaurantes {
     @Autowired
     private ClienteDAO clienteDAO;
     
+    @GetMapping("/restaurante")
+    public String infoRestaurante(Model model) {
+    	return "restaurante";
+    }
+    
 
     
   

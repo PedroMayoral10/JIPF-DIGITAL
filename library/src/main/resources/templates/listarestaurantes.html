@@ -67,7 +67,6 @@
             <span th:text="${restaurante.nombre}"></span>
             <div>
                 <button class="view-button" onclick="location.href='@{/restaurante/{idUsuario}(idUsuario=${restaurante.idUsuario})}'">Ver</button>
-                <button class="favorite-button" onclick="location.href='@{/favorito(idUsuario=${restaurante.idUsuario}, clienteId=${clienteId})}'">Añadir a Favoritos</button>
             </div>
         </li>
     </ul>
