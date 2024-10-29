@@ -66,7 +66,11 @@
         <li class="restaurant-item">
             <span th:text="${restaurante.nombre}"></span>
             <div>
-                <button class="view-button" onclick="location.href='@{/restaurante/{idUsuario}(idUsuario=${restaurante.idUsuario})}'">Ver</button>
+                <!-- Botón "Ver" que lleva a la página de detalle con el ID del restaurante en la URL -->
+                <button class="view-button" 
+                    onclick="location.href='@{/detallerestaurantes/{id}(id=${restaurante.id})}'">
+                    Ver
+                </button>
             </div>
         </li>
     </ul>
@@ -74,4 +78,3 @@
     <a href="/menucliente">Volver al menú cliente</a>
 </body>
 </html>
-

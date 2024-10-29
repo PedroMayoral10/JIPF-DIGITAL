@@ -43,18 +43,7 @@ public class GestorClientes {
         return "listarestaurantes"; // Retorna el nombre del HTML
     }
 
-    @GetMapping("/favorito")
-    public String agregarFavorito(@RequestParam String idUsuario, @RequestParam String clienteId) {
-        Restaurante restaurante = restauranteDAO.findById(idUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
-        Cliente cliente = clienteDAO.findById(clienteId)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
-        
-        cliente.addFavorito(restaurante); // Asegúrate de tener este método en la clase Cliente
-        clienteDAO.save(cliente); // Guarda el cliente actualizado
-
-        return "redirect:/listarestaurantes"; // Redirige a la lista de restaurantes
-    }
+   
 
 
     /**

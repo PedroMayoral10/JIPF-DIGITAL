@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Detalle del Restaurante</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e0f7df; /* Fondo verde aclarado */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .restaurant-details, .payment-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .restaurant-details {
+            width: 60%;
+        }
+
+        .payment-box {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .menu-item select, .menu-item input, .menu-item button {
+            margin-left: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #e0a800;
+        }
+
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 5px;
+            align-items: center;
+        }
+
+        a {
+            margin-top: 20px;
+            text-decoration: none;
+            color: #4CAF50;
+            font-size: 18px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1 th:text="${restaurante.nombre}">Nombre del Restaurante</h1>
+    
+    <div class="container">
+        <!-- Detalles del restaurante y menús -->
+        <div class="restaurant-details">
+            <p><strong>Dirección:</strong> <span th:text="${restaurante.direccion}"></span></p>
+            <p><strong>Teléfono:</strong> <span th:text="${restaurante.telefono}"></span></p>
+            <p><strong>Descripción:</strong> <span th:text="${restaurante.descripcion}"></span></p>
+            
+            <!-- Menús desplegables -->
+            <h2>Menús</h2>
+            <div th:each="menu : ${restaurante.menus}">
+                <h3 th:text="${menu.nombre}">Nombre del Menú</h3>
+                <div th:each="item : ${menu.items}" class="menu-item">
+                    <span th:text="${item.nombre}">Nombre del Ítem</span>
+                    <span th:text="${item.precio}">Precio del Ítem</span>
+                    <input type="number" min="1" value="1" th:attr="id=${'cantidad_' + item.id}" />
+                    <button th:onclick="|addItemToCart('${item.id}', '${item.nombre}', '${item.precio}')|">Añadir</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zona de pago -->
+        <div class="payment-box">
+            <h2>Carrito de Pedido</h2>
+            <div id="cartItems"></div>
+            <p><strong>Total: $<span id="totalAmount">0.00</span></strong></p>
+            <button onclick="processOrder()">Realizar Pedido</button>
+        </div>
+    </div>
+
+    <a href="/listaRestaurantes">Volver a la lista de restaurantes</a>
+
+    <!-- Scripts -->
+    <script>
+        let cart = [];
+        let totalAmount = 0;
+
+        function addItemToCart(id, name, price) {
+            const quantity = parseInt(document.getElementById('cantidad_' + id).value);
+            const itemTotal = quantity * parseFloat(price);
+
+            const itemIndex = cart.findIndex(item => item.id === id);
+            if (itemIndex === -1) {
+                cart.push({ id, name, price, quantity, itemTotal });
+            } else {
+                cart[itemIndex].quantity += quantity;
+                cart[itemIndex].itemTotal += itemTotal;
+            }
+            updateCartDisplay();
+        }
+
+        function removeItemFromCart(id) {
+            const itemIndex = cart.findIndex(item => item.id === id);
+            if (itemIndex !== -1) {
+                totalAmount -= cart[itemIndex].itemTotal;
+                cart.splice(itemIndex, 1);
+            }
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const cartContainer = document.getElementById("cartItems");
+            cartContainer.innerHTML = "";
+            totalAmount = 0;
+
+            cart.forEach(item => {
+                const itemDiv = document.createElement("div");
+                itemDiv.classList.add("payment-item");
+                itemDiv.innerHTML = `
+                    <span>${item.name} x${item.quantity} - $${item.itemTotal.toFixed(2)}</span>
+                    <button onclick="removeItemFromCart('${item.id}')">Eliminar</button>
+                `;
+                cartContainer.appendChild(itemDiv);
+                totalAmount += item.itemTotal;
+            });
+
+            document.getElementById("totalAmount").innerText = totalAmount.toFixed(2);
+        }
+
+        function processOrder() {
+            if (cart.length === 0) {
+                alert("No hay ítems en el carrito.");
+                return;
+            }
+            alert("Pedido procesado con éxito.");
+            cart = [];
+            updateCartDisplay();
+        }
+    </script>
+</body>
+</html>
