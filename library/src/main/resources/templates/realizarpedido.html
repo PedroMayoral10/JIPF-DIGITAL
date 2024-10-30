@@ -65,6 +65,6 @@
     </div>
 
     <!-- Enlace para volver a la lista de restaurantes -->
-    <a href="/listarestaurantes">Volver a la lista de restaurantes</a>
+    <a th:href="@{/listarestaurantes/{id}(id=${cliente.idUsuario})}" class="btn">Volver a Lista Restaurantes</a>
 </body>
 </html>

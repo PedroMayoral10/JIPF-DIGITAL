@@ -14,27 +14,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Controller
 public class GestorPedidos {
-
-	PedidoDAO pedidoDAO;
-	ServicioEntregaDAO servicioEntregaDAO;
-	Pedido pedidoEnMarcha;
-
-
-	@GetMapping("/pedidos")
-	public String pedidosForm(Model model) {
-		return "pedidos";
-	}
 	
 	@Autowired
     private RestauranteDAO restauranteDAO;
     @Autowired
     private ClienteDAO clienteDAO;
+	
+	@GetMapping("/pedidos")
+	public String pedidosForm(Model model) {
+		return "pedidos";
+	}
 
-    @GetMapping("/realizarpedido/{id}")
-    public String detalleRestaurante(@PathVariable("id") String id, Model model) {
-        Restaurante restaurante = restauranteDAO.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
+    @GetMapping("/realizarpedido/{id_cliente}/{id_restaurante}")
+    public String detalleRestaurante(@PathVariable("id_cliente") String idCliente, @PathVariable("id_restaurante") String idRestaurante, Model model) {
+        Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
+        Cliente cliente = clienteDAO.findById(idCliente).orElse(null);
         model.addAttribute("restaurante", restaurante);
+        model.addAttribute("cliente", cliente);
         return "realizarpedido";
     }
 

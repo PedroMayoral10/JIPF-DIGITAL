@@ -28,6 +28,7 @@
             display: flex;
             flex-direction: column;
             gap: 30px; /* Espacio entre los botones */
+            align-items: center; /* Centrar horizontalmente */
         }
 
         button {
@@ -53,7 +54,7 @@
             text-decoration: none;
             border-radius: 8px;
             font-size: 20px;
-            width: 150px;
+            width: 250px; /* Igualar ancho con el botón */
             text-align: center;
         }
 
@@ -64,15 +65,10 @@
 </head>
 <body>
     <h1>Menu Cliente</h1>
-    <!--<p th:text="'Hola ' + ${usuario.nombre}"> </p>-->
-    
-    <div class="button-container">
-        <button onclick="location.href='/pedidos'">Realizar un pedido</button>
-        <button onclick="location.href='/listarestaurantes'">Buscar Restaurante</button> <!-- Nuevo botón añadido -->
-    </div>
-    
+    <a th:href="@{/listarestaurantes/{id}(id=${id_cliente})}" class="btn">Ver Restaurantes</a>
     <br>
     <a href="/login">Volver al login</a>
 </body>
 </html>
+
 

@@ -11,6 +11,7 @@ import es.JIPF_Digital.library.dominio.entidades.*;
 import es.JIPF_Digital.library.persistencia.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 @Controller
 public class GestorUsuario {
 	
@@ -38,24 +39,23 @@ public class GestorUsuario {
 		Cliente cliente = clienteDAO.findById(usuario.getIdUsuario()).orElse(null);
 	    Restaurante restaurante = restauranteDAO.findById(usuario.getIdUsuario()).orElse(null);
 	    Repartidor repartidor = repartidorDAO.findById(usuario.getIdUsuario()).orElse(null);
-		
 		if(cliente != null) {
 			if(cliente.getPass().equals(usuario.getPass())) {
-				return "menucliente";
+				return "redirect:/menucliente/"+cliente.getIdUsuario();
 			}else {
 				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
 				 return "login";
 			}
 		}else if(restaurante != null) {
 			if(restaurante.getPass().equals(usuario.getPass())) {
-				return "menurestaurante";
+				return "redirect:/menurestaurante";
 			}else {
 				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
 				 return "login";
 			}
 		}else if(repartidor!=null) {
 			if(repartidor.getPass().equals(usuario.getPass())) {
-				return "menurepartidor";
+				return "redirect:/menurepartidor";
 			}else {
 				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
 				 return "login";

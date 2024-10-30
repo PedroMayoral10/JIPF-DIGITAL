@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -19,28 +21,34 @@ public class GestorClientes {
     @Autowired
     private ClienteDAO clienteDAO;
 
-    @GetMapping("/menucliente")
-    public String MenuCliente(Model model) {
-        return "menucliente";
+    @GetMapping("/menucliente/{id}")
+    public String MenuCliente(@PathVariable("id") String idCliente, Model model) {
+    	model.addAttribute("id_cliente", idCliente); 
+    	return "menucliente";
     }
 
-    @GetMapping("/listarestaurantes")
-    public String ListaRestaurante(Model model, @RequestParam(required = false) String codigoPostal, @RequestParam(required = false) String texto) {
+    @GetMapping("/listarestaurantes/{id}")
+    public String ListaRestaurante(Model model, @PathVariable("id") String idCliente) {
         List<Restaurante> restaurantes;
-
-        if (codigoPostal != null && !codigoPostal.isEmpty() && texto != null && !texto.isEmpty()) {
-            // Busca restaurantes por código postal y texto en el nombre
-            restaurantes = restauranteDAO.findByDireccion_CodigoPostalAndNombreContaining(codigoPostal, texto);
-        } else if (codigoPostal != null && !codigoPostal.isEmpty()) {
-            // Busca restaurantes solo por código postal
-            restaurantes = restauranteDAO.findByDireccion_CodigoPostal(codigoPostal);
-        } else {
-            // Si no se proporciona ningún filtro, devuelve todos los restaurantes
-            restaurantes = restauranteDAO.findAll();
-        }
-
+        Cliente cliente = clienteDAO.findById(idCliente).orElse(null);
+        restaurantes = restauranteDAO.findAll();
         model.addAttribute("restaurantes", restaurantes);
+        model.addAttribute("cliente", cliente);
         return "listarestaurantes"; // Retorna el nombre del HTML
+    }
+    
+    
+    @PostMapping("/listarestaurantes/{id}")
+    public String favorito(Model model, @PathVariable("id") String idCliente, @RequestParam(value = "id_restaurante", required = false) String idRestaurante) {
+        Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
+        Cliente cliente = clienteDAO.findById(idCliente).orElse(null);
+        if(cliente.getFavoritos().contains(restaurante)) {
+        	cliente.getFavoritos().remove(restaurante);
+        }else {
+        	cliente.getFavoritos().add(restaurante);
+        }
+        clienteDAO.save(cliente);
+        return "redirect:/listarestaurantes/" + idCliente;
     }
 
    
@@ -55,15 +63,7 @@ public class GestorClientes {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * 
-     * @param cliente
-     * @param r
-     */
-    public void favorito(Cliente cliente, Restaurante r) {
-        // Implementar la lógica para agregar un restaurante a los favoritos
-        throw new UnsupportedOperationException();
-    }
+    
 
     /**
      * 
