@@ -19,22 +19,6 @@ public class GestorRestaurantes {
     @Autowired
     private ClienteDAO clienteDAO;
 
-    @GetMapping("@{/detallerestaurantes/{id}(id=${restaurante.id})}")
-    public String verRestaurante(@PathVariable String idUsuario, Model model) {
-        Restaurante restaurante = restauranteDAO.findById(idUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
-        model.addAttribute("restaurante", restaurante);
-        return "detallerestaurantes";
-    }
-
-    @GetMapping("/detallerestaurante/{id}")
-    public String detalleRestaurante(@PathVariable("id") String id, Model model) {
-        Restaurante restaurante = restauranteDAO.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
-        model.addAttribute("restaurante", restaurante);
-        return "detallerestaurante";
-    }
-
     public void modificarMenu(String restauranteId, List<ItemMenu> nuevoMenu) { // Cambiado a String
         Restaurante restaurante = restauranteDAO.findById(restauranteId)
                 .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
