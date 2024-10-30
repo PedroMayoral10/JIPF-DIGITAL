@@ -4,9 +4,8 @@
     <title>Lista de Restaurantes</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
-        		
-		body {
-            font-family: sans-serif;
+        body {
+            font-family: Arial, sans-serif; /* Cambia a Arial */
             margin: 0;
             padding: 20px;
             background-color: #e0f7df; /* Fondo verde aclarado */
@@ -19,13 +18,22 @@
             color: #333;
             margin-bottom: 20px;
         }
-		
-		.star {
-			cursor: pointer;
-			font-size: 24px;
-			color: gold;
-		}
-		
+
+        .restaurant-name {
+            font-family: Arial, sans-serif; /* Cambia a Arial para el nombre del restaurante */
+            font-size: 24px; /* Aumenta el tamaño del texto */
+            font-weight: bold; /* Texto en negrita */
+            text-align: center; /* Centra el texto */
+            flex-grow: 1; /* Permite que el nombre ocupe espacio */
+        }
+
+        .star {
+            cursor: pointer;
+            font-size: 48px; /* Tamaño de estrella aumentado */
+            color: gold;
+            margin-left: 20px; /* Espacio entre el botón y la estrella */
+        }
+
         .restaurant-list {
             list-style-type: none; /* Sin viñetas */
             padding: 0;
@@ -40,18 +48,24 @@
             border-radius: 8px;
             display: flex;
             justify-content: space-between; /* Espacio entre el nombre y el botón */
+            align-items: center; /* Centra verticalmente */
         }
 
-        .view-button, .favorite-button {
+        .view-button {
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 10px 15px;
+            padding: 10px 20px; /* Ajusta el tamaño del botón */
+            font-size: 18px; /* Reduce el tamaño de la fuente */
             cursor: pointer;
+            display: flex;
+            justify-content: center; /* Centra el texto dentro del botón */
+            align-items: center; /* Centra verticalmente el texto dentro del botón */
+            margin: 0; /* Asegura que no hay margen */
         }
 
-        .view-button:hover, .favorite-button:hover {
+        .view-button:hover {
             background-color: #e0a800;
         }
 
@@ -71,37 +85,34 @@
     <h1>Lista de Restaurantes</h1>
     <ul class="restaurant-list" th:each="restaurante : ${restaurantes}">
         <li class="restaurant-item">
-            <span th:text="${restaurante.nombre}"></span>
-            <div>
+            <div class="restaurant-name" th:text="${restaurante.nombre}"></div> <!-- Se añade una div para el nombre del restaurante -->
+            <div style="display: flex; align-items: center;"> <!-- Flex para alinear elementos -->
                 <!-- Enlace "Realizar pedido" que lleva a la página de detalle con el ID del restaurante en la URL -->
-				<a th:href="@{/realizarpedido/{clienteId}/{restauranteId}(clienteId=${cliente.idUsuario}, restauranteId=${restaurante.idUsuario})}">
-				    <button class="view-button">Realizar pedido</button>
-				</a>
-
-				
-				<form th:action="@{/listarestaurantes/{id}(id=${cliente.idUsuario})}" method="post" class="favorite-form">
-					<input type="hidden" name="id_restaurante" th:value="${restaurante.idUsuario}" />
-					<button type="submit" class="star" 
-				    	th:text="${cliente.favoritos.contains(restaurante) ? '★' : '☆'}"
-				    	id_restaurante="${restaurante.idUsuario}">
-				    </button>
-				</form>
+                <a th:href="@{/realizarpedido/{clienteId}/{restauranteId}(clienteId=${cliente.idUsuario}, restauranteId=${restaurante.idUsuario})}">
+                    <button class="view-button">Realizar pedido</button>
+                </a>
+                <form th:action="@{/listarestaurantes/{id}(id=${cliente.idUsuario})}" method="post" class="favorite-form">
+                    <input type="hidden" name="id_restaurante" th:value="${restaurante.idUsuario}" />
+                    <button type="submit" class="star" 
+                        th:text="${cliente.favoritos.contains(restaurante) ? '★' : '☆'}"
+                        id_restaurante="${restaurante.idUsuario}">
+                    </button>
+                </form>
             </div>
         </li>
     </ul>
 
     <a th:href="@{/menucliente/{id}(id=${cliente.idUsuario})}" class="btn">Volver al Menu Cliente</a>
-	
-	<script>
-	        // Seleccionar todos los elementos de estrella
-	        document.querySelectorAll('.star').forEach(star => {
-	            // Evento para cada estrella que cambia entre vacía y rellena al hacer clic
-	            star.addEventListener('click', function() {
 
-					// Cambiar visualización localmente (alternar estrella)
-					this.textContent = this.textContent === "★" ? "☆" : "★";
-	            });
-			});
-	</script>
+    <script>
+        // Seleccionar todos los elementos de estrella
+        document.querySelectorAll('.star').forEach(star => {
+            // Evento para cada estrella que cambia entre vacía y rellena al hacer clic
+            star.addEventListener('click', function() {
+                // Cambiar visualización localmente (alternar estrella)
+                this.textContent = this.textContent === "★" ? "☆" : "★";
+            });
+        });
+    </script>
 </body>
 </html>
