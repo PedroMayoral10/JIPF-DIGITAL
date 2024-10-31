@@ -18,13 +18,36 @@ public class GestorRestaurantes {
     private RestauranteDAO restauranteDAO;
     @Autowired
     private ClienteDAO clienteDAO;
-
-    public void modificarMenu(String restauranteId, List<ItemMenu> nuevoMenu) { // Cambiado a String
+    
+    @GetMapping("menurestaurante/{id}")
+    public String MenuRestaurante(@PathVariable("id") String idRestaurante,Model model) {
+    	Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
+    	model.addAttribute(restaurante);
+    	return "menurestaurante";
+    }
+    
+    @GetMapping("altamenu/{id}")
+    public String darAltaMenu(@PathVariable("id") String idRestaurante,Model model) {
+    	Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
+    	model.addAttribute(restaurante);
+    	return "altamenu";
+    }
+    
+    @GetMapping("modificarmenu/{id}")
+    public String modificarMenu(@PathVariable("id") String idRestaurante,Model model) {
+    	Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
+    	model.addAttribute(restaurante);
+    	return "modificarmenu";
+    }
+    
+    
+    
+    /*public void modificarMenu(String restauranteId, List<ItemMenu> nuevoMenu) { // Cambiado a String
         Restaurante restaurante = restauranteDAO.findById(restauranteId)
                 .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
         restaurante.getCartasMenu().forEach(cartaMenu -> cartaMenu.setItems(nuevoMenu));
         restauranteDAO.save(restaurante);
-    }
+    }*/
 
     public void actualizarMenuPrincipal(Restaurante restaurante, Collection<ItemMenu> nuevosItems) {
         CartaMenu menuPrincipal = restaurante.getMenuPrincipal();

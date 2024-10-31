@@ -65,7 +65,8 @@ a:hover {
 <body>
 	<h1>Menu Restaurante</h1>
 	<!--<p th:text="'Hola ' + ${usuario.nombre}"> </p>-->
-	<button onclick="location.href='/pedidos'">Realizar un pedido</button>
+	<a th:href="@{/altamenu/{id}(id=${restaurante.idUsuario})}" class="btn">Dar Alta Menu</a>
+	<a th:href="@{/modificarmenu/{id}(id=${restaurante.idUsuario})}" class="btn">Modificar Menu</a>
 	<br>
 	<br>
 	<a href="/login">Volver al login</a>

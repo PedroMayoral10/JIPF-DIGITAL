@@ -48,14 +48,14 @@ public class GestorUsuario {
 			}
 		}else if(restaurante != null) {
 			if(restaurante.getPass().equals(usuario.getPass())) {
-				return "redirect:/menurestaurante";
+				return "redirect:/menurestaurante/"+restaurante.getIdUsuario();
 			}else {
 				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
 				 return "login";
 			}
 		}else if(repartidor!=null) {
 			if(repartidor.getPass().equals(usuario.getPass())) {
-				return "redirect:/menurepartidor";
+				return "redirect:/menurepartidor/"+repartidor.getIdUsuario();
 			}else {
 				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
 				 return "login";

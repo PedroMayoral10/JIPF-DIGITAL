@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<title>Modificar Menu</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<style>
+body {
+	background-color: #e0f7df;
+	font-family: sans-serif; padding : 20px; /* Relleno */
+	display: flex;
+	flex-direction: column; /* Colocar elementos en columna */
+	align-items: center; /* Centrar elementos horizontalmente */
+	margin: 0;
+	padding: 20px; /* Eliminar margen */
+}
+
+h1 {
+	padding-top: 5px; /* Relleno en la parte superior */
+	font-size: 48px;
+	color: #333; border-radius : 8px; /* Esquinas redondeadas */
+	width: 300px; /* Ancho del encabezado */
+	text-align: center;
+	border-radius: 8px;
+}
+
+p {
+	font-size: 20px;
+	margin: 20px 0;
+}
+
+a {
+	display: flex;
+	align-items: center; /* Centrar verticalmente */
+	justify-content: center; /* Centrar horizontalmente */
+	padding: 15px 30px;
+	background-color: #4CAF50;
+	color: white;
+	font-size: 15px;
+	text-decoration: none;
+	margin-top: 20px;
+	border-radius: 8px;
+}
+
+a:hover {
+	background-color: #d9534f;
+}
+</style>
+<body>
+	<h1>Modificar menu</h1>
+	<a th:href="@{/menurestaurante/{id}(id=${restaurante.idUsuario})}" class="btn">Volver al Menu Restaurante</a>
+</body>
+</html>
