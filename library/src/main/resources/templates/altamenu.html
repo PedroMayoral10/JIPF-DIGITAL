@@ -92,11 +92,21 @@
         padding: 10px 0;
         border-bottom: 1px solid #555;
     }
+	
+	.success-message {
+	            color: green;
+	            margin-bottom: 15px;
+	            font-size: 0.9em;
+	        }
+	
 </style>
 <body>
     <h1>Dar Alta Menu</h1>
     
-    <form th:action="@{/menurestaurante/nuevoMenuYItem}" method="post">
+    <form th:action="@{/altamenu/{id}(id=${restaurante.idUsuario})}" method="post">
+		<div th:if="${success}" class="success-message">
+			<p th:text="${success}"></p>
+		</div>
         <!-- Campo para el nombre del menú -->
         <label for="nombreMenu">Nombre del Menú:</label>
         <input type="text" id="nombreMenu" name="nombreMenu" required />
@@ -121,7 +131,7 @@
     <a th:href="@{/menurestaurante/{id}(id=${restaurante.idUsuario})}" class="btn">Volver al Menu Restaurante</a>
 
     <!-- Menú desplegable en la derecha -->
-    <div class="sidebar">
+    <!--<div class="sidebar">
         <h2>Items del Menú</h2>
         <ul>
             <li th:each="item : ${items}">
@@ -130,7 +140,6 @@
                 <span th:text="${item.tipo}">Tipo</span>
             </li>
         </ul>
-    </div>
+    </div>-->
 </body>
 </html>
-

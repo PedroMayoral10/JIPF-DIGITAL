@@ -1,15 +1,19 @@
 package es.JIPF_Digital.library.dominio.controladores;
 
 import es.JIPF_Digital.library.dominio.entidades.*;
+import es.JIPF_Digital.library.persistencia.*;
 import es.JIPF_Digital.library.persistencia.RestauranteDAO;
 import es.JIPF_Digital.library.persistencia.ClienteDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Collection;
 import java.util.List;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class GestorRestaurantes {
@@ -17,7 +21,11 @@ public class GestorRestaurantes {
     @Autowired
     private RestauranteDAO restauranteDAO;
     @Autowired
-    private ClienteDAO clienteDAO;
+    private CartaMenuDAO cartamenuDAO;
+    @Autowired
+    private ItemMenuDAO itemDAO;
+    
+    
     
     @GetMapping("menurestaurante/{id}")
     public String MenuRestaurante(@PathVariable("id") String idRestaurante,Model model) {
@@ -40,41 +48,61 @@ public class GestorRestaurantes {
     	return "modificarmenu";
     }
     
-    
-    
-    /*public void modificarMenu(String restauranteId, List<ItemMenu> nuevoMenu) { // Cambiado a String
-        Restaurante restaurante = restauranteDAO.findById(restauranteId)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
-        restaurante.getCartasMenu().forEach(cartaMenu -> cartaMenu.setItems(nuevoMenu));
-        restauranteDAO.save(restaurante);
-    }*/
+    @PostMapping("altamenu/{id}")
+    public String postAltaMenu(@PathVariable("id") String idRestaurante,
+            @RequestParam(value = "nombreMenu", required = false) String nombreMenu,
+            @RequestParam(value = "nombre", required = false) String nombreItem,
+            @RequestParam(value = "precio", required = false) double precio,
+            @RequestParam(value = "tipo", required = false) String tipo_menu,
+            RedirectAttributes redirectAttributes) {
+    	
+    	Restaurante restaurante = restauranteDAO.getById(idRestaurante);
+    	if(!comprobarSiExiste(nombreMenu, idRestaurante)) {
+    		CartaMenu cartamenu = cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante);
+    		ItemMenu item;
+            if (tipo_menu.equals("COMIDA")) {
+                item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
+            } else if (tipo_menu.equals("BEBIDA")) {
+                item = new ItemMenu(nombreItem, TipoItemMenu.BEBIDA, precio);
+            } else {
+                item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);
+            }
+            
+            cartamenu.getItems().add(item);
+            cartamenuDAO.save(cartamenu);
+            redirectAttributes.addFlashAttribute("success", "El item se ha creado correctamente.");
+        	return "redirect:/altamenu/"+idRestaurante;
+    	}
+    	CartaMenu cartamenu = new CartaMenu();
+        cartamenu.setNombre(nombreMenu);
+        cartamenu.setRestaurante(restaurante);
+        cartamenuDAO.save(cartamenu);
 
-    public void actualizarMenuPrincipal(Restaurante restaurante, Collection<ItemMenu> nuevosItems) {
-        CartaMenu menuPrincipal = restaurante.getMenuPrincipal();
-
-        if (menuPrincipal != null) {
-            menuPrincipal.setItems(nuevosItems);
+        ItemMenu item;
+        if (tipo_menu.equals("COMIDA")) {
+            item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
+        } else if (tipo_menu.equals("BEBIDA")) {
+            item = new ItemMenu(nombreItem, TipoItemMenu.BEBIDA, precio);
         } else {
-            CartaMenu nuevaCarta = new CartaMenu(restaurante, "Menú Principal");
-            nuevaCarta.setItems(nuevosItems);
-            restaurante.getCartasMenu().add(nuevaCarta);
+            item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);
         }
-    }
 
-    public List<Restaurante> listarRestaurantes() {
-        return restauranteDAO.findAll();
-    }
+        cartamenu.getItems().add(item);
+        cartamenuDAO.save(cartamenu);
 
-    public Restaurante obtenerRestaurantePorId(String idUsuario) {
-        return restauranteDAO.findById(idUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
+        // Agregar mensaje de éxito
+        redirectAttributes.addFlashAttribute("success", "El menú se ha creado correctamente.");
+    	
+    	return "redirect:/altamenu/"+idRestaurante;
     }
-
-    private ItemMenu crearItem(String nombre, TipoItemMenu tipo, double precio) {
-        return new ItemMenu(nombre, tipo, precio);
-    }
-
-    public ItemMenu agregarNuevoItem(String nombre, TipoItemMenu tipo, double precio) {
-        return crearItem(nombre, tipo, precio);
+    
+    private boolean comprobarSiExiste(String nombre, String idRestaurante) {
+    	CartaMenu cartamenu = cartamenuDAO.findByNombreAndRestauranteId(nombre, idRestaurante);
+    	System.out.println(cartamenu.getNombre());
+    	if(cartamenu != null) {
+    		return true;
+    	}else {
+    		return false;
+    	}
     }
 }
