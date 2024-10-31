@@ -57,7 +57,7 @@ public class GestorRestaurantes {
             RedirectAttributes redirectAttributes) {
     	
     	Restaurante restaurante = restauranteDAO.getById(idRestaurante);
-    	if(!comprobarSiExiste(nombreMenu, idRestaurante)) {
+    	if(!comprobarSiNoExiste(nombreMenu, idRestaurante)) {
     		CartaMenu cartamenu = cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante);
     		ItemMenu item;
             if (tipo_menu.equals("COMIDA")) {
@@ -96,13 +96,13 @@ public class GestorRestaurantes {
     	return "redirect:/altamenu/"+idRestaurante;
     }
     
-    private boolean comprobarSiExiste(String nombre, String idRestaurante) {
+    private boolean comprobarSiNoExiste(String nombre, String idRestaurante) {
     	CartaMenu cartamenu = cartamenuDAO.findByNombreAndRestauranteId(nombre, idRestaurante);
-    	System.out.println(cartamenu.getNombre());
+
     	if(cartamenu != null) {
-    		return true;
-    	}else {
     		return false;
+    	}else {
+    		return true;
     	}
     }
 }
