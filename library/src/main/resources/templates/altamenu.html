@@ -1,53 +1,136 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
-<title>Dar Alta Menu</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Dar Alta Menu</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <style>
-body {
-	background-color: #e0f7df;
-	font-family: sans-serif; padding : 20px; /* Relleno */
-	display: flex;
-	flex-direction: column; /* Colocar elementos en columna */
-	align-items: center; /* Centrar elementos horizontalmente */
-	margin: 0;
-	padding: 20px; /* Eliminar margen */
-}
+    body {
+        background-color: #e0f7df;
+        font-family: sans-serif;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+    }
 
-h1 {
-	padding-top: 5px; /* Relleno en la parte superior */
-	font-size: 48px;
-	color: #333; border-radius : 8px; /* Esquinas redondeadas */
-	width: 300px; /* Ancho del encabezado */
-	text-align: center;
-	border-radius: 8px;
-}
+    h1 {
+        padding-top: 5px;
+        font-size: 48px;
+        color: #333;
+        width: 300px;
+        text-align: center;
+        border-radius: 8px;
+    }
 
-p {
-	font-size: 20px;
-	margin: 20px 0;
-}
+    p {
+        font-size: 20px;
+        margin: 20px 0;
+    }
 
-a {
-	display: flex;
-	align-items: center; /* Centrar verticalmente */
-	justify-content: center; /* Centrar horizontalmente */
-	padding: 15px 30px;
-	background-color: #4CAF50;
-	color: white;
-	font-size: 15px;
-	text-decoration: none;
-	margin-top: 20px;
-	border-radius: 8px;
-}
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 300px;
+    }
 
-a:hover {
-	background-color: #d9534f;
-}
+    label, input, select {
+        font-size: 18px;
+        margin: 10px 0;
+        width: 100%;
+    }
+
+    input[type="text"], input[type="number"], select {
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px 30px;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 15px;
+        text-decoration: none;
+        margin-top: 20px;
+        border-radius: 8px;
+    }
+
+    .btn:hover {
+        background-color: #d9534f;
+    }
+
+    /* Estilo para el menú desplegable */
+    .sidebar {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 250px;
+        height: 100%;
+        background-color: #333;
+        color: white;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .sidebar h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        padding: 10px 0;
+        border-bottom: 1px solid #555;
+    }
 </style>
 <body>
-	<h1>Dar alta menu</h1>
-	<a th:href="@{/menurestaurante/{id}(id=${restaurante.idUsuario})}" class="btn">Volver al Menu Restaurante</a>
+    <h1>Dar Alta Menu</h1>
+    
+    <form th:action="@{/menurestaurante/nuevoMenuYItem}" method="post">
+        <!-- Campo para el nombre del menú -->
+        <label for="nombreMenu">Nombre del Menú:</label>
+        <input type="text" id="nombreMenu" name="nombreMenu" required />
+
+        <!-- Campos para el ítem del menú -->
+        <label for="nombre">Nombre del Ítem:</label>
+        <input type="text" id="nombre" name="nombre" required />
+
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" name="precio" step="0.01" required />
+
+        <label for="tipo">Tipo de Ítem:</label>
+        <select id="tipo" name="tipo" required>
+            <option th:value="COMIDA">Comida</option>
+            <option th:value="BEBIDA">Bebida</option>
+            <option th:value="POSTRE">Postre</option>
+        </select>
+
+        <button type="submit" class="btn">Crear Menú e Ítem</button>
+    </form>
+
+    <a th:href="@{/menurestaurante/{id}(id=${restaurante.idUsuario})}" class="btn">Volver al Menu Restaurante</a>
+
+    <!-- Menú desplegable en la derecha -->
+    <div class="sidebar">
+        <h2>Items del Menú</h2>
+        <ul>
+            <li th:each="item : ${items}">
+                <span th:text="${item.nombre}">Nombre del Ítem</span> - 
+                <span th:text="${item.precio}">Precio</span> - 
+                <span th:text="${item.tipo}">Tipo</span>
+            </li>
+        </ul>
+    </div>
 </body>
 </html>
+
