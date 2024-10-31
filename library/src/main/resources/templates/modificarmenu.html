@@ -53,39 +53,84 @@
             border-radius: 8px;
             background-color: #f1f1f1;
             margin: 10px;
+            position: relative; /* Necesario para posicionamiento de botones */
         }
 
         .menu-list {
             max-width: 200px;
         }
 
-        .menu-item, .item {
+        .menu-item {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
             margin: 8px 0;
-            padding: 8px;
+            padding: 16px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
             border: 1px solid #ddd;
             border-radius: 4px;
             background-color: #fff;
+            width: 100%;
         }
 
         .menu-item:hover, .item:hover {
             background-color: #eee;
         }
 
-        button {
-            margin-left: 10px;
-            background-color: #ff5f5f;
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .item span:first-child {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .item span:last-child {
+            color: #4CAF50;
+            font-size: 14px;
+        }
+
+        /* Botón Añadir Ítem en la esquina inferior izquierda */
+        .add-btn {
+            background-color: #4CAF50;
             color: white;
-            border: none;
+            padding: 10px 20px;
             border-radius: 4px;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
             cursor: pointer;
         }
 
-        .add-btn {
-            background-color: #4CAF50;
-            padding: 8px;
+        /* Botón Eliminar Ítem en la esquina inferior derecha */
+        .delete-btn {
+            background-color: #ff5f5f;
+            color: white;
+            padding: 10px 20px;
             border-radius: 4px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        /* Contenedor de ítems para que no interfiera con los botones */
+        #items-container {
+            padding-bottom: 50px; /* Espacio para evitar que el contenido cubra los botones */
         }
     </style>
 </head>
@@ -96,12 +141,12 @@
         <!-- Lista de menús a la izquierda -->
         <div class="menu-list">
             <h3>Menús Disponibles</h3>
-            <!-- Mostrar los menús desde la lista que hemos agregado en el modelo -->
             <div th:each="menu : ${menus}">
-                <div class="menu-item" 
-                     th:text="${menu.nombre}" 
-                     th:onclick="|showItems(${menu.id})|">
-                </div>
+                <!-- Cada menú es un formulario que envía el menú ID -->
+                <form th:action="@{/modificarmenu/{id}(id=${idRestaurante})}" method="post">
+                    <input type="hidden" name="menuId" th:value="${menu.id}" />
+                    <button type="submit" class="menu-item" th:text="${menu.nombre}"></button>
+                </form>
             </div>
         </div>
 
@@ -109,57 +154,40 @@
         <div class="item-list">
             <h3>Ítems del Menú</h3>
             <div id="items-container">
-                <!-- Los ítems se agregarán dinámicamente con JavaScript -->
+                <!-- Muestra los ítems si existen -->
+                <div th:if="${items != null}">
+                    <div th:each="item : ${items}">
+                        <div class="item">
+                            <span th:text="${item.nombre}"></span>
+                            <span th:text="${item.precio}">Precio</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mensaje si no hay ítems -->
+                <div th:if="${items == null}">
+                    <div>No hay ítems seleccionados.</div>
+                </div>
             </div>
-            <button class="add-btn" onclick="addItem()">Añadir Ítem</button>
+            <!-- Botón "Añadir Ítem" en la esquina inferior izquierda -->
+            <button class="add-btn" onclick="addItem()">Añadir Item</button>
+            <!-- Botón "Eliminar Ítem" en la esquina inferior derecha -->
+            <button class="delete-btn" onclick="deleteItem()">Eliminar Item</button>
         </div>
     </div>
 
-    <a th:href="@{/menurestaurante/{id}(id=${restauranteId})}" class="btn">Volver al Menu Restaurante</a>
+    <a th:href="@{/menurestaurante/{id}(id=${idRestaurante})}" class="btn">Volver al Menu Restaurante</a>
 
-	<script>
-	    // Asegúrate de que `menus` esté correctamente inicializado desde el backend
-	    let menus = /*[[${menus}]]*/ [];
+    <!-- Aquí puedes agregar scripts para las funciones de los botones -->
+    <script>
+        function addItem() {
+            // Lógica para añadir un ítem
+            console.log("Añadir Item");
+        }
 
-	    function showItems(menuId) {
-	        const itemsContainer = document.getElementById("items-container");
-	        itemsContainer.innerHTML = ""; // Limpiar ítems actuales
-
-	        // Encuentra el menú seleccionado por su ID
-	        const menu = menus.find(m => m.id === menuId);
-	        if (!menu) {
-	            console.error("Menú no encontrado:", menuId); // Mensaje de error si no se encuentra
-	            return;
-	        }
-
-	        // Verifica si el menú tiene ítems
-	        if (!menu.items || menu.items.length === 0) {
-	            itemsContainer.innerHTML = "<div>No hay ítems en este menú.</div>";
-	            return;
-	        }
-
-	        // Mostrar solo los ítems del menú seleccionado
-	        menu.items.forEach(item => {
-	            const itemDiv = document.createElement("div");
-	            itemDiv.classList.add("item");
-	            itemDiv.innerHTML = `
-	                <span>${item.nombre}</span>
-	                <span>$${item.precio.toFixed(2)}</span>
-	                <button onclick="deleteItem(${item.id})">Borrar</button>
-	            `;
-	            itemsContainer.appendChild(itemDiv);
-	        });
-	    }
-
-	    function deleteItem(itemId) {
-	        alert('Eliminar item con ID: ' + itemId);
-	        // Aquí puedes agregar la lógica para eliminar el ítem del menú
-	    }
-
-	    function addItem() {
-	        // Aquí puedes agregar la lógica para añadir un nuevo ítem al menú seleccionado
-	        alert('Añadir nuevo ítem');
-	    }
-	</script>
+        function deleteItem() {
+			console.log("Eliminar Item");
+        }
+    </script>
 </body>
 </html>
+

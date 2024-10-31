@@ -45,9 +45,8 @@ public class GestorRestaurantes {
     public String modificarMenu(@PathVariable("id") String idRestaurante, Model model) {
         // Obtener todos los menús del restaurante por su ID, incluyendo los ítems
         List<CartaMenu> menus = cartamenuDAO.findAllByRestauranteId(idRestaurante);
-        System.out.println(menus); // Imprimir para depurar
         model.addAttribute("menus", menus);
-        model.addAttribute("restauranteId", idRestaurante);
+        model.addAttribute("idRestaurante", idRestaurante);
         return "modificarmenu"; // Asegúrate de que el nombre de la vista coincide
     }
     
@@ -58,7 +57,6 @@ public class GestorRestaurantes {
             @RequestParam(value = "precio", required = false) double precio,
             @RequestParam(value = "tipo", required = false) String tipo_menu,
             RedirectAttributes redirectAttributes) {
-    	
     	Restaurante restaurante = restauranteDAO.getById(idRestaurante);
     	if(!comprobarSiNoExiste(nombreMenu, idRestaurante)) {
     		CartaMenu cartamenu = cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante);
@@ -97,6 +95,19 @@ public class GestorRestaurantes {
         redirectAttributes.addFlashAttribute("success", "El menú se ha creado correctamente.");
     	
     	return "redirect:/altamenu/"+idRestaurante;
+    }
+    
+    @PostMapping("modificarmenu/{id}")
+    public String postModMenu(@PathVariable("id") String idRestaurante,
+            @RequestParam(value = "menuId", required = false) Long idMenu, Model model, RedirectAttributes redirectAttributes) {
+    	CartaMenu cartamenu = cartamenuDAO.findById(idMenu).orElse(null);
+    	List<CartaMenu> menus = cartamenuDAO.findAll();
+    	if(!cartamenu.getItems().isEmpty())
+    		redirectAttributes.addFlashAttribute("items", cartamenu.getItems());
+    	redirectAttributes.addFlashAttribute("menus", menus);
+
+        
+        return "redirect:/modificarmenu/"+idRestaurante;
     }
     
     private boolean comprobarSiNoExiste(String nombre, String idRestaurante) {
