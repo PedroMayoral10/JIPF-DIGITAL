@@ -42,10 +42,13 @@ public class GestorRestaurantes {
     }
     
     @GetMapping("modificarmenu/{id}")
-    public String modificarMenu(@PathVariable("id") String idRestaurante,Model model) {
-    	Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
-    	model.addAttribute(restaurante);
-    	return "modificarmenu";
+    public String modificarMenu(@PathVariable("id") String idRestaurante, Model model) {
+        // Obtener todos los menús del restaurante por su ID, incluyendo los ítems
+        List<CartaMenu> menus = cartamenuDAO.findAllByRestauranteId(idRestaurante);
+        System.out.println(menus); // Imprimir para depurar
+        model.addAttribute("menus", menus);
+        model.addAttribute("restauranteId", idRestaurante);
+        return "modificarmenu"; // Asegúrate de que el nombre de la vista coincide
     }
     
     @PostMapping("altamenu/{id}")

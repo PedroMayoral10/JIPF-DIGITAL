@@ -3,144 +3,163 @@
 <head>
     <title>Modificar Menu</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            background-color: #e0f7df;
+            font-family: sans-serif;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+
+        h1 {
+            padding-top: 5px;
+            font-size: 48px;
+            color: #333;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+        }
+
+        a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 15px;
+            text-decoration: none;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        a:hover {
+            background-color: #d9534f;
+        }
+
+        .container {
+            display: flex;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .menu-list, .item-list {
+            flex: 1;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f1f1f1;
+            margin: 10px;
+        }
+
+        .menu-list {
+            max-width: 200px;
+        }
+
+        .menu-item, .item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        .menu-item:hover, .item:hover {
+            background-color: #eee;
+        }
+
+        button {
+            margin-left: 10px;
+            background-color: #ff5f5f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-btn {
+            background-color: #4CAF50;
+            padding: 8px;
+            border-radius: 4px;
+        }
+    </style>
 </head>
-<style>
-    body {
-        background-color: #e0f7df;
-        font-family: sans-serif;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0;
-    }
-
-    h1 {
-        padding-top: 5px;
-        font-size: 48px;
-        color: #333;
-        border-radius: 8px;
-        width: 300px;
-        text-align: center;
-    }
-
-    a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 15px 30px;
-        background-color: #4CAF50;
-        color: white;
-        font-size: 15px;
-        text-decoration: none;
-        margin-top: 20px;
-        border-radius: 8px;
-    }
-
-    a:hover {
-        background-color: #d9534f;
-    }
-
-    /* Estilos para los contenedores de listas */
-    .container {
-        display: flex;
-        margin-top: 20px;
-        width: 100%;
-        max-width: 800px;
-    }
-
-    .menu-list, .item-list {
-        flex: 1;
-        padding: 20px;
-        border-radius: 8px;
-        background-color: #f1f1f1;
-        margin: 10px;
-    }
-
-    .menu-list {
-        max-width: 200px;
-    }
-
-    .menu-item, .item {
-        display: flex;
-        justify-content: space-between;
-        margin: 8px 0;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: #fff;
-    }
-
-    .menu-item:hover, .item:hover {
-        background-color: #eee;
-    }
-
-    button {
-        margin-left: 10px;
-        background-color: #ff5f5f;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .add-btn {
-        background-color: #4CAF50;
-        padding: 8px;
-        border-radius: 4px;
-    }
-</style>
-
 <body>
-    <h1>Modificar menu</h1>
-    
+    <h1>Modificar menú</h1>
+
     <div class="container">
         <!-- Lista de menús a la izquierda -->
         <div class="menu-list">
             <h3>Menús Disponibles</h3>
-            <!-- Aquí se mostrarán los menús desde la base de datos -->
-            <div class="menu-item" onclick="showItems('menu1')">Menú 1</div>
-            <div class="menu-item" onclick="showItems('menu2')">Menú 2</div>
-            <div class="menu-item" onclick="showItems('menu3')">Menú 3</div>
+            <!-- Mostrar los menús desde la lista que hemos agregado en el modelo -->
+            <div th:each="menu : ${menus}">
+                <div class="menu-item" 
+                     th:text="${menu.nombre}" 
+                     th:onclick="|showItems(${menu.id})|">
+                </div>
+            </div>
         </div>
-        
+
         <!-- Lista de ítems seleccionados a la derecha -->
         <div class="item-list">
             <h3>Ítems del Menú</h3>
             <div id="items-container">
-                <!-- Aquí se agregarán los ítems dinámicamente -->
+                <!-- Los ítems se agregarán dinámicamente con JavaScript -->
             </div>
             <button class="add-btn" onclick="addItem()">Añadir Ítem</button>
         </div>
     </div>
-	
-	<a th:href="@{/menurestaurante/{id}(id=${restaurante.idUsuario})}" class="btn">Volver al Menu Restaurante</a>
 
-    <script>
-        // Función básica para mostrar ítems (sólo para la estructura, sin conexión de base de datos)
-        function showItems(menuId) {
-            const itemsContainer = document.getElementById("items-container");
-            itemsContainer.innerHTML = ""; // Limpiar ítems actuales
+    <a th:href="@{/menurestaurante/{id}(id=${restauranteId})}" class="btn">Volver al Menu Restaurante</a>
 
-            // Esto es solo un ejemplo, luego obtendrás los ítems desde la base de datos
-            const exampleItems = {
-                "menu1": ["Item 1.1", "Item 1.2", "Item 1.3"],
-                "menu2": ["Item 2.1", "Item 2.2"],
-                "menu3": ["Item 3.1", "Item 3.2", "Item 3.3"]
-            };
+	<script>
+	    // Asegúrate de que `menus` esté correctamente inicializado desde el backend
+	    let menus = /*[[${menus}]]*/ [];
 
-            exampleItems[menuId].forEach((item, index) => {
-                const itemDiv = document.createElement("div");
-                itemDiv.classList.add("item");
-                itemDiv.innerHTML = `
-                    ${item}
-                    <button onclick="deleteItem(${index})">Borrar</button>
-                `;
-                itemsContainer.appendChild(itemDiv);
-            });
-        }
+	    function showItems(menuId) {
+	        const itemsContainer = document.getElementById("items-container");
+	        itemsContainer.innerHTML = ""; // Limpiar ítems actuales
 
+	        // Encuentra el menú seleccionado por su ID
+	        const menu = menus.find(m => m.id === menuId);
+	        if (!menu) {
+	            console.error("Menú no encontrado:", menuId); // Mensaje de error si no se encuentra
+	            return;
+	        }
 
-    </script>
+	        // Verifica si el menú tiene ítems
+	        if (!menu.items || menu.items.length === 0) {
+	            itemsContainer.innerHTML = "<div>No hay ítems en este menú.</div>";
+	            return;
+	        }
+
+	        // Mostrar solo los ítems del menú seleccionado
+	        menu.items.forEach(item => {
+	            const itemDiv = document.createElement("div");
+	            itemDiv.classList.add("item");
+	            itemDiv.innerHTML = `
+	                <span>${item.nombre}</span>
+	                <span>$${item.precio.toFixed(2)}</span>
+	                <button onclick="deleteItem(${item.id})">Borrar</button>
+	            `;
+	            itemsContainer.appendChild(itemDiv);
+	        });
+	    }
+
+	    function deleteItem(itemId) {
+	        alert('Eliminar item con ID: ' + itemId);
+	        // Aquí puedes agregar la lógica para eliminar el ítem del menú
+	    }
+
+	    function addItem() {
+	        // Aquí puedes agregar la lógica para añadir un nuevo ítem al menú seleccionado
+	        alert('Añadir nuevo ítem');
+	    }
+	</script>
 </body>
 </html>
