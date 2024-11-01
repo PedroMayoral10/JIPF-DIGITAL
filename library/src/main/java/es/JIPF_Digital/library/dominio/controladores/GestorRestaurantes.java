@@ -134,12 +134,12 @@ public class GestorRestaurantes {
 	public String postAltaMenu(@PathVariable("id") Long idMenu,
 			@RequestParam(value = "nombre", required = false) String nombreItem,
 			@RequestParam(value = "precio", required = false) double precio,
-			@RequestParam(value = "tipo", required = false) String tipo_menu,
+			@RequestParam(value = "tipo", required = false) String tipo_item,
 			RedirectAttributes redirectAttributes, Model model) {
 		ItemMenu item;
-		if (tipo_menu.equals("COMIDA")) {
+		if (tipo_item.equals("COMIDA")) {
 			item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
-		} else if (tipo_menu.equals("BEBIDA")) {
+		} else if (tipo_item.equals("BEBIDA")) {
 			item = new ItemMenu(nombreItem, TipoItemMenu.BEBIDA, precio);
 		} else {
 			item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);

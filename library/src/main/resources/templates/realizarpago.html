@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Realizar Pago</title>
+    <style>
+		body {
+		    background-color: #e0f7df;
+		    font-family: sans-serif;
+		    padding: 20px;
+		    display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		    margin: 0;
+		}
+
+		h1 {
+		    padding-top: 5px;
+		    font-size: 64px;
+		    color: #333;
+		    border-radius: 8px;
+		    width: 100%;
+		    text-align: center;
+		}
+
+		.container {
+		    display: flex;
+		    justify-content: space-between;
+		    margin-top: 20px;
+		    width: 100%;
+		    max-width: 1200px;
+		}
+
+		.barra_direcciones {
+		    width: 350px;
+		    background-color: #f4f4f4;
+		    padding: 30px;
+		    border-radius: 8px;
+		    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+		    margin-right: 20px;
+		}
+
+		.form-container {
+		    flex-grow: 1;
+		    padding: 30px;
+		    border-radius: 8px;
+		    background-color: #f1f1f1;
+		}
+
+		.form-group {
+		    margin-bottom: 20px;
+		}
+
+		label {
+		    font-weight: bold;
+		    margin-bottom: 8px;
+		    font-size: 20px;
+		}
+
+		input[type="date"],
+		select {
+		    padding: 15px;
+		    font-size: 20px;
+		    width: 100%;
+		    border: 1px solid #ddd;
+		    border-radius: 4px;
+		}
+
+		button {
+		    padding: 20px 40px;
+		    background-color: #4CAF50;
+		    color: white;
+		    font-size: 20px;
+		    border: none;
+		    border-radius: 8px;
+		    cursor: pointer;
+		}
+
+		button:hover {
+		    background-color: #d9534f;
+		}
+
+		/* Estilo del botón de "Volver" */
+		.return-button {
+		    position: fixed;
+		    bottom: 20px;
+		    right: 20px;
+		    background-color: #4CAF50;
+		    color: white;
+		    width: 50px;
+		    height: 50px;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    border-radius: 50%;
+		    text-decoration: none;
+		    font-size: 24px;
+		    transition: background-color 0.3s ease;
+		}
+
+		.return-button:hover {
+		    background-color: #d9534f;
+		}
+    </style>
+</head>
+<body>
+    <h1>Realizar Pago</h1>
+    <div class="container">
+		<nav class="barra_direcciones">
+		    <h2>Ingrese su Dirección</h2>
+		    <form action="/submitDireccion" method="POST">
+		        <div class="form-group">
+		            <label for="codigoPostal">Código Postal:</label>
+		            <input type="text" id="codigoPostal" name="codigoPostal" required>
+		        </div>
+		        <div class="form-group">
+		            <label for="calle">Calle:</label>
+		            <input type="text" id="calle" name="calle" required>
+		        </div>
+		        <div class="form-group">
+		            <label for="numero">Número:</label>
+		            <input type="text" id="numero" name="numero" required>
+		        </div>
+		        <div class="form-group">
+		            <label for="complemento">Complemento:</label>
+		            <input type="text" id="complemento" name="complemento">
+		        </div>
+		        <div class="form-group">
+		            <label for="municipio">Municipio:</label>
+		            <input type="text" id="municipio" name="municipio" required>
+		        </div>
+		        <button type="submit">Guardar Dirección</button>
+		    </form>
+		</nav>
+		
+		<div class="form-container">
+            <form action="/realizarPago" method="POST">
+                <div class="form-group">
+                    <label for="metodoPago">Método de Pago:</label>
+                    <select id="metodoPago" name="metodoPago" required>
+                        <option value="PAYPAL">PayPal</option>
+                        <option value="TARJETA">Transferencia Bancaria</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fechaTransaccion">Fecha de Transacción:</label>
+                    <input type="date" id="fechaTransaccion" name="fechaTransaccion" required>
+                </div>
+                <h2>Items del Pedido:</h2>
+                <ul>
+                    <li th:each="item : ${itemsPedidos}">
+                        <span th:text="${item.nombre}">Nombre del Item</span> - 
+                        <span th:text="${item.tipo}">Tipo del Item</span> - 
+                        <span th:text="${item.precio} + ' €'">Precio del Item</span>
+                    </li>
+                </ul>
+                <h3>Total: <span th:text="${precioTotal}">0.0</span> €</h3>
+                <button type="submit">Confirmar Pago</button>
+            </form>
+        </div>
+        
+        <a th:href="@{/realizarpedido/{idCliente}/{idRestaurante}(idCliente=${idCliente}, idRestaurante=${idRestaurante})}" class="return-button">&#x21a9;</a> <!-- Botón de "Volver" circular -->
+    </div>
+</body>
+</html>

@@ -44,7 +44,7 @@
             display: flex;
             margin-top: 20px;
             width: 100%;
-            max-width: 800px;
+            max-width: 1200px; /* Aumentado para listas grandes */
         }
 
         .menu-list, .item-list {
@@ -53,11 +53,13 @@
             border-radius: 8px;
             background-color: #f1f1f1;
             margin: 10px;
-            position: relative; /* Necesario para posicionamiento de botones */
+            position: relative;
+            overflow-y: auto; /* Agrega scroll en caso de listas extensas */
+            max-height: 600px; /* Aumenta el tamaño de las listas */
         }
 
         .menu-list {
-            max-width: 200px;
+            max-width: 300px; /* Aumentado para una lista de menús más grande */
         }
 
         .menu-item {
@@ -104,8 +106,6 @@
             font-size: 14px;
         }
 
-       
-        /* Botón Eliminar Ítem en la esquina inferior derecha */
         .volver-btn {
             background-color: #ff5f5f;
             color: white;
@@ -117,22 +117,48 @@
             cursor: pointer;
         }
 		
-	
-		
-		
+		.pedir-item-btn {
+			background-color: #ff5f5f;
+			color: black;
+			font-weight: bold;
+			border: none;
+			padding: 5px 10px;
+			cursor: pointer;
+			border-radius: 5px;
+			transition: background-color 0.3s;
+			margin-left: 10px;
+		}
 
-        /* Contenedor de ítems para que no interfiera con los botones */
         #items-container {
-            padding-bottom: 50px; /* Espacio para evitar que el contenido cubra los botones */
+            padding-bottom: 50px;
         }
 
 		.nombre_item {
-		    flex: 1; /* Toma todo el espacio disponible */
+		    flex: 1;
 		}
 
 		.precio_item {
-		    width: 100px; /* Ancho fijo para el precio */
-		    text-align: right; /* Alinear a la derecha */
+		    width: 100px;
+		    text-align: right;
+		}
+		
+		.tipo_item {
+			width: 100px;
+			text-align: right;
+		}
+
+		.pedidos {
+		     border-left: 1px solid #ccc;
+		     max-width: 400px; /* Aumentado para la lista de pedidos */
+		}
+
+		.pedido-item {
+		    display: flex;
+		    justify-content: space-between;
+			padding: 10px 0;
+			border-bottom: 1px solid #eee;
+			font-size: 18px;
+			font-weight: 500;
 		}
 		
     </style>
@@ -152,58 +178,102 @@
             </div>
         </div>
 
-        <!-- Lista de ítems seleccionados a la derecha -->
+        <!-- Lista de ítems seleccionados -->
         <div class="item-list">
             <h3>Items del Menú</h3>
-            <!-- Desplegable para seleccionar el tipo de ítem -->
-            <label for="tipoItem">Filtrar por tipo:</label>
-            <select id="tipoItem" onchange="filtrarItems()">
-                <option value="">Todos</option>
-                <option value="COMIDA">Comida</option>
-                <option value="BEBIDA">Bebida</option>
-                <option value="POSTRE">Postre</option>
-            </select>
-
             <div id="items-container">
                 <!-- Muestra los ítems si existen -->
                 <div th:if="${items != null}">
                     <div th:each="item : ${items}">
-                        <div class="item" data-tipo-item="${item.tipo}">
+                        <div class="item">
                             <span th:text="${item.nombre}" class="nombre_item"></span>
+                            <span th:text="${item.tipo}" class="tipo_item"></span>
                             <span th:text="${item.precio} + ' €'" class="precio_item"></span>
+                            <!-- Botón de pedir -->
+                            <button type="button" class="pedir-item-btn" onclick="agregarAPedido(this)">
+                                Pedir
+                            </button>
                         </div>
                     </div>
                 </div>
                 <!-- Mensaje si no hay ítems -->
-                <div th:if="${items == null || items.size() == 0}">
+                <div th:if="${items == null}">
                     <div>No hay ítems seleccionados.</div>
                 </div>
             </div>
-            
+
+            <!-- Enlace para volver a la lista de restaurantes -->
             <a th:href="@{/listarestaurantes/{id}(id=${cliente.idUsuario})}" class="volver-btn">Volver a la lista restaurantes</a>
+        </div>
+
+        <!-- Lista de ítems pedidos -->
+        <div class="item-list pedidos">
+            <h3>Items Pedidos</h3>
+            <div id="pedidos-container">
+                <!-- Los items pedidos se añadirán aquí -->
+            </div>
+
+            <!-- Botón de realizar pago con atributos de datos -->
+            <button class="realizar-pago-btn" 
+                    th:data-id-cliente="${cliente.idUsuario}" 
+                    th:data-id-restaurante="${restaurante.idUsuario}" 
+                    onclick="realizarPago(this)">
+                Realizar Pago
+            </button>
         </div>
     </div>
 
     <script>
-        function filtrarItems() {
-            var tipoSeleccionado = document.getElementById("tipoItem").value; // Cambiado a "tipoItem"
-            var items = document.querySelectorAll("#items-container .item");
+        function agregarAPedido(button) {
+            // Obtener el contenedor donde se mostrarán los ítems pedidos
+            const pedidosContainer = document.getElementById("pedidos-container");
 
-            // Recorre todos los ítems y los muestra/oculta según el tipo seleccionado
-            items.forEach(function(item) {
-                // Obtener el tipo del atributo data-tipo-item y comparar
-                var tipoItem = item.getAttribute("data-tipo-item");
-                if (tipoSeleccionado === "" || tipoItem === tipoSeleccionado) {
-                    item.style.display = ""; // Muestra el ítem
-                } else {
-                    item.style.display = "none"; // Oculta el ítem
-                }
-            });
+            // Obtener los datos del ítem seleccionado
+            const item = button.parentElement;
+            const nombre = item.querySelector(".nombre_item")?.innerText || "";
+            const tipo = item.querySelector(".tipo_item")?.innerText || "";
+            const precio = item.querySelector(".precio_item")?.innerText.replace(" €", "") || "";
+
+            // Crear un nuevo div para el ítem pedido
+            const pedidoItem = document.createElement("div");
+            pedidoItem.classList.add("pedido-item");
+
+            // Aseguramos que los datos están bien asignados
+            pedidoItem.dataset.nombre = nombre;  
+            pedidoItem.dataset.tipo = tipo;
+            pedidoItem.dataset.precio = precio;
+
+            // Agregar la información del ítem al nuevo div
+            pedidoItem.innerHTML = `
+                <span>${nombre}</span>
+                <span>${tipo}</span>
+                <span>${precio} €</span>
+            `;
+
+            // Agregar el ítem al contenedor de pedidos
+            pedidosContainer.appendChild(pedidoItem);
+        }
+
+        function realizarPago(button) {
+            const idCliente = button.dataset.idCliente;
+            const idRestaurante = button.dataset.idRestaurante;
+
+            // Obtener todos los ítems pedidos
+            const pedidosContainer = document.getElementById("pedidos-container");
+            const itemsPedidos = Array.from(pedidosContainer.getElementsByClassName("pedido-item"));
+
+            // Construir el query string
+            const queryString = itemsPedidos.map((pedido, index) => {
+                const nombre = encodeURIComponent(pedido.dataset.nombre || "");
+                const tipo = encodeURIComponent(pedido.dataset.tipo || "");
+                const precio = encodeURIComponent(pedido.dataset.precio || 0);
+                return `nombre${index}=${nombre}&tipo${index}=${tipo}&precio${index}=${precio}`;
+            }).join("&");
+
+            // Redirigir a la URL de pago con el query string
+            window.location.href = `/realizarpago/${idCliente}/${idRestaurante}?${queryString}`;
         }
     </script>
 </body>
-
-
-
 </html>
 

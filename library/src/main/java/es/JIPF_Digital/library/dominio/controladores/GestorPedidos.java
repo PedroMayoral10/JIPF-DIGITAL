@@ -1,6 +1,8 @@
 package es.JIPF_Digital.library.dominio.controladores;
 
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,16 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import es.JIPF_Digital.library.dominio.entidades.CartaMenu;
-import es.JIPF_Digital.library.dominio.entidades.Cliente;
-import es.JIPF_Digital.library.dominio.entidades.Direccion;
-import es.JIPF_Digital.library.dominio.entidades.ItemMenu;
-import es.JIPF_Digital.library.dominio.entidades.Pedido;
-import es.JIPF_Digital.library.dominio.entidades.Restaurante;
-import es.JIPF_Digital.library.dominio.entidades.ServicioEntrega;
-import es.JIPF_Digital.library.persistencia.CartaMenuDAO;
-import es.JIPF_Digital.library.persistencia.ClienteDAO;
-import es.JIPF_Digital.library.persistencia.RestauranteDAO;
+import es.JIPF_Digital.library.dominio.entidades.*;
+import es.JIPF_Digital.library.persistencia.*;
 
 
 @Controller
@@ -62,17 +56,45 @@ public class GestorPedidos {
 
 		return "redirect:/realizarpedido/"+ idCliente +"/" + idRestaurante;
 		}
-	/* public void realizarPedido(Cliente cliente, Restaurante restaurante, List<ItemMenu> items) {
-			Pedido nuevoPedido = new Pedido();
-			nuevoPedido.setCliente(cliente);
-			nuevoPedido.setRestaurante(restaurante);
-			nuevoPedido.setItems(items);
-			nuevoPedido.setFecha(new Date());
-			nuevoPedido.setEstado(EstadoPedido.PENDIENTE);
-			
-			PedidoDAO.save(nuevoPedido);
-		}*/
-		
+	
+	
+	@GetMapping("/realizarpago/{idCliente}/{idRestaurante}")
+    public String realizarPago(
+        @PathVariable("idCliente") String idCliente,
+        @PathVariable("idRestaurante") String idRestaurante,
+        @RequestParam Map<String, String> params,
+        Model model) {
+
+        // Recoger ítems seleccionados
+        List<ItemMenu> itemsPedidos = new ArrayList<>();
+        int index = 0;
+        double precioTotalPedido = 0;
+        while (params.containsKey("nombre" + index)) {
+            String nombreItem = params.get("nombre" + index);
+            String tipo_item = params.get("tipo" + index);
+            double precio = Double.parseDouble(params.get("precio" + index));
+            precioTotalPedido += precio;
+            ItemMenu item;
+    		if (tipo_item.equals("COMIDA")) {
+    			item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
+    		} else if (tipo_item.equals("BEBIDA")) {
+    			item = new ItemMenu(nombreItem, TipoItemMenu.BEBIDA, precio);
+    		} else {
+    			item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);
+    		}
+            
+            itemsPedidos.add(item);
+            index++;
+        }
+
+        // Añadir los ítems al modelo junto con los identificadores de cliente y restaurante
+        model.addAttribute("itemsPedidos", itemsPedidos);
+        model.addAttribute("idCliente", idCliente);
+        model.addAttribute("idRestaurante", idRestaurante);
+        model.addAttribute("precioTotal", precioTotalPedido);
+        
+        return "realizarpago";
+    }
 
 	private boolean realizarPago(Pedido p) {
 		// TODO - implement GestorPedidos.realizarPago
