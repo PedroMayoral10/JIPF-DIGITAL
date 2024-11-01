@@ -101,14 +101,13 @@
 	
 </style>
 <body>
-    <h1>Dar Alta Menu</h1>
+    <h1>Añade un Item al menú: <span th:text="${menu.nombre}"></span></h1>
     
-    <form th:action="@{/altamenu/{id}(id=${restaurante.idUsuario})}" method="post">
-        <!-- Campo para el nombre del menú -->
-        <label for="nombreMenu">Nombre del Menú:</label>
-        <input type="text" id="nombreMenu" name="nombreMenu" required />
-
-        <!-- Campos para el ítem del menú -->
+    <form th:action="@{/nuevoitem/{id}(id=${menu.id})}" method="post">
+		<div th:if="${success}" class="success-message">
+			<p th:text="${success}"></p>
+		</div>
+        
         <label for="nombre">Nombre del Ítem:</label>
         <input type="text" id="nombre" name="nombre" required />
 
@@ -122,10 +121,11 @@
             <option th:value="POSTRE">Postre</option>
         </select>
 
-        <button type="submit" class="btn">Crear Menú e Item</button>
+        <button type="submit" class="btn">Crear Item</button>
     </form>
 
-    <a th:href="@{/menurestaurante/{id}(id=${restaurante.idUsuario})}" class="btn">Volver al Menu Restaurante</a>
+    <a th:href="@{/modificarmenu/{id}(id=${idRestaurante})}" class="btn">Volver a Modificar menu</a>
+	<a th:href="@{/menurestaurante/{id}(id=${idRestaurante})}" class="btn">Volver a Menu restaurante</a>
 
 </body>
 </html>

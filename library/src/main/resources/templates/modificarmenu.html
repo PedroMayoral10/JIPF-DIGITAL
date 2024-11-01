@@ -127,12 +127,47 @@
             right: 10px;
             cursor: pointer;
         }
+		
+		.delete-item-btn {
+		    background-color: #ff5f5f;
+		    color: black; /* Color del texto negro */
+			font-weight: bold;
+			border: none; /* Sin borde */
+		    padding: 5px 10px; /* Espaciado interno */
+		    cursor: pointer; /* Cambiar el cursor al pasar por encima */
+		    border-radius: 5px; /* Bordes redondeados */
+		    transition: background-color 0.3s; /* Efecto de transición */
+			margin-left: 10px;
+		}
+		
+		.delete-menu-btn {
+		    background-color: #ff5f5f; /* Color de fondo rojo */
+		    color: black; /* Color del texto negro */
+		    font-weight: bold;
+		    border: none; /* Sin borde */
+		    padding: 10px 20px; /* Espaciado interno */
+		    cursor: pointer; /* Cambiar el cursor al pasar por encima */
+		    border-radius: 4px; /* Bordes redondeados */
+		    transition: background-color 0.3s; /* Efecto de transición */
+		    margin-left: 10px; /* Espacio entre botones */
+		    position: absolute; /* Para posicionarlo de forma precisa */
+		    bottom: 50px; /* Alineación vertical */
+		    left: 150px; /* Ajusta este valor según la distancia deseada del botón de añadir */
+		}
 
         /* Contenedor de ítems para que no interfiera con los botones */
         #items-container {
             padding-bottom: 50px; /* Espacio para evitar que el contenido cubra los botones */
         }
-		
+
+		.nombre_item {
+		    flex: 1; /* Toma todo el espacio disponible */
+		}
+
+		.precio_item {
+		    width: 100px; /* Ancho fijo para el precio */
+		    text-align: right; /* Alinear a la derecha */
+		}
 		
     </style>
 </head>
@@ -160,8 +195,8 @@
 		        <div th:if="${items != null}">
 		            <div th:each="item : ${items}">
 		                <div class="item">
-		                    <span th:text="${item.nombre}"></span>
-		                    <span th:text="${item.precio}">Precio</span>
+		                    <span th:text="${item.nombre}" class = nombre_item></span>
+		                    <span th:text="${item.precio} + ' €'" class = precio_item></span>
 		                    <!-- Botón de eliminación -->
 							<button type="button" class="delete-item-btn" th:onclick="'confirmDeleteItem(' + ${item.id} + ')'">
 							    Eliminar
@@ -174,16 +209,19 @@
 		            <div>No hay ítems seleccionados.</div>
 		        </div>
 		    </div>
-		    <!-- Botón "Añadir Ítem" en la esquina inferior izquierda -->
-		    <button class="add-btn" onclick="addItem()">Añadir Item</button>
+			<button class="add-btn" th:onclick="'addItem(' + ${menu_seleccionado} + ')'">Añadir Item</button>
+			<button type="button" class="delete-menu-btn" th:onclick="'confirmDeleteMenu(' + ${menu_seleccionado} + ')'">Eliminar Menú</button>
 			<a th:href="@{/menurestaurante/{id}(id=${idRestaurante})}" class="volver-btn">Volver al Menu Restaurante</a>
 		</div>
 		
 
 		<script>
-		    function addItem() {
-		        // Lógica para añadir un ítem
-		        console.log("Añadir Item");
+		    function addItem(menuId) {
+				if (menuId === null) {
+					alert("Selecciona primero un menu.");
+					return;
+				}
+				window.location.href = `/nuevoitem/${menuId}`;
 		    }
 
 		    function confirmDeleteItem(itemId) {
@@ -199,13 +237,38 @@
 		        .then(response => {
 		            if (response.ok) {
 		                alert("Item eliminado");
-		                location.reload(); // Esto recargará la página actual
+		                location.reload();
 		            } else {
 		                alert.error("Error al eliminar el item");
 		            }
 		        })
 		        .catch(error => console.error("Error en la solicitud:", error));
 		    }
+			
+			function confirmDeleteMenu(menuId) {
+				if (menuId === null) {
+					alert("Selecciona primero un menu.");
+					return;
+				}
+				if (confirm("¿Quieres eliminar el menú?")) {
+					deleteMenu(menuId);
+				}
+			}
+			
+			function deleteMenu(menuId) {
+				fetch(`/eliminarmenu/${menuId}`, {
+					method: 'DELETE'
+				})
+				.then(response => {
+					if (response.ok) {
+						alert("Menú eliminado");
+						location.reload();
+					} else {
+			 			alert.error("Error al eliminar el menú");
+					}
+				})
+				.catch(error => console.error("Error en la solicitud:", error));
+			}
 		</script>
 </body>
 </html>
