@@ -64,16 +64,48 @@ public class GestorPedidos {
         @PathVariable("idRestaurante") String idRestaurante,
         @RequestParam Map<String, String> params,
         Model model) {
+		
+		List<ItemMenu> itemsPedidos = obtenerItems(params);
+		double precioTotalPedido = 0.0;
+		for (ItemMenu item : itemsPedidos) {
+		    precioTotalPedido += item.getPrecio();
+		}
 
-        // Recoger ítems seleccionados
-        List<ItemMenu> itemsPedidos = new ArrayList<>();
+
+        // Añadir los ítems al modelo junto con los identificadores de cliente y restaurante
+        model.addAttribute("itemsPedidos", itemsPedidos);
+        model.addAttribute("idCliente", idCliente);
+        model.addAttribute("idRestaurante", idRestaurante);
+        model.addAttribute("precioTotal", precioTotalPedido);
+        
+        return "realizarpago";
+    }
+	
+	@PostMapping("/realizarpago/{idCliente}/{idRestaurante}")
+	public String submitPago(@PathVariable("idCliente") String idCliente, @PathVariable("idRestaurante") String idRestaurante,
+	        @RequestParam Map<String, String> params, Model model) {
+		
+		List<ItemMenu> itemsPedidos = obtenerItems(params);
+		int precioTotalPedido = 0;
+		for (ItemMenu item : itemsPedidos) {
+		    precioTotalPedido += item.getPrecio();
+		}
+        
+		System.out.println(precioTotalPedido);
+		
+		return "redirect:/login";
+	}
+	
+
+
+
+	private List<ItemMenu> obtenerItems(Map<String, String> params) {
+		List<ItemMenu> itemsPedidos = new ArrayList<>();
         int index = 0;
-        double precioTotalPedido = 0;
         while (params.containsKey("nombre" + index)) {
             String nombreItem = params.get("nombre" + index);
             String tipo_item = params.get("tipo" + index);
             double precio = Double.parseDouble(params.get("precio" + index));
-            precioTotalPedido += precio;
             ItemMenu item;
     		if (tipo_item.equals("COMIDA")) {
     			item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
@@ -86,16 +118,10 @@ public class GestorPedidos {
             itemsPedidos.add(item);
             index++;
         }
-
-        // Añadir los ítems al modelo junto con los identificadores de cliente y restaurante
-        model.addAttribute("itemsPedidos", itemsPedidos);
-        model.addAttribute("idCliente", idCliente);
-        model.addAttribute("idRestaurante", idRestaurante);
-        model.addAttribute("precioTotal", precioTotalPedido);
-        
-        return "realizarpago";
-    }
-
+        return itemsPedidos;
+		
+	}
+	
 	private boolean realizarPago(Pedido p) {
 		// TODO - implement GestorPedidos.realizarPago
 		throw new UnsupportedOperationException();
@@ -104,12 +130,6 @@ public class GestorPedidos {
 
 	private ServicioEntrega crearServicioEntrega(Pedido p, Direccion d) {
 		// TODO - implement GestorPedidos.crearServicioEntrega
-		throw new UnsupportedOperationException();
-	}
-
-
-	public void addItemMenu(ItemMenu item) {
-		// TODO - implement GestorPedidos.addItemMenu
 		throw new UnsupportedOperationException();
 	}
 
