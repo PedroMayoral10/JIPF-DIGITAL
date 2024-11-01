@@ -1,7 +1,23 @@
 package es.JIPF_Digital.library.dominio.entidades;
 
-import java.util.*;
-import jakarta.persistence.*;
+import java.util.Collection;
+import java.util.Date;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 public class Pedido {
@@ -35,6 +51,70 @@ public class Pedido {
 
 	public Pedido() {
 		
+	}
+
+	public Long getId_pedido() {
+		return id_pedido;
+	}
+
+	public void setId_pedido(Long id_pedido) {
+		this.id_pedido = id_pedido;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public Pago getPago() {
+		return pago;
+	}
+
+	public void setPago(Pago pago) {
+		this.pago = pago;
+	}
+
+	public Collection<ItemMenu> getItems() {
+		return items;
+	}
+
+	public void setItems(Collection<ItemMenu> items) {
+		this.items = items;
+	}
+
+	public Restaurante getRestaurante() {
+		return restaurante;
+	}
+
+	public void setRestaurante(Restaurante restaurante) {
+		this.restaurante = restaurante;
+	}
+
+	public ServicioEntrega getEntrega() {
+		return entrega;
+	}
+
+	public void setEntrega(ServicioEntrega entrega) {
+		this.entrega = entrega;
+	}
+
+	public EstadoPedido getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoPedido estado) {
+		this.estado = estado;
+	}
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
 	}
 	
 	

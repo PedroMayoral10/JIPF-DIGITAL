@@ -1,70 +1,209 @@
-<!DOCTYPE HTML>
-<html xmlns:th="https://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Realizar pedido</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8">
+    <title>Realizar Pedido</title>
     <style>
         body {
+            background-color: #e0f7df;
             font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #e0f7df; /* Fondo verde aclarado */
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            margin: 0;
         }
 
         h1 {
+            padding-top: 5px;
+            font-size: 48px;
             color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 500px; /* Tamaño máximo del contenedor */
-            width: 100%;
-            padding: 20px;
-            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            gap: 20px;
-        }
-
-        .restaurant-details {
+            width: 300px;
             text-align: center;
         }
 
         a {
-            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 15px;
             text-decoration: none;
-            color: #4CAF50;
-            font-size: 18px;
-            text-align: center;
+            margin-top: 20px;
+            border-radius: 8px;
         }
 
         a:hover {
-            text-decoration: underline;
+            background-color: #d9534f;
         }
 
+        .container {
+            display: flex;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .menu-list, .item-list {
+            flex: 1;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f1f1f1;
+            margin: 10px;
+            position: relative; /* Necesario para posicionamiento de botones */
+        }
+
+        .menu-list {
+            max-width: 200px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 8px 0;
+            padding: 16px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            width: 100%;
+        }
+
+        .menu-item:hover, .item:hover {
+            background-color: #eee;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .item span:first-child {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .item span:last-child {
+            color: #4CAF50;
+            font-size: 14px;
+        }
+
+       
+        /* Botón Eliminar Ítem en la esquina inferior derecha */
+        .volver-btn {
+            background-color: #ff5f5f;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+		
+	
+		
+		
+
+        /* Contenedor de ítems para que no interfiera con los botones */
+        #items-container {
+            padding-bottom: 50px; /* Espacio para evitar que el contenido cubra los botones */
+        }
+
+		.nombre_item {
+		    flex: 1; /* Toma todo el espacio disponible */
+		}
+
+		.precio_item {
+		    width: 100px; /* Ancho fijo para el precio */
+		    text-align: right; /* Alinear a la derecha */
+		}
+		
     </style>
 </head>
 <body>
-    <!-- Nombre del restaurante -->
-    <h1 th:text="${restaurante.nombre}">Nombre del Restaurante</h1>
-    
-    <!-- CIF del restaurante -->
+    <h1>Realizar Pedido</h1>
+
     <div class="container">
-        <div class="realizar_pedido">
-            <p><strong>CIF:</strong> <span th:text="${restaurante.cif}">CIF del Restaurante</span></p>
+        <!-- Lista de menús a la izquierda -->
+        <div class="menu-list">
+            <h3>Menús Disponibles</h3>
+            <div th:each="menu : ${menus}">
+                <form th:action="@{/realizarpedido/{clienteId}/{restauranteId}(clienteId=${cliente.idUsuario}, restauranteId=${restaurante.idUsuario})}" method="post">
+                    <input type="hidden" name="menuId" th:value="${menu.id}" />
+                    <button type="submit" class="menu-item" th:text="${menu.nombre}"></button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lista de ítems seleccionados a la derecha -->
+        <div class="item-list">
+            <h3>Items del Menú</h3>
+            <!-- Desplegable para seleccionar el tipo de ítem -->
+            <label for="tipoItem">Filtrar por tipo:</label>
+            <select id="tipoItem" onchange="filtrarItems()">
+                <option value="">Todos</option>
+                <option value="COMIDA">Comida</option>
+                <option value="BEBIDA">Bebida</option>
+                <option value="POSTRE">Postre</option>
+            </select>
+
+            <div id="items-container">
+                <!-- Muestra los ítems si existen -->
+                <div th:if="${items != null}">
+                    <div th:each="item : ${items}">
+                        <div class="item" data-tipo-item="${item.tipo}">
+                            <span th:text="${item.nombre}" class="nombre_item"></span>
+                            <span th:text="${item.precio} + ' €'" class="precio_item"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mensaje si no hay ítems -->
+                <div th:if="${items == null || items.size() == 0}">
+                    <div>No hay ítems seleccionados.</div>
+                </div>
+            </div>
+            
+            <a th:href="@{/listarestaurantes/{id}(id=${cliente.idUsuario})}" class="volver-btn">Volver a la lista restaurantes</a>
         </div>
     </div>
 
-    <!-- Enlace para volver a la lista de restaurantes -->
-    <a th:href="@{/listarestaurantes/{id}(id=${cliente.idUsuario})}" class="btn">Volver a Lista Restaurantes</a>
+    <script>
+        function filtrarItems() {
+            var tipoSeleccionado = document.getElementById("tipoItem").value; // Cambiado a "tipoItem"
+            var items = document.querySelectorAll("#items-container .item");
+
+            // Recorre todos los ítems y los muestra/oculta según el tipo seleccionado
+            items.forEach(function(item) {
+                // Obtener el tipo del atributo data-tipo-item y comparar
+                var tipoItem = item.getAttribute("data-tipo-item");
+                if (tipoSeleccionado === "" || tipoItem === tipoSeleccionado) {
+                    item.style.display = ""; // Muestra el ítem
+                } else {
+                    item.style.display = "none"; // Oculta el ítem
+                }
+            });
+        }
+    </script>
 </body>
+
+
+
 </html>
+
