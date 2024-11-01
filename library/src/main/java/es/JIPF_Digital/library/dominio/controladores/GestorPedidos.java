@@ -30,6 +30,8 @@ public class GestorPedidos {
 	public String pedidosForm(Model model) {
 		return "pedidos";
 	}
+	
+	private static List<ItemMenu> itemsPedidos;
 
     @GetMapping("/realizarpedido/{id_cliente}/{id_restaurante}")
     public String detalleRestaurante(@PathVariable("id_cliente") String idCliente, @PathVariable("id_restaurante") String idRestaurante, Model model) {
@@ -65,7 +67,7 @@ public class GestorPedidos {
         @RequestParam Map<String, String> params,
         Model model) {
 		
-		List<ItemMenu> itemsPedidos = obtenerItems(params);
+		itemsPedidos = obtenerItems(params);
 		double precioTotalPedido = 0.0;
 		for (ItemMenu item : itemsPedidos) {
 		    precioTotalPedido += item.getPrecio();
@@ -83,15 +85,14 @@ public class GestorPedidos {
 	
 	@PostMapping("/realizarpago/{idCliente}/{idRestaurante}")
 	public String submitPago(@PathVariable("idCliente") String idCliente, @PathVariable("idRestaurante") String idRestaurante,
-	        @RequestParam Map<String, String> params, Model model) {
+	        Model model, @RequestParam(value = "codigoPostal", required = false) String codigoPostal        
+			) {
 		
-		List<ItemMenu> itemsPedidos = obtenerItems(params);
-		int precioTotalPedido = 0;
+		double precioTotalPedido = 0.0;
 		for (ItemMenu item : itemsPedidos) {
 		    precioTotalPedido += item.getPrecio();
 		}
-        
-		System.out.println(precioTotalPedido);
+		
 		
 		return "redirect:/login";
 	}
