@@ -9,11 +9,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.ResponseEntity;
+import java.util.Optional;
 
 @Controller
 public class GestorRestaurantes {
@@ -108,6 +111,17 @@ public class GestorRestaurantes {
 
         
         return "redirect:/modificarmenu/"+idRestaurante;
+    }
+    
+    @DeleteMapping("/eliminaritem/{itemId}")
+    public ResponseEntity<Void> deleteItem(@PathVariable("itemId") Long itemId) {
+        Optional<ItemMenu> item = itemDAO.findById(itemId);
+        if (item.isPresent()) {
+            itemDAO.delete(item.get());
+            return ResponseEntity.ok().build(); // Responde con 200 OK si se eliminó correctamente
+        } else {
+            return ResponseEntity.notFound().build(); // Responde con 404 si el ítem no existe
+        }
     }
     
     private boolean comprobarSiNoExiste(String nombre, String idRestaurante) {

@@ -117,7 +117,7 @@
         }
 
         /* Botón Eliminar Ítem en la esquina inferior derecha */
-        .delete-btn {
+        .volver-btn {
             background-color: #ff5f5f;
             color: white;
             padding: 10px 20px;
@@ -132,6 +132,8 @@
         #items-container {
             padding-bottom: 50px; /* Espacio para evitar que el contenido cubra los botones */
         }
+		
+		
     </style>
 </head>
 <body>
@@ -151,43 +153,60 @@
         </div>
 
         <!-- Lista de ítems seleccionados a la derecha -->
-        <div class="item-list">
-            <h3>Ítems del Menú</h3>
-            <div id="items-container">
-                <!-- Muestra los ítems si existen -->
-                <div th:if="${items != null}">
-                    <div th:each="item : ${items}">
-                        <div class="item">
-                            <span th:text="${item.nombre}"></span>
-                            <span th:text="${item.precio}">Precio</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Mensaje si no hay ítems -->
-                <div th:if="${items == null}">
-                    <div>No hay ítems seleccionados.</div>
-                </div>
-            </div>
-            <!-- Botón "Añadir Ítem" en la esquina inferior izquierda -->
-            <button class="add-btn" onclick="addItem()">Añadir Item</button>
-            <!-- Botón "Eliminar Ítem" en la esquina inferior derecha -->
-            <button class="delete-btn" onclick="deleteItem()">Eliminar Item</button>
-        </div>
-    </div>
+		<div class="item-list">
+		    <h3>Items del Menú</h3>
+		    <div id="items-container">
+		        <!-- Muestra los ítems si existen -->
+		        <div th:if="${items != null}">
+		            <div th:each="item : ${items}">
+		                <div class="item">
+		                    <span th:text="${item.nombre}"></span>
+		                    <span th:text="${item.precio}">Precio</span>
+		                    <!-- Botón de eliminación -->
+							<button type="button" class="delete-item-btn" th:onclick="'confirmDeleteItem(' + ${item.id} + ')'">
+							    Eliminar
+							</button>
+		                </div>
+		            </div>
+		        </div>
+		        <!-- Mensaje si no hay ítems -->
+		        <div th:if="${items == null}">
+		            <div>No hay ítems seleccionados.</div>
+		        </div>
+		    </div>
+		    <!-- Botón "Añadir Ítem" en la esquina inferior izquierda -->
+		    <button class="add-btn" onclick="addItem()">Añadir Item</button>
+			<a th:href="@{/menurestaurante/{id}(id=${idRestaurante})}" class="volver-btn">Volver al Menu Restaurante</a>
+		</div>
+		
 
-    <a th:href="@{/menurestaurante/{id}(id=${idRestaurante})}" class="btn">Volver al Menu Restaurante</a>
+		<script>
+		    function addItem() {
+		        // Lógica para añadir un ítem
+		        console.log("Añadir Item");
+		    }
 
-    <!-- Aquí puedes agregar scripts para las funciones de los botones -->
-    <script>
-        function addItem() {
-            // Lógica para añadir un ítem
-            console.log("Añadir Item");
-        }
+		    function confirmDeleteItem(itemId) {
+				if (confirm("¿Quieres eliminar el item?")) {
+					deleteItem(itemId);
+				}
+		    }
 
-        function deleteItem() {
-			console.log("Eliminar Item");
-        }
-    </script>
+		    function deleteItem(itemId) {
+		        fetch(`/eliminaritem/${itemId}`, {
+		            method: 'DELETE'
+		        })
+		        .then(response => {
+		            if (response.ok) {
+		                alert("Item eliminado");
+		                location.reload(); // Esto recargará la página actual
+		            } else {
+		                alert.error("Error al eliminar el item");
+		            }
+		        })
+		        .catch(error => console.error("Error en la solicitud:", error));
+		    }
+		</script>
 </body>
 </html>
 
