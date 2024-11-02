@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Modificar Menu</title>
+    <title>Modificar Menú</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
         body {
@@ -23,23 +23,6 @@
             text-align: center;
         }
 
-        a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px 30px;
-            background-color: #4CAF50;
-            color: white;
-            font-size: 15px;
-            text-decoration: none;
-            margin-top: 20px;
-            border-radius: 8px;
-        }
-
-        a:hover {
-            background-color: #d9534f;
-        }
-
         .container {
             display: flex;
             margin-top: 20px;
@@ -53,7 +36,7 @@
             border-radius: 8px;
             background-color: #f1f1f1;
             margin: 10px;
-            position: relative; /* Necesario para posicionamiento de botones */
+            position: relative;
         }
 
         .menu-list {
@@ -104,82 +87,79 @@
             font-size: 14px;
         }
 
-        /* Botón Añadir Ítem en la esquina inferior izquierda */
-        .add-btn {
+        /* Botones para añadir y eliminar ítem y menú */
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .add-btn, .delete-item-btn, .delete-menu-btn, .volver-btn {
             background-color: #4CAF50;
             color: white;
             padding: 10px 20px;
             border-radius: 4px;
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
             cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
         }
 
-        /* Botón Eliminar Ítem en la esquina inferior derecha */
-        .volver-btn {
-            background-color: #ff5f5f;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            cursor: pointer;
+        .add-btn:hover, .delete-item-btn:hover, .delete-menu-btn:hover {
+            background-color: #45a049;
         }
-		
-		.delete-item-btn {
-		    background-color: #ff5f5f;
-		    color: black; /* Color del texto negro */
-			font-weight: bold;
-			border: none; /* Sin borde */
-		    padding: 5px 10px; /* Espaciado interno */
-		    cursor: pointer; /* Cambiar el cursor al pasar por encima */
-		    border-radius: 5px; /* Bordes redondeados */
-		    transition: background-color 0.3s; /* Efecto de transición */
-			margin-left: 10px;
-		}
-		
-		.delete-menu-btn {
-		    background-color: #ff5f5f; /* Color de fondo rojo */
-		    color: black; /* Color del texto negro */
-		    font-weight: bold;
-		    border: none; /* Sin borde */
-		    padding: 10px 20px; /* Espaciado interno */
-		    cursor: pointer; /* Cambiar el cursor al pasar por encima */
-		    border-radius: 4px; /* Bordes redondeados */
-		    transition: background-color 0.3s; /* Efecto de transición */
-		    margin-left: 10px; /* Espacio entre botones */
-		    position: absolute; /* Para posicionarlo de forma precisa */
-		    bottom: 50px; /* Alineación vertical */
-		    left: 150px; /* Ajusta este valor según la distancia deseada del botón de añadir */
-		}
+
+        .delete-menu-btn {
+            background-color: #ff5f5f;
+        }
+
+        .delete-menu-btn:hover {
+            background-color: #e63939;
+        }
 
         /* Contenedor de ítems para que no interfiera con los botones */
         #items-container {
             padding-bottom: 50px; /* Espacio para evitar que el contenido cubra los botones */
         }
 
-		.nombre_item {
-		    flex: 1; /* Toma todo el espacio disponible */
-		}
+        .nombre_item {
+            flex: 1; /* Toma todo el espacio disponible */
+        }
 
-		.precio_item {
-		    width: 100px; /* Ancho fijo para el precio */
-		    text-align: right; /* Alinear a la derecha */
-		}
-		
+        .precio_item {
+            width: 100px; /* Ancho fijo para el precio */
+            text-align: right; /* Alinear a la derecha */
+        }
+        .return-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 24px;
+            transition: background-color 0.3s ease;
+        }
+
+        .return-button:hover {
+            background-color: #d9534f;
+        }
+
     </style>
 </head>
 <body>
-    <h1>Modificar menú</h1>
+    <h1>Modificar Menú</h1>
 
     <div class="container">
         <!-- Lista de menús a la izquierda -->
         <div class="menu-list">
             <h3>Menús Disponibles</h3>
             <div th:each="menu : ${menus}">
-                <!-- Cada menú es un formulario que envía el menú ID -->
                 <form th:action="@{/modificarmenu/{id}(id=${idRestaurante})}" method="post">
                     <input type="hidden" name="menuId" th:value="${menu.id}" />
                     <button type="submit" class="menu-item" th:text="${menu.nombre}"></button>
@@ -188,88 +168,85 @@
         </div>
 
         <!-- Lista de ítems seleccionados a la derecha -->
-		<div class="item-list">
-		    <h3>Items del Menú</h3>
-		    <div id="items-container">
-		        <!-- Muestra los ítems si existen -->
-		        <div th:if="${items != null}">
-		            <div th:each="item : ${items}">
-		                <div class="item">
-		                    <span th:text="${item.nombre}" class = nombre_item></span>
-		                    <span th:text="${item.precio} + ' €'" class = precio_item></span>
-		                    <!-- Botón de eliminación -->
-							<button type="button" class="delete-item-btn" th:onclick="'confirmDeleteItem(' + ${item.id} + ')'">
-							    Eliminar
-							</button>
-		                </div>
-		            </div>
-		        </div>
-		        <!-- Mensaje si no hay ítems -->
-		        <div th:if="${items == null}">
-		            <div>No hay ítems seleccionados.</div>
-		        </div>
-		    </div>
-			<button class="add-btn" th:onclick="'addItem(' + ${menu_seleccionado} + ')'">Añadir Item</button>
-			<button type="button" class="delete-menu-btn" th:onclick="'confirmDeleteMenu(' + ${menu_seleccionado} + ')'">Eliminar Menú</button>
-			<a th:href="@{/menurestaurante/{id}(id=${idRestaurante})}" class="volver-btn">Volver al Menu Restaurante</a>
-		</div>
-		
+        <div class="item-list">
+            <h3>Ítems del Menú</h3>
+            <div id="items-container">
+                <div th:if="${items != null}">
+                    <div th:each="item : ${items}">
+                        <div class="item">
+                            <span th:text="${item.nombre}" class="nombre_item"></span>
+                            <span th:text="${item.precio} + ' €'" class="precio_item"></span>
+                            <button type="button" class="delete-item-btn" th:onclick="'confirmDeleteItem(' + ${item.id} + ')'">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${items == null}">
+                    <div>No hay ítems seleccionados.</div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="add-btn" th:onclick="'addItem(' + ${menu_seleccionado} + ')'">Añadir Ítem</button>
+                <button type="button" class="delete-menu-btn" th:onclick="'confirmDeleteMenu(' + ${menu_seleccionado} + ')'">Eliminar Menú</button>
+            </div>
+            
+            <a th:href="@{/menurestaurante/{id}(id=${idRestaurante})}" class="return-button">&#x21a9;</a>
+        </div>
+    </div>
 
-		<script>
-		    function addItem(menuId) {
-				if (menuId === null) {
-					alert("Selecciona primero un menu.");
-					return;
-				}
-				window.location.href = `/nuevoitem/${menuId}`;
-		    }
+    <script>
+        function addItem(menuId) {
+            if (menuId === null) {
+                alert("Selecciona primero un menú.");
+                return;
+            }
+            window.location.href = `/nuevoitem/${menuId}`;
+        }
 
-		    function confirmDeleteItem(itemId) {
-				if (confirm("¿Quieres eliminar el item?")) {
-					deleteItem(itemId);
-				}
-		    }
+        function confirmDeleteItem(itemId) {
+            if (confirm("¿Quieres eliminar el ítem?")) {
+                deleteItem(itemId);
+            }
+        }
 
-		    function deleteItem(itemId) {
-		        fetch(`/eliminaritem/${itemId}`, {
-		            method: 'DELETE'
-		        })
-		        .then(response => {
-		            if (response.ok) {
-		                alert("Item eliminado");
-		                location.reload();
-		            } else {
-		                alert.error("Error al eliminar el item");
-		            }
-		        })
-		        .catch(error => console.error("Error en la solicitud:", error));
-		    }
-			
-			function confirmDeleteMenu(menuId) {
-				if (menuId === null) {
-					alert("Selecciona primero un menu.");
-					return;
-				}
-				if (confirm("¿Quieres eliminar el menú?")) {
-					deleteMenu(menuId);
-				}
-			}
-			
-			function deleteMenu(menuId) {
-				fetch(`/eliminarmenu/${menuId}`, {
-					method: 'DELETE'
-				})
-				.then(response => {
-					if (response.ok) {
-						alert("Menú eliminado");
-						location.reload();
-					} else {
-			 			alert.error("Error al eliminar el menú");
-					}
-				})
-				.catch(error => console.error("Error en la solicitud:", error));
-			}
-		</script>
+        function deleteItem(itemId) {
+            fetch(`/eliminaritem/${itemId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Ítem eliminado");
+                    location.reload();
+                } else {
+                    alert("Error al eliminar el ítem");
+                }
+            })
+            .catch(error => console.error("Error en la solicitud:", error));
+        }
+
+        function confirmDeleteMenu(menuId) {
+            if (menuId === null) {
+                alert("Selecciona primero un menú.");
+                return;
+            }
+            if (confirm("¿Quieres eliminar el menú?")) {
+                deleteMenu(menuId);
+            }
+        }
+
+        function deleteMenu(menuId) {
+            fetch(`/eliminarmenu/${menuId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Menú eliminado");
+                    location.reload();
+                } else {
+                    alert("Error al eliminar el menú");
+                }
+            })
+            .catch(error => console.error("Error en la solicitud:", error));
+        }
+    </script>
 </body>
 </html>
-

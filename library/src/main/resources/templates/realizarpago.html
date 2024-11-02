@@ -94,6 +94,26 @@
             flex: 1;
             min-width: 300px;
         }
+        .return-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 24px;
+            transition: background-color 0.3s ease;
+        }
+
+        .return-button:hover {
+            background-color: #d9534f;
+        }
     </style>
 </head>
 <body>
@@ -157,46 +177,9 @@
         </form>
     </div>
 
-    <div id="mensajeExito">
-        ¡El pedido se ha realizado correctamente!
-    </div>
-
-    <div id="mensajeError">
-        ¡Error al realizar el pedido!
-    </div>
-
-    <script>
-		function mostrarMensajeYRedirigir(event) {
-			event.preventDefault();
-	
-			// Validar que todos los campos estén completos
-			var codigoPostal = document.getElementById('codigoPostal').value;
-			var calle = document.getElementById('calle').value;
-			var numero = document.getElementById('numero').value;
-			var municipio = document.getElementById('municipio').value;
-			var metodoPago = document.getElementById('metodoPago').value;
-			var fechaTransaccion = document.getElementById('fechaTransaccion').value;
-	
-			if (!codigoPostal || !calle || !numero || !municipio || !metodoPago || !fechaTransaccion) {
-				alert('Por favor, complete todos los campos obligatorios.');
-				return false; // No continuar con el envío
-			}
-	
-			var mensaje = document.getElementById('mensajeExito');
-			mensaje.style.display = 'block';
-			var idCliente = document.getElementById('idCliente').value; // Obtener el valor de idCliente
-	
-			// Enviar el formulario
-			document.getElementById('formPago').submit();
-	
-			setTimeout(function() {
-				// Redirigir al menú principal
-				window.location.href = `/confirmacionpago/${idCliente}`;  // Redirigir a la ruta correcta
-			}, 4000); 
-	
-			return false; // Asegúrate de que el formulario no se envíe de nuevo
-		}
-	</script>
+    <a th:href="@{/realizarpedido/{idCliente}/{idRestaurante}(idCliente=${idCliente}, idRestaurante=${idRestaurante})}" class="return-button">&#x21a9;</a>
+    
+    
 	
 </body>
 </html>
