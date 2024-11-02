@@ -1,6 +1,6 @@
 package es.JIPF_Digital.library.dominio.entidades;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import jakarta.persistence.*;
 import java.util.*;
 
@@ -16,13 +16,35 @@ public class ServicioEntrega {
     @JoinColumn(name = "id_direccion", referencedColumnName = "id_direccion")
     private Direccion direccion; 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idUsuario") 
+    @JoinColumn(name = "id_repartidor") 
     private Repartidor repartidor;
-	private LocalDateTime fechaRecepcion;
-	private LocalDateTime fechaEntrega;
+    @Column
+	private LocalDate fechaRecepcion;
+    @Column
+	private LocalDate fechaEntrega;
 	
 	public ServicioEntrega() {
 		
+	}
+	
+	public void setPedido(Pedido pedido) {
+		this.pedido = pedido;
+	}
+	
+	public void setDireccion(Direccion direccion) {
+		this.direccion = direccion;
+	}
+	
+	public void setRepartidor(Repartidor repartidor) {
+		this.repartidor = repartidor;
+	}
+	
+	public void setFechaRecepcion(LocalDate fechaRecepcion) {
+		this.fechaRecepcion = fechaRecepcion;
+	}
+	
+	public void setFechaEntrega(LocalDate fechaEntrega) {
+		this.fechaEntrega = fechaEntrega;
 	}
 	
 }

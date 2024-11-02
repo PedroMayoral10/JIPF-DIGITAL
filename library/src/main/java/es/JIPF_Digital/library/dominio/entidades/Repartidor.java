@@ -41,6 +41,11 @@ public class Repartidor extends Usuario {
 		return idUsuario;
 	}
 	
+	public Collection<ServicioEntrega> getServicios(){
+		return servicios;
+	}
+	
+	
 	public void setIdUsuario(String idUsuario) {
 		this.idUsuario = idUsuario;
 	}
@@ -49,4 +54,12 @@ public class Repartidor extends Usuario {
 		return pass;
 	}
 	
+	public int getEficiencia() {
+		return eficiencia;
+	}
+	
+	public void actualizarEficiencia(int num) {
+		eficiencia += num;
+	}
+
 }
