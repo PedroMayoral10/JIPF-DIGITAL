@@ -73,17 +73,6 @@
         button:hover {
             background-color: #45a049;
         }
-
-        #mensajeExito, #mensajeError {
-            display: none;
-            color: green;
-            margin-top: 20px;
-        }
-
-        #mensajeError {
-            color: rgb(248, 9, 9);
-        }
-
         .form-row {
             display: flex;
             justify-content: space-between;
@@ -159,15 +148,12 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="fechaTransaccion">Fecha de Transacción:</label>
-                        <input type="date" id="fechaTransaccion" name="fechaTransaccion" required>
-                    </div>
                     <h2>Items del Pedido:</h2>
                     <ul>
                         <li th:each="item : ${itemsPedidos}">
                             <span th:text="${item.nombre}">Nombre del Item</span> - 
                             <span th:text="${item.tipo}">Tipo del Item</span> - 
-                            <span th:text="${item.precio} + ' €'">Precio del Item</span>
+                            <span th:utext="${#numbers.formatDecimal(item.precio, 1, 2)} + ' €'">Precio del Item</span>
                         </li>
                     </ul>
                     <h3>Total: <span th:text="${precioTotal}">0.0</span> €</h3>
