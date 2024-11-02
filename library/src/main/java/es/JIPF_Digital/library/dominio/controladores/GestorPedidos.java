@@ -1,9 +1,9 @@
 package es.JIPF_Digital.library.dominio.controladores;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +14,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import es.JIPF_Digital.library.dominio.entidades.*;
-import es.JIPF_Digital.library.persistencia.*;
+import es.JIPF_Digital.library.dominio.entidades.CartaMenu;
+import es.JIPF_Digital.library.dominio.entidades.Cliente;
+import es.JIPF_Digital.library.dominio.entidades.Direccion;
+import es.JIPF_Digital.library.dominio.entidades.EstadoPedido;
+import es.JIPF_Digital.library.dominio.entidades.ItemMenu;
+import es.JIPF_Digital.library.dominio.entidades.MetodoPago;
+import es.JIPF_Digital.library.dominio.entidades.Pago;
+import es.JIPF_Digital.library.dominio.entidades.Pedido;
+import es.JIPF_Digital.library.dominio.entidades.Repartidor;
+import es.JIPF_Digital.library.dominio.entidades.Restaurante;
+import es.JIPF_Digital.library.dominio.entidades.ServicioEntrega;
+import es.JIPF_Digital.library.persistencia.CartaMenuDAO;
+import es.JIPF_Digital.library.persistencia.ClienteDAO;
+import es.JIPF_Digital.library.persistencia.DireccionDAO;
+import es.JIPF_Digital.library.persistencia.ItemMenuDAO;
+import es.JIPF_Digital.library.persistencia.PedidoDAO;
+import es.JIPF_Digital.library.persistencia.RepartidorDAO;
+import es.JIPF_Digital.library.persistencia.RestauranteDAO;
 
 @Controller
 public class GestorPedidos {
@@ -97,7 +113,12 @@ public class GestorPedidos {
 
 		return "realizarpago";
 	}
-
+ 
+	@GetMapping("/confirmacionpago/{idCliente}")
+	public String confirmacionpago(@PathVariable("idCliente") String idCliente, Model model) {
+		model.addAttribute("idCliente", idCliente); 
+		return "confirmacionPago";
+	}
 	@PostMapping("/realizarpago/{idCliente}/{idRestaurante}")
 	public String submitPago(@PathVariable("idCliente") String idCliente,
 			@PathVariable("idRestaurante") String idRestaurante, Model model,
@@ -133,8 +154,11 @@ public class GestorPedidos {
 		pedido.setEntrega(servicioEntrega);
 
 		pedidoDAO.save(pedido);
+		model.addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
+		model.addAttribute("idCliente", idCliente); // Pasar el idCliente a la vista
+		
 
-		return "redirect:/login";
+		return "redirect:/confirmacionpago/" + idCliente;
 	}
 
 	private List<ItemMenu> obtenerItems(Map<String, String> params) {
