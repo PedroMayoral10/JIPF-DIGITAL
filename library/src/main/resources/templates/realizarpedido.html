@@ -185,10 +185,11 @@
                 <!-- Muestra los ítems si existen -->
                 <div th:if="${items != null}">
                     <div th:each="item : ${items}">
-                        <div class="item">
+                        <div class="item" data-id="${item.id}">
                             <span th:text="${item.nombre}" class="nombre_item"></span>
                             <span th:text="${item.tipo}" class="tipo_item"></span>
                             <span th:text="${item.precio} + ' €'" class="precio_item"></span>
+							<input type="hidden" th:value="${item.id}" class="id_item"/>
                             <!-- Botón de pedir -->
                             <button type="button" class="pedir-item-btn" onclick="agregarAPedido(this)">
                                 Pedir
@@ -233,7 +234,7 @@
             const nombre = item.querySelector(".nombre_item")?.innerText || "";
             const tipo = item.querySelector(".tipo_item")?.innerText || "";
             const precio = item.querySelector(".precio_item")?.innerText.replace(" €", "") || "";
-
+			const id =  item.querySelector(".id_item")?.value || "";
             // Crear un nuevo div para el ítem pedido
             const pedidoItem = document.createElement("div");
             pedidoItem.classList.add("pedido-item");
@@ -242,6 +243,7 @@
             pedidoItem.dataset.nombre = nombre;  
             pedidoItem.dataset.tipo = tipo;
             pedidoItem.dataset.precio = precio;
+			pedidoItem.dataset.id = id; // Guardar el ID del item
 
             // Agregar la información del ítem al nuevo div
             pedidoItem.innerHTML = `
@@ -264,10 +266,8 @@
 
             // Construir el query string
             const queryString = itemsPedidos.map((pedido, index) => {
-                const nombre = encodeURIComponent(pedido.dataset.nombre || "");
-                const tipo = encodeURIComponent(pedido.dataset.tipo || "");
-                const precio = encodeURIComponent(pedido.dataset.precio || 0);
-                return `nombre${index}=${nombre}&tipo${index}=${tipo}&precio${index}=${precio}`;
+				const id = encodeURIComponent(pedido.dataset.id || "");
+                return `id${index}=${id}`;
             }).join("&");
 
             // Redirigir a la URL de pago con el query string

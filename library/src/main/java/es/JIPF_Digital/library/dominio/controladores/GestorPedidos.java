@@ -3,6 +3,8 @@ package es.JIPF_Digital.library.dominio.controladores;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.time.LocalDate;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,17 +23,25 @@ import es.JIPF_Digital.library.persistencia.*;
 public class GestorPedidos {
 	
 	@Autowired
+	private ItemMenuDAO itemMenuDAO;
+	@Autowired
     private RestauranteDAO restauranteDAO;
     @Autowired
     private ClienteDAO clienteDAO;
 	@Autowired
 	private CartaMenuDAO cartamenuDAO;
+	@Autowired
+	private PedidoDAO pedidoDAO;
 	@GetMapping("/pedidos")
 	public String pedidosForm(Model model) {
 		return "pedidos";
 	}
 	
-	private static List<ItemMenu> itemsPedidos;
+	//Obtenemos los ID's de los items para luego usarlos en el POSTmapping
+	private static List<Long> itemIds = new ArrayList<>();
+	
+	private static List<ItemMenu> itemsPedidos = new ArrayList<>();
+	
 
     @GetMapping("/realizarpedido/{id_cliente}/{id_restaurante}")
     public String detalleRestaurante(@PathVariable("id_cliente") String idCliente, @PathVariable("id_restaurante") String idRestaurante, Model model) {
@@ -68,6 +78,11 @@ public class GestorPedidos {
         Model model) {
 		
 		itemsPedidos = obtenerItems(params);
+		 
+		for (ItemMenu item : itemsPedidos) {
+		        itemIds.add(item.getId()); // Suponiendo que hay un método getId() en ItemMenu
+		}
+		
 		double precioTotalPedido = 0.0;
 		for (ItemMenu item : itemsPedidos) {
 		    precioTotalPedido += item.getPrecio();
@@ -85,14 +100,30 @@ public class GestorPedidos {
 	
 	@PostMapping("/realizarpago/{idCliente}/{idRestaurante}")
 	public String submitPago(@PathVariable("idCliente") String idCliente, @PathVariable("idRestaurante") String idRestaurante,
-	        Model model, @RequestParam(value = "codigoPostal", required = false) String codigoPostal        
+	        Model model, @RequestParam(value = "codigoPostal", required = false) String codigoPostal,
+	        @RequestParam("metodoPago") MetodoPago tipo,
+	        @RequestParam("fechaTransaccion") String fechaTransaccionString
 			) {
 		
-		double precioTotalPedido = 0.0;
-		for (ItemMenu item : itemsPedidos) {
-		    precioTotalPedido += item.getPrecio();
-		}
-		
+		 // Convertir la fecha de transacción de String a LocalDate
+	    LocalDate fechaTransaccion = LocalDate.parse(fechaTransaccionString);
+	  
+	    Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
+        Cliente cliente = clienteDAO.findById(idCliente).orElse(null);
+        Pedido pedido = new Pedido ();
+        
+        
+        pedido.setCliente(cliente);
+        pedido.setRestaurante(restaurante);
+        pedido.setFecha (fechaTransaccion);
+        pedido.setEstado(EstadoPedido.PAGADO);   
+        
+        System.out.println(itemsPedidos.size());    
+        
+        pedido.setItems(itemsPedidos);
+	    Pago pago = new Pago (pedido, tipo, fechaTransaccion);
+	    pedido.setPago(pago);
+	    pedidoDAO.save(pedido); //Si tenemos CASCADE configurado, se guardará automáticamente Pago
 		
 		return "redirect:/login";
 	}
@@ -101,24 +132,19 @@ public class GestorPedidos {
 
 
 	private List<ItemMenu> obtenerItems(Map<String, String> params) {
-		List<ItemMenu> itemsPedidos = new ArrayList<>();
+		
         int index = 0;
-        while (params.containsKey("nombre" + index)) {
-            String nombreItem = params.get("nombre" + index);
-            String tipo_item = params.get("tipo" + index);
-            double precio = Double.parseDouble(params.get("precio" + index));
-            ItemMenu item;
-    		if (tipo_item.equals("COMIDA")) {
-    			item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
-    		} else if (tipo_item.equals("BEBIDA")) {
-    			item = new ItemMenu(nombreItem, TipoItemMenu.BEBIDA, precio);
-    		} else {
-    			item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);
-    		}
-            
+        while (params.containsKey("id" + index)) {
+            Long id_item = Long.parseLong(params.get("id"+ index));
+            ItemMenu item = itemMenuDAO.findById(id_item).orElse(null);
             itemsPedidos.add(item);
             index++;
+            System.out.println(item.getNombre());
         }
+        
+        System.out.println(itemsPedidos.size());
+        
+        
         return itemsPedidos;
 		
 	}

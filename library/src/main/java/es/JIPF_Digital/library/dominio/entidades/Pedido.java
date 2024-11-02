@@ -1,7 +1,7 @@
 package es.JIPF_Digital.library.dominio.entidades;
 
 import java.util.Collection;
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -46,8 +46,7 @@ public class Pedido {
 	@Enumerated(EnumType.STRING)
     private EstadoPedido estado;
 	@Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-	private Date fecha;
+	private LocalDate fecha;
 
 	public Pedido() {
 		
@@ -109,11 +108,11 @@ public class Pedido {
 		this.estado = estado;
 	}
 
-	public Date getFecha() {
+	public LocalDate getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(Date fecha) {
+	public void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
 	}
 	
