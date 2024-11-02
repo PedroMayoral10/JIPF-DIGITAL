@@ -7,8 +7,8 @@
 			"name": "database",
 			"save-password": true,
 			"configuration": {
-				"database": "C:\\Users\\pedro\\git\\JIPF-DIGITAL\\library\\database",
-				"url": "jdbc:derby:C:\\Users\\pedro\\git\\JIPF-DIGITAL\\library\\database",
+				"database": "C:\\Users\\Fran\\git\\JIPF-DIGITAL\\library\\database",
+				"url": "jdbc:derby:C:\\Users\\Fran\\git\\JIPF-DIGITAL\\library\\database",
 				"configurationType": "MANUAL",
 				"type": "dev",
 				"closeIdleConnection": true,
