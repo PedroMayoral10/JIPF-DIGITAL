@@ -9,20 +9,20 @@
             font-family: 'Montserrat', sans-serif;
             background-color: #e0f7df;
             padding: 20px;
-            display: flex; /* Para centrar los elementos en la pantalla */
-            justify-content: center; /* Centrar horizontalmente */
-            align-items: center; /* Centrar verticalmente */
-            min-height: 100vh; /* Asegurar que el contenido ocupa al menos el 100% de la altura de la ventana */
-            margin: 0; /* Eliminar márgenes predeterminados */
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
         }
         .container {
             background-color: #ffffff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 100%; /* Para que el contenedor use el 100% del ancho disponible */
-            max-width: 600px; /* Limitar el ancho máximo del contenedor */
-            text-align: center; /* Centrar el texto dentro del contenedor */
+            width: 100%; 
+            max-width: 600px; 
+            text-align: center; 
         }
         h1 {
             margin-bottom: 20px;
@@ -32,21 +32,21 @@
             margin-bottom: 10px;
             padding: 15px;
             border-radius: 5px;
-            text-align: left; /* Alinear texto a la izquierda dentro de cada servicio */
+            text-align: left; 
         }
         .registro-btn {
-            background-color: #4CAF50; /* Cambiado a verde */
+            background-color: #4CAF50;
             color: white;
             border: none;
             padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
-            display: block; /* Asegurarse de que el botón ocupa todo el ancho disponible */
-            margin: 10px auto 0; /* Centrar el botón y añadir margen superior */
+            display: block; 
+            margin: 10px auto 0; 
         }
         .registro-btn:hover {
-            background-color: #3e8e41; /* Color de hover más oscuro */
+            background-color: #3e8e41; 
         }
 		
 		.return-button {
@@ -88,7 +88,7 @@
             <p th:text="'Estado Actual: ' + ${servicio.pedido.estado}"></p>
             <form th:action="@{/registrar_recogida/{id}(id=${idRepartidor})}" method="post">
                 <input type="hidden" name="id_pedido" th:value="${servicio.pedido.id_pedido}" />
-                <button type="submit" class="registro-btn">Registrar Recogida</button> <!-- Aquí está el cambio -->
+                <button type="submit" class="registro-btn">Registrar Recogida</button> 
             </form>
         </div>
     </div>

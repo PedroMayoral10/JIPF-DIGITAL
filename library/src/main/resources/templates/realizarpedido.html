@@ -189,17 +189,17 @@
         }
 
         .eliminar-btn i {
-            font-size: 20px; /* Tamaño del ícono */
+            font-size: 20px; 
         }
 
         .cuenta-link {
             margin-top: 10px;
-            font-size: 14px; /* Tamaño del texto */
+            font-size: 14px; 
             color: #4CAF50;
             text-decoration: none;
             display: inline-block;
-            text-align: center; /* Centra el texto */
-            margin-left: 10px; /* Añade un poco de margen */
+            text-align: center; 
+            margin-left: 10px; 
         }
     </style>
 </head>
@@ -244,13 +244,13 @@
         <div class="item-list pedidos">
             <h3>Items Pedidos</h3>
             <div id="pedidos-container">
-                <!-- Los items pedidos se añadirán aquí -->
+               
                 <div th:each="pedido : ${pedidos}" class="pedido-item">
                     <span th:text="${pedido.nombre}"></span>
                     <span th:text="${pedido.tipo}"></span>
                     <span th:text="${pedido.precio} + ' €'"></span>
                     <button class="eliminar-btn" onclick="eliminarPedido(this)">
-                        <i class="fas fa-trash"></i> <!-- Icono de papelera -->
+                        <i class="fas fa-trash"></i> 
                     </button>
                 </div>
             </div>
@@ -268,26 +268,26 @@
     
     <script>
         function agregarAPedido(button) {
-            // Obtener el contenedor donde se mostrarán los ítems pedidos
+            
             const pedidosContainer = document.getElementById("pedidos-container");
     
-            // Obtener los datos del ítem seleccionado
+          
             const item = button.parentElement;
             const nombre = item.querySelector(".nombre_item")?.innerText || "";
             const tipo = item.querySelector(".tipo_item")?.innerText || "";
             const precio = item.querySelector(".precio_item")?.innerText.replace(" €", "") || "";
             const id =  item.querySelector(".id_item")?.value || "";
-            // Crear un nuevo div para el ítem pedido
+           
             const pedidoItem = document.createElement("div");
             pedidoItem.classList.add("pedido-item");
     
-            // Aseguramos que los datos están bien asignados
+          
             pedidoItem.dataset.nombre = nombre;
             pedidoItem.dataset.tipo = tipo;
             pedidoItem.dataset.precio = precio;
             pedidoItem.dataset.id = id;
     
-            // Agregar el HTML correspondiente al nuevo ítem pedido
+          
             pedidoItem.innerHTML = `
                 <span>${nombre}</span>
                 <span>${tipo}</span>
@@ -297,12 +297,12 @@
                 </button>
             `;
     
-            // Añadir el nuevo ítem al contenedor
+         
             pedidosContainer.appendChild(pedidoItem);
         }
     
         function eliminarPedido(button) {
-            // Eliminar el ítem pedido
+       
             const pedidoItem = button.closest('.pedido-item');
             if (pedidoItem) {
                 pedidoItem.remove();
@@ -313,17 +313,17 @@ function realizarPago(button) {
             const idCliente = button.dataset.idCliente;
             const idRestaurante = button.dataset.idRestaurante;
 
-            // Obtener todos los ítems pedidos
+          
             const pedidosContainer = document.getElementById("pedidos-container");
             const itemsPedidos = Array.from(pedidosContainer.getElementsByClassName("pedido-item"));
 
-            // Construir el query string
+          
             const queryString = itemsPedidos.map((pedido, index) => {
 				const id = encodeURIComponent(pedido.dataset.id || "");
                 return `id${index}=${id}`;
             }).join("&");
 
-            // Redirigir a la URL de pago con el query string
+           
             window.location.href = `/realizarpago/${idCliente}/${idRestaurante}?${queryString}`;
         }
     </script>

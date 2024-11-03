@@ -29,8 +29,7 @@ public class GestorRestaurantes {
 	private ItemMenuDAO itemDAO;
 
 	/*
-	 * GETMAPPINGS------------------------------------
-	 * ---------------------------------------------
+	 * GETMAPPINGS
 	 */
 
 	@GetMapping("menurestaurante/{id}")
@@ -66,8 +65,7 @@ public class GestorRestaurantes {
 	}
 
 	/*
-	 * POSTMAPPINGS------------------------------------
-	 * ---------------------------------------------
+	 * POSTMAPPINGS
 	 */
 
 	@PostMapping("altamenu/{id}")
@@ -110,7 +108,6 @@ public class GestorRestaurantes {
 		cartamenu.getItems().add(item);
 		cartamenuDAO.save(cartamenu);
 
-		// Agregar mensaje de éxito
 		redirectAttributes.addFlashAttribute("success", "El menú se ha creado correctamente.");
 
 		return "redirect:/nuevoitem/" + cartamenu.getId();
@@ -134,8 +131,8 @@ public class GestorRestaurantes {
 	public String postAltaMenu(@PathVariable("id") Long idMenu,
 			@RequestParam(value = "nombre", required = false) String nombreItem,
 			@RequestParam(value = "precio", required = false) double precio,
-			@RequestParam(value = "tipo", required = false) String tipo_item,
-			RedirectAttributes redirectAttributes, Model model) {
+			@RequestParam(value = "tipo", required = false) String tipo_item, RedirectAttributes redirectAttributes,
+			Model model) {
 		ItemMenu item;
 		if (tipo_item.equals("COMIDA")) {
 			item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
@@ -144,17 +141,16 @@ public class GestorRestaurantes {
 		} else {
 			item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);
 		}
-		
+
 		CartaMenu menu = cartamenuDAO.findById(idMenu).orElse(null);
 		menu.getItems().add(item);
 		cartamenuDAO.save(menu);
-		redirectAttributes.addFlashAttribute("success","Item añadido con exito");
+		redirectAttributes.addFlashAttribute("success", "Item añadido con exito");
 		return "redirect:/nuevoitem/" + idMenu;
 	}
 
 	/*
-	 * DELETEMAPPINGS------------------------------------
-	 * ---------------------------------------------
+	 * DELETEMAPPINGS
 	 */
 
 	@DeleteMapping("/eliminaritem/{itemId}")
@@ -162,25 +158,25 @@ public class GestorRestaurantes {
 		ItemMenu item = itemDAO.findById(itemId).orElse(null);
 		if (item != null) {
 			itemDAO.delete(item);
-			return ResponseEntity.ok().build(); // Responde con 200 OK si se eliminó correctamente
+			return ResponseEntity.ok().build();
 		} else {
-			return ResponseEntity.notFound().build(); // Responde con 404 si el ítem no existe
+			return ResponseEntity.notFound().build();
 		}
 	}
-	
+
 	@DeleteMapping("/eliminarmenu/{menuId}")
 	public ResponseEntity<Void> deleteMenu(@PathVariable("menuId") Long menuId) {
 		CartaMenu menu = cartamenuDAO.findById(menuId).orElse(null);
 		if (menu != null) {
-			Collection <ItemMenu> items = menu.getItems();
+			Collection<ItemMenu> items = menu.getItems();
 			for (ItemMenu item : items) {
 				itemDAO.delete(item);
 			}
 			cartamenuDAO.delete(menu);
-			
-			return ResponseEntity.ok().build(); // Responde con 200 OK si se eliminó correctamente
+
+			return ResponseEntity.ok().build();
 		} else {
-			return ResponseEntity.notFound().build(); // Responde con 404 si el ítem no existe
+			return ResponseEntity.notFound().build();
 		}
 	}
 
