@@ -5,13 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
         body {
-            font-family: sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
-            padding-top: 5px;
+            padding: 0; /* Eliminado padding en el body */
             background-color: #e0f7df; /* Fondo verde aclarado */
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             height: 100vh;
             text-align: center;
@@ -20,8 +19,12 @@
         h1 {
             padding-top: 5px;
             font-size: 48px;
-            color: #333;
-            margin-bottom: 40px;
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Sombra sutil para el texto */
         }
 
         .button-container {
@@ -29,48 +32,57 @@
             flex-direction: column;
             gap: 30px; /* Espacio entre los botones */
             align-items: center; /* Centrar horizontalmente */
+            margin-top: 100px; /* Espacio arriba de los botones */
         }
 
-        button {
-            padding: 15px 30px;
+        button, .btn {
+            padding: 15px 25px;
             background-color: #4CAF50;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 24px; /* Tamaño de fuente aumentado */
             color: #e0f7df;
-            width: 250px;
+            width: 300px; /* Ajustado el ancho */
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para un efecto 3D */
         }
 
-        button:hover {
+        button:hover, .btn:hover {
             background-color: #e0a800;
+            transform: scale(1.05); /* Efecto de aumento al pasar el ratón */
         }
 
-        a {
-            display: block;
-            padding: 15px 30px;
+        .return-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
             background-color: #4CAF50;
             color: white;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%; /* Redondear el botón de volver */
             text-decoration: none;
-            border-radius: 8px;
-            font-size: 20px;
-            width: 250px; /* Igualar ancho con el botón */
-            text-align: center;
+            font-size: 28px; /* Tamaño de fuente para el icono */
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        a:hover {
+        .return-button:hover {
             background-color: #d9534f;
+            transform: scale(1.1); /* Efecto de aumento al pasar el ratón */
         }
     </style>
 </head>
 <body>
     <h1>Menu Cliente</h1>
-    <a th:href="@{/listarestaurantes/{id}(id=${id_cliente})}" class="btn">Ver Restaurantes</a>
-    <br>
-	<a th:href="@{/pedidoscliente/{id}(id=${id_cliente})}" class="btn">Ver Pedidos</a>
-	<br>
-    <a href="/login">Volver al login</a>
+    <div class="button-container">
+        <a th:href="@{/listarestaurantes/{id}(id=${id_cliente})}" class="btn">Ver Restaurantes</a>
+        <a th:href="@{/pedidoscliente/{id}(id=${id_cliente})}" class="btn">Ver Pedidos</a>
+    </div>
+    <a th:href="@{/login}" class="return-button">&#x21a9;</a>
 </body>
 </html>
-
-

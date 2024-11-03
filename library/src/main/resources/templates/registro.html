@@ -57,6 +57,27 @@
         .hidden {
             display: none;
         }
+
+        .return-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 24px;
+            transition: background-color 0.3s ease;
+        }
+
+        .return-button:hover {
+            background-color: #d9534f;
+        }
     </style>
 
     <script>
@@ -87,8 +108,8 @@
         <!-- Campo de selección para el tipo de usuario -->
         <p>
             Tipo de usuario:
-            <select id="tipoUsuario" name="rol" onchange="mostrarCamposAdicionales()">
-                <option value="0">Selecciona un tipo</option>
+            <select id="tipoUsuario" name="rol" onchange="mostrarCamposAdicionales()" required>
+                <option value="" selected disabled>Selecciona un tipo</option>
                 <option value="1">Cliente</option>
                 <option value="2">Restaurante</option>
                 <option value="3">Repartidor</option>
@@ -96,54 +117,54 @@
         </p>
 
         <p>
-            Usuario: <input type="text" th:field="*{idUsuario}" />
+            Usuario: <input type="text" th:field="*{idUsuario}" required />
         </p>
         <p>
-            Nombre: <input type="text" th:field="*{nombre}" />
+            Nombre: <input type="text" th:field="*{nombre}" required />
         </p>
         <p>
-            Contraseña: <input type="password" th:field="*{pass}" />
+            Contraseña: <input type="password" th:field="*{pass}" required />
         </p>
 
         <!-- Campos adicionales para cliente -->
         <div id="camposCliente" class="hidden">
             <p>
-                Apellidos: <input type="text" name="apellidosCliente" />
+                Apellidos: <input type="text" name="apellidosCliente" required />
             </p>
             <p>
-                DNI: <input type="text" name="dniCliente" />
+                DNI: <input type="text" name="dniCliente" required />
             </p>
         </div>
 
         <!-- Campos adicionales para restaurante -->
         <div id="camposRestaurante" class="hidden">
             <p>
-                CIF: <input type="text" name="cifRestaurante" />
+                CIF: <input type="text" name="cifRestaurante" required />
             </p>
             <p>
-                Código Postal: <input type="text" name="codigoPostalRestaurante" />
+                Código Postal: <input type="text" name="codigoPostalRestaurante" required />
             </p>
             <p>
-                Calle: <input type="text" name="calleRestaurante" />
+                Calle: <input type="text" name="calleRestaurante" required />
             </p>
             <p>
-                Número: <input type="text" name="numeroRestaurante" />
+                Número: <input type="text" name="numeroRestaurante" required />
             </p>
             <p>
                 Complemento: <input type="text" name="complementoRestaurante" />
             </p>
             <p>
-                Municipio: <input type="text" name="municipioRestaurante" />
+                Municipio: <input type="text" name="municipioRestaurante" required />
             </p>
         </div>
 
         <!-- Campos adicionales para repartidor -->
         <div id="camposRepartidor" class="hidden">
             <p>
-                Apellidos: <input type="text" name="apellidosRepartidor" />
+                Apellidos: <input type="text" name="apellidosRepartidor" required />
             </p>
             <p>
-                NIF: <input type="text" name="nifRepartidor" />
+                NIF: <input type="text" name="nifRepartidor" required />
             </p>
         </div>
 
@@ -152,7 +173,9 @@
             <input type="reset" value="Cancelar" />
         </p>
     </form>
-    <button onclick="location.href='/login'">Volver al login</button>
+    
+    <a th:href="@{/login}" class="return-button">&#x21a9;</a>
 </body>
 </html>
+
 

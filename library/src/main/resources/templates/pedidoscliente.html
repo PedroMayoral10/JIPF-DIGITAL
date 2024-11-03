@@ -6,8 +6,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #f0f4f8;
-            font-family: 'Montserrat', sans-serif;
+            background-color: #e0f7df;
+            font-family:  sans-serif;
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -19,7 +19,7 @@
             padding-top: 5px;
             font-size: 36px;
             color: #2c3e50;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #4CAF50;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -79,27 +79,9 @@
             padding: 5px 0;
         }
 
-        .return-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.3s, transform 0.3s;
-        }
+        
 
-        .return-button:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        .return-button:active {
-            transform: translateY(0);
-        }
+    
 
         @media (max-width: 600px) {
             .container {
@@ -110,24 +92,27 @@
                 font-size: 28px;
             }
 
-            .return-button {
-                width: 100%;
-                padding: 12px;
-            }
+            
         }
         .return-button {
-            margin-top: 20px;
-            padding: 10px 20px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             background-color: #4CAF50;
             color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
             text-decoration: none;
+            font-size: 24px;
+            transition: background-color 0.3s ease;
         }
 
         .return-button:hover {
-            background-color: #45a049;
+            background-color: #d9534f;
         }
     </style>
 </head>

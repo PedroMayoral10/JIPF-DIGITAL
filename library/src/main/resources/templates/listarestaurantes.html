@@ -3,52 +3,66 @@
 <head>
     <title>Lista de Restaurantes</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif; /* Cambia a Arial */
+            background-color: #e0f7df; /* Fondo verde aclarado */
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #e0f7df; /* Fondo verde aclarado */
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         h1 {
-            color: #333;
+            padding-top: 5px;
+            font-size: 48px;
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
             margin-bottom: 20px;
-        }
-
-        .restaurant-name {
-            font-family: Arial, sans-serif; /* Cambia a Arial para el nombre del restaurante */
-            font-size: 24px; /* Aumenta el tamaño del texto */
-            font-weight: bold; /* Texto en negrita */
-            text-align: center; /* Centra el texto */
-            flex-grow: 1; /* Permite que el nombre ocupe espacio */
-        }
-
-        .star {
-            cursor: pointer;
-            font-size: 48px; /* Tamaño de estrella aumentado */
-            color: gold;
-            margin-left: 20px; /* Espacio entre el botón y la estrella */
+            text-align: center;
+            width: 100%;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Sombra sutil para el texto */
         }
 
         .restaurant-list {
             list-style-type: none; /* Sin viñetas */
             padding: 0;
             width: 100%;
-            max-width: 600px; /* Ancho máximo */
+            max-width: 800px; /* Ancho máximo */
+            margin: 0; /* Eliminar margen */
         }
 
         .restaurant-item {
             background-color: #fff;
-            margin: 10px 0;
+            margin: 15px 0; /* Espacio entre elementos */
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px; /* Bordes redondeados */
             display: flex;
             justify-content: space-between; /* Espacio entre el nombre y el botón */
             align-items: center; /* Centra verticalmente */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+            transition: transform 0.2s; /* Transición suave para el efecto hover */
+        }
+
+        .restaurant-item:hover {
+            transform: translateY(-5px); /* Levanta el elemento al pasar el ratón */
+        }
+
+        .restaurant-name {
+            font-size: 24px; /* Aumenta el tamaño del texto */
+            font-weight: bold; /* Texto en negrita */
+            color: #333;
+            flex-grow: 1; /* Permite que el nombre ocupe espacio */
+            text-align: left; /* Alinear a la izquierda */
+        }
+
+        .star {
+            cursor: pointer;
+            font-size: 36px; /* Tamaño de estrella aumentado */
+            color: gold;
+            margin-left: 20px; /* Espacio entre el botón y la estrella */
         }
 
         .view-button {
@@ -62,22 +76,43 @@
             display: flex;
             justify-content: center; /* Centra el texto dentro del botón */
             align-items: center; /* Centra verticalmente el texto dentro del botón */
-            margin: 0; /* Asegura que no hay margen */
+            transition: background-color 0.3s, transform 0.2s; /* Transición suave para el hover */
         }
 
         .view-button:hover {
             background-color: #e0a800;
+            transform: scale(1.05); /* Efecto de aumento al pasar el ratón */
         }
 
         a {
-            margin-top: 20px;
             text-decoration: none;
             color: #4CAF50;
             font-size: 18px;
         }
 
         a:hover {
-            text-decoration: underline;
+            text-decoration: none;
+        }
+
+        .return-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 24px;
+            transition: background-color 0.3s ease;
+        }
+
+        .return-button:hover {
+            background-color: #d9534f;
         }
     </style>
 </head>
@@ -87,7 +122,6 @@
         <li class="restaurant-item">
             <div class="restaurant-name" th:text="${restaurante.nombre}"></div> <!-- Se añade una div para el nombre del restaurante -->
             <div style="display: flex; align-items: center;"> <!-- Flex para alinear elementos -->
-                <!-- Enlace "Realizar pedido" que lleva a la página de detalle con el ID del restaurante en la URL -->
                 <a th:href="@{/realizarpedido/{clienteId}/{restauranteId}(clienteId=${cliente.idUsuario}, restauranteId=${restaurante.idUsuario})}">
                     <button class="view-button">Realizar pedido</button>
                 </a>
@@ -102,8 +136,7 @@
         </li>
     </ul>
 
-    <a th:href="@{/menucliente/{id}(id=${cliente.idUsuario})}" class="btn">Volver al Menu Cliente</a>
-
+    <a th:href="@{/menucliente/{id}(id=${cliente.idUsuario})}" class="return-button">&#x21a9;</a>
     <script>
         // Seleccionar todos los elementos de estrella
         document.querySelectorAll('.star').forEach(star => {
@@ -116,3 +149,4 @@
     </script>
 </body>
 </html>
+

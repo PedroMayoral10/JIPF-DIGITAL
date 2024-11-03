@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Realizar Pago</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             background-color: #e0f7df;
-            font-family: sans-serif;
+            font-family: 'Arial', sans-serif;
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -16,10 +17,12 @@
 
         h1 {
             padding-top: 5px;
-            font-size: 64px;
-            color: #333;
-            border-radius: 8px;
+            font-size: 48px;
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            margin-bottom: 20px;
             text-align: center;
+            width: 100%;
         }
 
         .container {
@@ -33,10 +36,17 @@
 
         .barra_direcciones, .form-container {
             flex: 1;
-            background-color: #f4f4f4;
+            background-color: #f9f9f9;
             padding: 30px;
             border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+            border-bottom: 2px solid #4CAF50;
         }
 
         .form-group {
@@ -46,14 +56,14 @@
         label {
             font-weight: bold;
             margin-bottom: 8px;
-            font-size: 20px;
+            font-size: 18px;
         }
 
         input[type="text"],
         input[type="date"],
         select {
             padding: 10px;
-            font-size: 18px;
+            font-size: 16px;
             width: 100%;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -68,21 +78,13 @@
             border-radius: 8px;
             cursor: pointer;
             margin-top: 20px;
+            transition: background-color 0.3s;
         }
 
         button:hover {
             background-color: #45a049;
         }
-        .form-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
 
-        .barra_direcciones, .form-container {
-            flex: 1;
-            min-width: 300px;
-        }
         .return-button {
             position: fixed;
             bottom: 20px;
@@ -102,6 +104,17 @@
 
         .return-button:hover {
             background-color: #d9534f;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .barra_direcciones, .form-container {
+            flex: 1;
+            min-width: 300px;
         }
     </style>
 </head>
@@ -148,24 +161,22 @@
                         </select>
                     </div>
                     <div class="form-group">
-                    <h2>Items del Pedido:</h2>
-                    <ul>
-                        <li th:each="item : ${itemsPedidos}">
-                            <span th:text="${item.nombre}">Nombre del Item</span> - 
-                            <span th:text="${item.tipo}">Tipo del Item</span> - 
-                            <span th:utext="${#numbers.formatDecimal(item.precio, 1, 2)} + ' €'">Precio del Item</span>
-                        </li>
-                    </ul>
-                    <h3>Total: <span th:text="${precioTotal}">0.0</span> €</h3>
-                    <button type="submit">Confirmar Pago</button>
+                        <h2>Items del Pedido:</h2>
+                        <ul>
+                            <li th:each="item : ${itemsPedidos}">
+                                <span th:text="${item.nombre}">Nombre del Item</span> - 
+                                <span th:text="${item.tipo}">Tipo del Item</span> - 
+                                <span th:utext="${#numbers.formatDecimal(item.precio, 1, 2)} + ' €'">Precio del Item</span>
+                            </li>
+                        </ul>
+                        <h3>Total: <span th:text="${precioTotal}">0.0</span> €</h3>
+                        <button type="submit">Confirmar Pago</button>
+                    </div>
                 </div>
             </div>
         </form>
     </div>
 
     <a th:href="@{/realizarpedido/{idCliente}/{idRestaurante}(idCliente=${idCliente}, idRestaurante=${idRestaurante})}" class="return-button">&#x21a9;</a>
-    
-    
-	
 </body>
 </html>
