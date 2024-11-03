@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class GestorRepartidor {
@@ -71,7 +72,8 @@ public class GestorRepartidor {
 	
 	@PostMapping("/registrar_recogida/{idRepartidor}")
 	public String submitRecogida(@PathVariable("idRepartidor") String idRepartidor, Model model,
-			@RequestParam(value = "id_pedido", required = false) Long id_pedido) {
+			@RequestParam(value = "id_pedido", required = false) Long id_pedido,
+			RedirectAttributes redirectAttributes) {
 		model.addAttribute("idRepartidor", idRepartidor);
 		Pedido pedido = pedidoDAO.findById(id_pedido).orElse(null);
 		pedido.setEstado(EstadoPedido.RECOGIDO);
@@ -79,22 +81,30 @@ public class GestorRepartidor {
 		ServicioEntrega servicio = pedido.getEntrega();
 		servicio.setFechaRecepcion(LocalDate.now());
 		servicioentregaDAO.save(servicio);
+		
+		redirectAttributes.addFlashAttribute("exito", "Recogida registrada con éxito");
 		return "redirect:/registrar_recogida/" + idRepartidor;
 	}
 	
 	@PostMapping("/registrar_entrega/{idRepartidor}")
 	public String submitEntrega(@PathVariable("idRepartidor") String idRepartidor, Model model,
-			@RequestParam(value = "id_pedido", required = false) Long id_pedido) {
+			@RequestParam(value = "id_pedido", required = false) Long id_pedido,
+			RedirectAttributes redirectAttributes) {
 		model.addAttribute("idRepartidor", idRepartidor);
+		
 		Pedido pedido = pedidoDAO.findById(id_pedido).orElse(null);
 		pedido.setEstado(EstadoPedido.ENTREGADO);
 		pedidoDAO.save(pedido);
+		
 		ServicioEntrega servicio = pedido.getEntrega();
 		servicio.setFechaEntrega(LocalDate.now());
 		servicioentregaDAO.save(servicio);
+		
 		Repartidor repartidor = repartidorDAO.findById(idRepartidor).orElse(null);
 		repartidor.actualizarEficiencia(1);
 		repartidorDAO.save(repartidor);
+		
+		redirectAttributes.addFlashAttribute("exito", "Entrega registrada con éxito");
 		return "redirect:/registrar_entrega/" + idRepartidor;
 	}
 	

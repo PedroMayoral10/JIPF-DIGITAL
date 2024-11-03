@@ -68,13 +68,20 @@
 
 		.return-button:hover {
 		 	background-color: #d9534f;
-		 }
+		}
+		 
+		.mensaje-exito {
+			color: green;
+		    margin-bottom: 20px;
+		    font-weight: bold;
+		}
 		
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Registrar Recogida</h1>
+		<div th:if="${exito}" class="mensaje-exito" th:text="${exito}"></div>
         <div th:each="servicio : ${servicios}" class="servicio">
             <h3 th:text="'Servicio ID: ' + ${servicio.id_servicioEntrega}"></h3>
             <p th:text="'ID del Pedido: ' + ${servicio.pedido.id_pedido}"></p>
