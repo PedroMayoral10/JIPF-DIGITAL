@@ -26,6 +26,14 @@ public class ServicioEntrega {
 	public ServicioEntrega() {
 		
 	}
+	public Long getId_servicioEntrega() {
+		return id_servicioEntrega;
+	}
+	
+	
+	public Pedido getPedido() {
+		return pedido;
+	}
 	
 	public void setPedido(Pedido pedido) {
 		this.pedido = pedido;
