@@ -107,16 +107,5 @@ public class GestorRepartidor {
 		redirectAttributes.addFlashAttribute("exito", "Entrega registrada con éxito");
 		return "redirect:/registrar_entrega/" + idRepartidor;
 	}
-	
-	public void marcarPedidoRecogido(ServicioEntrega servicio) {
-		// TODO - implement GestorRepartos.marcarPedidoRecogido
-		throw new UnsupportedOperationException();
-	}
-
-	
-	public void marcarPedidoEntregado(ServicioEntrega servicio) {
-		// TODO - implement GestorRepartos.marcarPedidoEntregado
-		throw new UnsupportedOperationException();
-	}
 
 }

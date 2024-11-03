@@ -68,7 +68,7 @@ public class GestorPedidos {
 		itemsPedidos = obtenerItems(params);
 
 		for (ItemMenu item : itemsPedidos) {
-			itemIds.add(item.getId()); // Suponiendo que hay un método getId() en ItemMenu
+			itemIds.add(item.getId());
 		}
 
 		double precioTotalPedido = 0.0;
@@ -78,8 +78,6 @@ public class GestorPedidos {
 		BigDecimal precioTotalRedondeado = BigDecimal.valueOf(precioTotalPedido).setScale(2, RoundingMode.HALF_UP);
 	    double precioTotal = precioTotalRedondeado.doubleValue();
 
-		// Añadir los ítems al modelo junto con los identificadores de cliente y
-		// restaurante
 		model.addAttribute("itemsPedidos", itemsPedidos);
 		model.addAttribute("idCliente", idCliente);
 		model.addAttribute("idRestaurante", idRestaurante);
@@ -161,7 +159,7 @@ public class GestorPedidos {
 
 		pedidoDAO.save(pedido);
 		model.addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
-		model.addAttribute("idCliente", idCliente); // Pasar el idCliente a la vista
+		model.addAttribute("idCliente", idCliente);
 		
 
 		return "redirect:/confirmacionpago/" + idCliente;
