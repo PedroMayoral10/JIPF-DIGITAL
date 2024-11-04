@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import es.JIPF_Digital.library.dominio.entidades.*;
 
-public interface RepartidorDAO extends JpaRepository<Repartidor, String>{
+public interface RepartidorDAO extends JpaRepository<Repartidor, String> {
 
 }

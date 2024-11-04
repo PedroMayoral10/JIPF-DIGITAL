@@ -42,6 +42,10 @@ public class GestorUsuario {
 	return "registro";
 	}
 	
+	/*
+	 * POSTMAPPINGS
+	 */
+	
 	@PostMapping("/login")
 	public String loginSubmit(@ModelAttribute Usuario usuario, Model model) {
 		model.addAttribute("usuario", usuario);
@@ -75,9 +79,7 @@ public class GestorUsuario {
 		}
 	}
 	
-	/*
-	 * POSTMAPPINGS
-	 */
+	
 	
 	@PostMapping("/registro")
 	public String registroSubmit(

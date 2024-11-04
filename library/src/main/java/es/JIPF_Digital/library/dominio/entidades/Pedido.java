@@ -21,35 +21,31 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 public class Pedido {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id_pedido;
 	@ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
+	@JoinColumn(name = "cliente_id", nullable = false)
 	private Cliente cliente;
 	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "pago_id", referencedColumnName = "idTransaccion")
+	@JoinColumn(name = "pago_id", referencedColumnName = "idTransaccion")
 	private Pago pago;
 	@ManyToMany
-	@JoinTable(
-			name = "pedido_items",
-			joinColumns = @JoinColumn(name = "pedido_id"),
-			inverseJoinColumns = @JoinColumn(name = "item_menu_id")
-	)
+	@JoinTable(name = "pedido_items", joinColumns = @JoinColumn(name = "pedido_id"), inverseJoinColumns = @JoinColumn(name = "item_menu_id"))
 	private Collection<ItemMenu> items;
 	@ManyToOne
-    @JoinColumn(name = "restaurante_id", nullable = false)
+	@JoinColumn(name = "restaurante_id", nullable = false)
 	private Restaurante restaurante;
-	@OneToOne(mappedBy="pedido",cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL)
 	private ServicioEntrega entrega;
 	@Enumerated(EnumType.STRING)
-    private EstadoPedido estado;
+	private EstadoPedido estado;
 	@Column(nullable = false)
 	private LocalDate fecha;
 
 	public Pedido() {
-		
+
 	}
 
 	public Long getId_pedido() {
@@ -115,18 +111,5 @@ public class Pedido {
 	public void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
 	}
-	
-	
-	/*
-	public void add(ItemMenu itemMenu) {
-		// TODO - implement Pedido.add
-		throw new UnsupportedOperationException();
-	}
-
-	
-	public void delete(ItemMenu itemMenu) {
-		// TODO - implement Pedido.delete
-		throw new UnsupportedOperationException();
-	}*/
 
 }

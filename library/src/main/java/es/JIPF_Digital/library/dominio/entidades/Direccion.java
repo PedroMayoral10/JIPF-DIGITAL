@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 @Entity
 public class Direccion {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_direccion;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id_direccion;
 	@Column(nullable = false)
 	private String codigoPostal;
 	@Column(nullable = false)
@@ -17,16 +17,15 @@ public class Direccion {
 	private String complemento;
 	@Column(nullable = false)
 	private String municipio;
-	
+
 	public Direccion() {
-    }
-	
-	
+	}
+
 	public Direccion(String codigoPostal, String calle, String numero, String complemento, String municipio) {
-        this.codigoPostal = codigoPostal;
-        this.calle = calle;
-        this.numero = numero;
-        this.complemento = complemento;
-        this.municipio = municipio;
-    }
+		this.codigoPostal = codigoPostal;
+		this.calle = calle;
+		this.numero = numero;
+		this.complemento = complemento;
+		this.municipio = municipio;
+	}
 }

@@ -11,5 +11,5 @@ import es.JIPF_Digital.library.dominio.entidades.Pedido;
 @Repository
 public interface PedidoDAO extends JpaRepository<Pedido, Long> {
 	@Query("SELECT p FROM Pedido p WHERE p.cliente.idUsuario = :idCliente")
-    List<Pedido> findPedidosByCliente(@Param("idCliente") String idCliente);
+	List<Pedido> findPedidosByCliente(@Param("idCliente") String idCliente);
 }

@@ -16,7 +16,7 @@ import java.util.List;
 public class GestorClientes {
 
 	@Autowired
-	private RestauranteDAO restauranteDAO; // Declarar el repositorio
+	private RestauranteDAO restauranteDAO; 
 
 	@Autowired
 	private ClienteDAO clienteDAO;
@@ -24,6 +24,7 @@ public class GestorClientes {
 	/*
 	 * GETMAPPINGS
 	 */
+	
 	@GetMapping("/menucliente/{id}")
 	public String MenuCliente(@PathVariable("id") String idCliente, Model model) {
 		model.addAttribute("id_cliente", idCliente);
@@ -37,7 +38,7 @@ public class GestorClientes {
 		restaurantes = restauranteDAO.findAll();
 		model.addAttribute("restaurantes", restaurantes);
 		model.addAttribute("cliente", cliente);
-		return "listarestaurantes"; // Retorna el nombre del HTML
+		return "listarestaurantes"; 
 	}
 
 	/*
