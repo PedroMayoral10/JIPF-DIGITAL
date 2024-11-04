@@ -3,25 +3,29 @@
 <head>
     <title>Modificar Menú</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            background-color: #e0f7df;
-            font-family: sans-serif;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-        }
+       body {
+        background-color: #e0f7df;
+        font-family: 'Arial', sans-serif;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-        h1 {
-            padding-top: 5px;
-            font-size: 48px;
-            color: #333;
-            border-radius: 8px;
-            width: 300px;
-            text-align: center;
-        }
+    h1 {
+        padding-top: 5px;
+        font-size: 48px;
+        color: #2e7d32;
+        width: 100%;
+        text-align: center;
+        border-bottom: 2px solid #4CAF50;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
 
         .container {
             display: flex;
@@ -93,7 +97,7 @@
             margin-top: 20px;
         }
 
-        .add-btn, .delete-item-btn, .delete-menu-btn, .volver-btn {
+        .add-btn, .delete-menu-btn, .volver-btn {
             background-color: #4CAF50;
             color: white;
             padding: 10px 20px;
@@ -103,16 +107,34 @@
             transition: background-color 0.3s;
         }
 
-        .add-btn:hover, .delete-item-btn:hover, .delete-menu-btn:hover {
+        .add-btn:hover {
             background-color: #45a049;
         }
 
         .delete-menu-btn {
             background-color: #ff5f5f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
         }
 
         .delete-menu-btn:hover {
             background-color: #e63939;
+        }
+
+        .delete-item-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            color: #ff5f5f;
+            font-size: 20px;
+            margin-left: 10px;
+        }
+
+        .delete-item-btn:hover {
+            color: #e63939;
         }
 
         #items-container {
@@ -172,7 +194,9 @@
                         <div class="item">
                             <span th:text="${item.nombre}" class="nombre_item"></span>
                             <span th:text="${item.precio} + ' €'" class="precio_item"></span>
-                            <button type="button" class="delete-item-btn" th:onclick="'confirmDeleteItem(' + ${item.id} + ')'">Eliminar</button>
+                            <button type="button" class="delete-item-btn" th:onclick="'confirmDeleteItem(' + ${item.id} + ')'">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -182,7 +206,9 @@
             </div>
             <div class="action-buttons">
                 <button class="add-btn" th:onclick="'addItem(' + ${menu_seleccionado} + ')'">Añadir Ítem</button>
-                <button type="button" class="delete-menu-btn" th:onclick="'confirmDeleteMenu(' + ${menu_seleccionado} + ')'">Eliminar Menú</button>
+                <button type="button" class="delete-menu-btn" th:onclick="'confirmDeleteMenu(' + ${menu_seleccionado} + ')'">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </div>
             
             <a th:href="@{/menurestaurante/{id}(id=${idRestaurante})}" class="return-button">&#x21a9;</a>
@@ -246,3 +272,4 @@
     </script>
 </body>
 </html>
+

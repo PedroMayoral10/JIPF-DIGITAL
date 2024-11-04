@@ -84,10 +84,12 @@
         function mostrarCamposAdicionales() {
             const tipoUsuario = document.getElementById('tipoUsuario').value;
             
+            // Ocultar todos los campos adicionales primero
             document.getElementById('camposCliente').classList.add('hidden');
             document.getElementById('camposRestaurante').classList.add('hidden');
             document.getElementById('camposRepartidor').classList.add('hidden');
             
+            // Mostrar los campos correspondientes según el valor de rol
             if (tipoUsuario == '1') { // Cliente
                 document.getElementById('camposCliente').classList.remove('hidden');
             } else if (tipoUsuario == '2') { // Restaurante
@@ -103,10 +105,11 @@
     <form action="#" th:action="@{/registro}" th:object="${usuario}" method="post">
         <h1>Registro</h1>
 
+        <!-- Campo de selección para el tipo de usuario -->
         <p>
             Tipo de usuario:
-            <select id="tipoUsuario" name="rol" onchange="mostrarCamposAdicionales()" required>
-                <option value="" selected disabled>Selecciona un tipo</option>
+            <select id="tipoUsuario" name="rol" onchange="mostrarCamposAdicionales()">
+                <option value="0">Selecciona un tipo</option>
                 <option value="1">Cliente</option>
                 <option value="2">Restaurante</option>
                 <option value="3">Repartidor</option>
@@ -114,51 +117,54 @@
         </p>
 
         <p>
-            Usuario: <input type="text" th:field="*{idUsuario}" required />
+            Usuario: <input type="text" th:field="*{idUsuario}" />
         </p>
         <p>
-            Nombre: <input type="text" th:field="*{nombre}" required />
+            Nombre: <input type="text" th:field="*{nombre}" />
         </p>
         <p>
-            Contraseña: <input type="password" th:field="*{pass}" required />
+            Contraseña: <input type="password" th:field="*{pass}" />
         </p>
 
+        <!-- Campos adicionales para cliente -->
         <div id="camposCliente" class="hidden">
             <p>
-                Apellidos: <input type="text" name="apellidosCliente" required />
+                Apellidos: <input type="text" name="apellidosCliente" />
             </p>
             <p>
-                DNI: <input type="text" name="dniCliente" required />
+                DNI: <input type="text" name="dniCliente" />
             </p>
         </div>
 
+        <!-- Campos adicionales para restaurante -->
         <div id="camposRestaurante" class="hidden">
             <p>
-                CIF: <input type="text" name="cifRestaurante" required />
+                CIF: <input type="text" name="cifRestaurante" />
             </p>
             <p>
-                Código Postal: <input type="text" name="codigoPostalRestaurante" required />
+                Código Postal: <input type="text" name="codigoPostalRestaurante" />
             </p>
             <p>
-                Calle: <input type="text" name="calleRestaurante" required />
+                Calle: <input type="text" name="calleRestaurante" />
             </p>
             <p>
-                Número: <input type="text" name="numeroRestaurante" required />
+                Número: <input type="text" name="numeroRestaurante" />
             </p>
             <p>
                 Complemento: <input type="text" name="complementoRestaurante" />
             </p>
             <p>
-                Municipio: <input type="text" name="municipioRestaurante" required />
+                Municipio: <input type="text" name="municipioRestaurante" />
             </p>
         </div>
 
+        <!-- Campos adicionales para repartidor -->
         <div id="camposRepartidor" class="hidden">
             <p>
-                Apellidos: <input type="text" name="apellidosRepartidor" required />
+                Apellidos: <input type="text" name="apellidosRepartidor" />
             </p>
             <p>
-                NIF: <input type="text" name="nifRepartidor" required />
+                NIF: <input type="text" name="nifRepartidor" />
             </p>
         </div>
 
@@ -167,7 +173,6 @@
             <input type="reset" value="Cancelar" />
         </p>
     </form>
-    
     <a th:href="@{/login}" class="return-button">&#x21a9;</a>
 </body>
 </html>

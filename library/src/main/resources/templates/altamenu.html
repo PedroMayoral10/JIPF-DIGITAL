@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
     <title>Dar Alta Menu</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -7,45 +8,66 @@
 <style>
     body {
         background-color: #e0f7df;
-        font-family: sans-serif;
+        font-family: 'Arial', sans-serif;
         padding: 20px;
         display: flex;
         flex-direction: column;
         align-items: center;
         margin: 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
         padding-top: 5px;
         font-size: 48px;
-        color: #333;
-        width: 300px;
+        color: #2e7d32;
+        width: 100%;
         text-align: center;
-        border-radius: 8px;
+        border-bottom: 2px solid #4CAF50;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     p {
         font-size: 20px;
         margin: 20px 0;
+        color: #555;
     }
 
     form {
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 300px;
+        width: 100%;
+        max-width: 400px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
 
-    label, input, select {
+    label,
+    input,
+    select {
         font-size: 18px;
         margin: 10px 0;
         width: 100%;
     }
 
-    input[type="text"], input[type="number"], select {
+    input[type="text"],
+    input[type="number"],
+    select {
         padding: 10px;
         border-radius: 8px;
         border: 1px solid #ccc;
+        transition: border 0.3s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+        border: 1px solid #4CAF50;
+        outline: none;
     }
 
     .btn {
@@ -59,12 +81,46 @@
         text-decoration: none;
         margin-top: 20px;
         border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
     }
 
     .btn:hover {
         background-color: #d9534f;
+        transform: scale(1.05);
     }
 
+    .success-message {
+        color: green;
+        margin-bottom: 15px;
+        font-size: 0.9em;
+    }
+
+    .return-button {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        background-color: #4CAF50;
+        color: white;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        text-decoration: none;
+        font-size: 32px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .return-button:hover {
+        background-color: #d9534f;
+        transform: scale(1.1);
+    }
+
+    
     .sidebar {
         position: fixed;
         right: 0;
@@ -91,19 +147,13 @@
         padding: 10px 0;
         border-bottom: 1px solid #555;
     }
-	
-	.success-message {
-	            color: green;
-	            margin-bottom: 15px;
-	            font-size: 0.9em;
-	        }
-	
 </style>
+</head>
+
 <body>
     <h1>Dar Alta Menu</h1>
-    
-    <form th:action="@{/altamenu/{id}(id=${restaurante.idUsuario})}" method="post">
 
+    <form th:action="@{/altamenu/{id}(id=${restaurante.idUsuario})}" method="post">
         <label for="nombreMenu">Nombre del Menú:</label>
         <input type="text" id="nombreMenu" name="nombreMenu" required />
 
@@ -123,7 +173,7 @@
         <button type="submit" class="btn">Crear Menú e Item</button>
     </form>
 
-    <a th:href="@{/menurestaurante/{id}(id=${restaurante.idUsuario})}" class="btn">Volver al Menu Restaurante</a>
-
+    <a th:href="@{/menurestaurante/{id}(id=${restaurante.idUsuario})}" class="return-button">&#x21a9;</a>
 </body>
+
 </html>
