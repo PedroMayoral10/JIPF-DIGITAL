@@ -14,7 +14,7 @@ public class Cliente {
         joinColumns = @JoinColumn(name = "cliente_id"),
         inverseJoinColumns = @JoinColumn(name = "restaurante_id")
     )
-    private Collection<Restaurante> favoritos = new HashSet<>(); // Inicializamos la colección
+    private Collection<Restaurante> favoritos = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "cliente_id") // Agrega una columna cliente_id en la tabla Direccion

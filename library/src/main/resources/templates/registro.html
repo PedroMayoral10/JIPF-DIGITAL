@@ -84,12 +84,10 @@
         function mostrarCamposAdicionales() {
             const tipoUsuario = document.getElementById('tipoUsuario').value;
             
-            // Ocultar todos los campos adicionales primero
             document.getElementById('camposCliente').classList.add('hidden');
             document.getElementById('camposRestaurante').classList.add('hidden');
             document.getElementById('camposRepartidor').classList.add('hidden');
             
-            // Mostrar los campos correspondientes según el valor de rol
             if (tipoUsuario == '1') { // Cliente
                 document.getElementById('camposCliente').classList.remove('hidden');
             } else if (tipoUsuario == '2') { // Restaurante
@@ -105,7 +103,6 @@
     <form action="#" th:action="@{/registro}" th:object="${usuario}" method="post">
         <h1>Registro</h1>
 
-        <!-- Campo de selección para el tipo de usuario -->
         <p>
             Tipo de usuario:
             <select id="tipoUsuario" name="rol" onchange="mostrarCamposAdicionales()" required>
@@ -126,7 +123,6 @@
             Contraseña: <input type="password" th:field="*{pass}" required />
         </p>
 
-        <!-- Campos adicionales para cliente -->
         <div id="camposCliente" class="hidden">
             <p>
                 Apellidos: <input type="text" name="apellidosCliente" required />
@@ -136,7 +132,6 @@
             </p>
         </div>
 
-        <!-- Campos adicionales para restaurante -->
         <div id="camposRestaurante" class="hidden">
             <p>
                 CIF: <input type="text" name="cifRestaurante" required />
@@ -158,7 +153,6 @@
             </p>
         </div>
 
-        <!-- Campos adicionales para repartidor -->
         <div id="camposRepartidor" class="hidden">
             <p>
                 Apellidos: <input type="text" name="apellidosRepartidor" required />

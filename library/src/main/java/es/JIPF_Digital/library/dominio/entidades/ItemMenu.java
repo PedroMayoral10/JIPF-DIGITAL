@@ -15,7 +15,7 @@ public class ItemMenu {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TipoItemMenu tipo; // Usa el enum TipoItemMenu para especificar el tipo de ítem (COMIDA, BEBIDA, POSTRE)
+    private TipoItemMenu tipo;
     
     @Column(nullable = false)
     private double precio;
@@ -24,17 +24,13 @@ public class ItemMenu {
     @JoinColumn(name = "carta_menu_id")
     private CartaMenu cartaMenu;
 
-    // Constructor por defecto
     public ItemMenu() {}
 
-    // Constructor con parámetros
     public ItemMenu(String nombre, TipoItemMenu tipo, double precio) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.precio = precio;
     }
-
-    // Getters y Setters
 
     public Long getId() {
         return id;

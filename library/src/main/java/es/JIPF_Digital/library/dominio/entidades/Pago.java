@@ -21,18 +21,15 @@ public class Pago {
     @Column(nullable = false)
     private LocalDate fechaTransaccion;
 
-    // Constructor vacío
     public Pago() {}
 
-    // Constructor con parámetros
     public Pago(Pedido pedido, MetodoPago tipo, LocalDate fechaTransaccion) {
         this.pedido = pedido;
         this.tipo = tipo;
         this.fechaTransaccion = fechaTransaccion;
-        this.idTransaccion = UUID.randomUUID(); // Genera automáticamente un UUID único
+        this.idTransaccion = UUID.randomUUID();
     }
 
-    // Getters y Setters
     public UUID getIdTransaccion() {
         return idTransaccion;
     }

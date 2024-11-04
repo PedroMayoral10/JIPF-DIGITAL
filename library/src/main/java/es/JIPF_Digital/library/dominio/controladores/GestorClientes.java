@@ -16,11 +16,15 @@ import java.util.List;
 public class GestorClientes {
 
     @Autowired
-    private RestauranteDAO restauranteDAO; // Declarar el repositorio
+    private RestauranteDAO restauranteDAO;
 
     @Autowired
     private ClienteDAO clienteDAO;
-
+    
+    /*
+	 * GETMAPPINGS
+	 */
+    
     @GetMapping("/menucliente/{id}")
     public String MenuCliente(@PathVariable("id") String idCliente, Model model) {
     	model.addAttribute("id_cliente", idCliente); 
@@ -34,9 +38,12 @@ public class GestorClientes {
         restaurantes = restauranteDAO.findAll();
         model.addAttribute("restaurantes", restaurantes);
         model.addAttribute("cliente", cliente);
-        return "listarestaurantes"; // Retorna el nombre del HTML
+        return "listarestaurantes";
     }
     
+    /*
+	 * POSTMAPPINGS
+	 */
     
     @PostMapping("/listarestaurantes/{id}")
     public String favorito(Model model, @PathVariable("id") String idCliente, @RequestParam(value = "id_restaurante", required = false) String idRestaurante) {
@@ -51,41 +58,4 @@ public class GestorClientes {
         return "redirect:/listarestaurantes/" + idCliente;
     }
 
-   
-
-
-    /**
-     * 
-     * @param zona
-     */
-    public List<Restaurante> buscarRestaurante(String zona) {
-        // Implementar la búsqueda de restaurantes por zona
-        throw new UnsupportedOperationException();
-    }
-
-    
-
-    /**
-     * 
-     * @param nombre
-     * @param apellido
-     * @param d
-     */
-    public Cliente registrarCliente(String nombre, String apellido, Direccion d) {
-        // Implementar la lógica para registrar un nuevo cliente
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * 
-     * @param calle
-     * @param numero
-     * @param complemento
-     * @param cp
-     * @param municipio
-     */
-    private Direccion altaDirecion(String calle, String numero, String complemento, String cp, String municipio) {
-        // Implementar la lógica para crear una nueva dirección
-        throw new UnsupportedOperationException();
-    }
 }

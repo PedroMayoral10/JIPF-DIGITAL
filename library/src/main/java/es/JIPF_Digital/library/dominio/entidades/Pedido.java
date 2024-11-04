@@ -115,18 +115,5 @@ public class Pedido {
 	public void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
 	}
-	
-	
-	/*
-	public void add(ItemMenu itemMenu) {
-		// TODO - implement Pedido.add
-		throw new UnsupportedOperationException();
-	}
-
-	
-	public void delete(ItemMenu itemMenu) {
-		// TODO - implement Pedido.delete
-		throw new UnsupportedOperationException();
-	}*/
 
 }

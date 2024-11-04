@@ -44,8 +44,7 @@ public class GestorPedidos {
 	private static List<ItemMenu> itemsPedidos = new ArrayList<>();
 	
 	/*
-	 * GETMAPPINGS------------------------------------
-	 * ---------------------------------------------
+	 * GETMAPPINGS
 	 */
 	
 	@GetMapping("/realizarpedido/{id_cliente}/{id_restaurante}")
@@ -102,8 +101,7 @@ public class GestorPedidos {
 	}
  
 	/*
-	 * POSTMAPPINGS------------------------------------
-	 * ---------------------------------------------
+	 * POSTMAPPINGS
 	 */
 	
 	@PostMapping("/realizarpedido/{id_cliente}/{id_restaurante}")
@@ -134,7 +132,6 @@ public class GestorPedidos {
 			@RequestParam(value = "complemento", required = false) String complemento,
 			@RequestParam(value = "municipio", required = false) String municipio) {
 
-		// Convertir la fecha de transacción de String a LocalDate
 		LocalDate fechaTransaccion = LocalDate.now();
 
 		Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);

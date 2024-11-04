@@ -87,7 +87,6 @@
             font-size: 14px;
         }
 
-        /* Botones para añadir y eliminar ítem y menú */
         .action-buttons {
             display: flex;
             justify-content: space-between;
@@ -116,18 +115,17 @@
             background-color: #e63939;
         }
 
-        /* Contenedor de ítems para que no interfiera con los botones */
         #items-container {
-            padding-bottom: 50px; /* Espacio para evitar que el contenido cubra los botones */
+            padding-bottom: 50px;
         }
 
         .nombre_item {
-            flex: 1; /* Toma todo el espacio disponible */
+            flex: 1;
         }
 
         .precio_item {
-            width: 100px; /* Ancho fijo para el precio */
-            text-align: right; /* Alinear a la derecha */
+            width: 100px;
+            text-align: right;
         }
         .return-button {
             position: fixed;
@@ -156,7 +154,6 @@
     <h1>Modificar Menú</h1>
 
     <div class="container">
-        <!-- Lista de menús a la izquierda -->
         <div class="menu-list">
             <h3>Menús Disponibles</h3>
             <div th:each="menu : ${menus}">
@@ -167,7 +164,6 @@
             </div>
         </div>
 
-        <!-- Lista de ítems seleccionados a la derecha -->
         <div class="item-list">
             <h3>Ítems del Menú</h3>
             <div id="items-container">

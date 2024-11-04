@@ -64,7 +64,7 @@
         .info-group {
             margin-bottom: 10px;
             position: relative;
-            z-index: 1; /* Asegura que el texto esté por encima del pseudo-elemento */
+            z-index: 1;
         }
 
         label {
@@ -150,7 +150,7 @@
     <script>
         document.querySelectorAll('.pedido').forEach(function(pedido) {
             const precios = Array.from(pedido.querySelectorAll('span')).map(function(span) {
-                return parseFloat(span.innerText) || 0; // Convertir a número, manejar NaN
+                return parseFloat(span.innerText) || 0; 
             });
             const total = precios.reduce((acc, precio) => acc + precio, 0);
             const precioTotalElement = pedido.querySelector('.value[id^="precioTotal_"]');

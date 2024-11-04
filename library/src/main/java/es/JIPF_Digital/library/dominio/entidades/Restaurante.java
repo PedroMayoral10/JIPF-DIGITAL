@@ -39,7 +39,6 @@ public class Restaurante {
         this.direccion = direccion;
     }
 
-    // Getter y Setter para `cartasMenu`
     public Collection<CartaMenu> getCartasMenu() {
         return cartasMenu;
     }
@@ -51,13 +50,11 @@ public class Restaurante {
         }
     }
 
-    // Método para obtener el primer menú (asumiendo que un restaurante tiene una sola carta principal)
     public CartaMenu getMenuPrincipal() {
         return cartasMenu.isEmpty() ? null : cartasMenu.iterator().next();
     }
 
 
-    // Otros getters y setters para los atributos restantes
     public String getIdUsuario() {
         return idUsuario;
     }

@@ -29,8 +29,7 @@ public class GestorRestaurantes {
 	private ItemMenuDAO itemDAO;
 
 	/*
-	 * GETMAPPINGS------------------------------------
-	 * ---------------------------------------------
+	 * GETMAPPINGS
 	 */
 
 	@GetMapping("menurestaurante/{id}")
@@ -66,8 +65,7 @@ public class GestorRestaurantes {
 	}
 
 	/*
-	 * POSTMAPPINGS------------------------------------
-	 * ---------------------------------------------
+	 * POSTMAPPINGS
 	 */
 
 	@PostMapping("altamenu/{id}")
@@ -153,8 +151,7 @@ public class GestorRestaurantes {
 	}
 
 	/*
-	 * DELETEMAPPINGS------------------------------------
-	 * ---------------------------------------------
+	 * DELETEMAPPINGS
 	 */
 
 	@DeleteMapping("/eliminaritem/{itemId}")

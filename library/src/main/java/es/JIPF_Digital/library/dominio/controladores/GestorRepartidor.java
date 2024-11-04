@@ -25,6 +25,10 @@ public class GestorRepartidor {
 	@Autowired
 	ServicioEntregaDAO servicioentregaDAO;
 	
+	/*
+	 * GETMAPPINGS
+	 */
+	
 	@GetMapping("/menurepartidor/{idRepartidor}")
 	public String menuRepartidor(@PathVariable("idRepartidor") String idRepartidor, Model model) {
 		model.addAttribute("idRepartidor", idRepartidor);
@@ -69,6 +73,10 @@ public class GestorRepartidor {
 		model.addAttribute("servicios", serviciosPagados);
 		return "registrar_entrega";
 	}
+	
+	/*
+	 * POSTMAPPINGS
+	 */
 	
 	@PostMapping("/registrar_recogida/{idRepartidor}")
 	public String submitRecogida(@PathVariable("idRepartidor") String idRepartidor, Model model,
