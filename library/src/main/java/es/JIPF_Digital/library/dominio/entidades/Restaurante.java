@@ -6,98 +6,105 @@ import jakarta.persistence.*;
 @Entity
 public class Restaurante {
 
-	@Id
-	private String idUsuario;
+    @Id
+    private String idUsuario;
 
-	@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Collection<Pedido> pedidos;
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<Pedido> pedidos;
 
-	@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Collection<CartaMenu> cartasMenu = new ArrayList<>();
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<CartaMenu> cartasMenu = new ArrayList<>();
 
-	@Column
-	private String nombre;
+    @Column
+    private String nombre;
 
-	@Column
-	private String pass;
+    @Column
+    private String pass;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "direccion_id", referencedColumnName = "id_direccion")
-	private Direccion direccion;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "direccion_id", referencedColumnName = "id_direccion")
+    private Direccion direccion;
 
-	@Column
-	private String cif;
+    @Column
+    private String cif;
 
-	public Restaurante() {
-	}
+    public Restaurante() {
+    }
 
-	public Restaurante(String idUsuario, String nombre, String pass, Direccion direccion, String cif) {
-		this.idUsuario = idUsuario;
-		this.nombre = nombre;
-		this.pass = pass;
-		this.cif = cif;
-		this.direccion = direccion;
-	}
+    public Restaurante(String idUsuario, String nombre, String pass, Direccion direccion, String cif) {
+        this.idUsuario = idUsuario;
+        this.nombre = nombre;
+        this.pass = pass;
+        this.cif = cif;
+        this.direccion = direccion;
+    }
 
-	// Getter y Setter para `cartasMenu`
-	public Collection<CartaMenu> getCartasMenu() {
-		return cartasMenu;
-	}
+    // Getter y Setter para `cartasMenu`
+    public Collection<CartaMenu> getCartasMenu() {
+        return cartasMenu;
+    }
 
-	public void setCartasMenu(Collection<CartaMenu> cartasMenu) {
-		this.cartasMenu.clear();
-		if (cartasMenu != null) {
-			this.cartasMenu.addAll(cartasMenu);
-		}
-	}
+    public void setCartasMenu(Collection<CartaMenu> cartasMenu) {
+        this.cartasMenu.clear();
+        if (cartasMenu != null) {
+            this.cartasMenu.addAll(cartasMenu);
+        }
+    }
 
-	public CartaMenu getMenuPrincipal() {
-		return cartasMenu.isEmpty() ? null : cartasMenu.iterator().next();
-	}
+    // Método para obtener el primer menú (asumiendo que un restaurante tiene una sola carta principal)
+    public CartaMenu getMenuPrincipal() {
+        return cartasMenu.isEmpty() ? null : cartasMenu.iterator().next();
+    }
 
-	public String getIdUsuario() {
-		return idUsuario;
-	}
 
-	public void setIdUsuario(String idUsuario) {
-		this.idUsuario = idUsuario;
-	}
+    // Otros getters y setters para los atributos restantes
+    public String getIdUsuario() {
+        return idUsuario;
+    }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public String getNombre() {
+        return nombre;
+    }
 
-	public String getPass() {
-		return pass;
-	}
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-	public void setPass(String pass) {
-		this.pass = pass;
-	}
+    public String getPass() {
+        return pass;
+    }
 
-	public Direccion getDireccion() {
-		return direccion;
-	}
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
 
-	public void setDireccion(Direccion direccion) {
-		this.direccion = direccion;
-	}
+    public Direccion getDireccion() {
+        return direccion;
+    }
 
-	public String getCif() {
-		return cif;
-	}
+    public void setDireccion(Direccion direccion) {
+        this.direccion = direccion;
+    }
 
-	public void setCif(String cif) {
-		this.cif = cif;
-	}
+    public String getCif() {
+        return cif;
+    }
 
-	@Override
-	public String toString() {
-		return "Restaurante{" + "idUsuario='" + idUsuario + '\'' + ", nombre='" + nombre + '\'' + ", cif='" + cif + '\''
-				+ ", direccion=" + direccion + '}';
-	}
+    public void setCif(String cif) {
+        this.cif = cif;
+    }
+
+    @Override
+    public String toString() {
+        return "Restaurante{" +
+                "idUsuario='" + idUsuario + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", cif='" + cif + '\'' +
+                ", direccion=" + direccion +
+                '}';
+    }
 }

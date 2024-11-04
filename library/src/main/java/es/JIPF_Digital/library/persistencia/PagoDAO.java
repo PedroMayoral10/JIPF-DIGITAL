@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import es.JIPF_Digital.library.dominio.entidades.*;
 import java.util.UUID;
 
-public interface PagoDAO extends JpaRepository<Pago, UUID> {
+public interface PagoDAO extends JpaRepository<Pago,UUID> {
 }
