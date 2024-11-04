@@ -5,66 +5,76 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #e0f7df; 
+            background-color: #e0f7df;
+            font-family: sans-serif;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
-            text-align: center;
+            margin: 0;
         }
 
         h1 {
             padding-top: 5px;
             font-size: 48px;
-            color: #4CAF50;
-            border-bottom: 2px solid #4CAF50;
-            margin-bottom: 20px;
+            color: #333;
+            border-radius: 8px;
+            width: 300px;
             text-align: center;
-            width: 100%;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); 
         }
 
         .container {
             display: flex;
-            width: 90%;
-            max-width: 800px;
             margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
         }
 
         .menu-list, .item-list {
             flex: 1;
             padding: 20px;
+            border-radius: 8px;
             background-color: #f1f1f1;
-            border-radius: 12px;
             margin: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
         }
 
         .menu-list {
             max-width: 200px;
         }
 
-        .menu-item, .item {
+        .menu-item {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 15px;
-            margin: 10px 0;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 18px;
+            margin: 8px 0;
+            padding: 16px;
+            font-weight: bold;
+            font-size: 16px;
             color: #333;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            width: 100%;
         }
 
         .menu-item:hover, .item:hover {
-            background-color: #e0f7df;
-            transform: scale(1.02);
+            background-color: #eee;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .item span:first-child {
@@ -74,31 +84,28 @@
 
         .item span:last-child {
             color: #4CAF50;
-            font-size: 16px;
+            font-size: 14px;
         }
 
+        /* Botones para añadir y eliminar ítem y menú */
         .action-buttons {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             margin-top: 20px;
         }
 
-        .add-btn, .delete-item-btn, .delete-menu-btn, .return-button {
+        .add-btn, .delete-item-btn, .delete-menu-btn, .volver-btn {
             background-color: #4CAF50;
             color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
             font-weight: bold;
-            text-decoration: none;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
         }
 
-        .add-btn:hover, .delete-item-btn:hover, .return-button:hover {
+        .add-btn:hover, .delete-item-btn:hover, .delete-menu-btn:hover {
             background-color: #45a049;
-            transform: scale(1.05);
         }
 
         .delete-menu-btn {
@@ -109,25 +116,47 @@
             background-color: #e63939;
         }
 
+        /* Contenedor de ítems para que no interfiera con los botones */
+        #items-container {
+            padding-bottom: 50px; /* Espacio para evitar que el contenido cubra los botones */
+        }
+
+        .nombre_item {
+            flex: 1; /* Toma todo el espacio disponible */
+        }
+
+        .precio_item {
+            width: 100px; /* Ancho fijo para el precio */
+            text-align: right; /* Alinear a la derecha */
+        }
         .return-button {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 40px;
-            height: 40px;
+            background-color: #4CAF50;
+            color: white;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
+            text-decoration: none;
             font-size: 24px;
+            transition: background-color 0.3s ease;
         }
+
+        .return-button:hover {
+            background-color: #d9534f;
+        }
+
     </style>
 </head>
 <body>
     <h1>Modificar Menú</h1>
 
     <div class="container">
-       
+        <!-- Lista de menús a la izquierda -->
         <div class="menu-list">
             <h3>Menús Disponibles</h3>
             <div th:each="menu : ${menus}">
@@ -138,7 +167,7 @@
             </div>
         </div>
 
-        
+        <!-- Lista de ítems seleccionados a la derecha -->
         <div class="item-list">
             <h3>Ítems del Menú</h3>
             <div id="items-container">
@@ -164,7 +193,6 @@
         </div>
     </div>
 
-  
     <script>
         function addItem(menuId) {
             if (menuId === null) {

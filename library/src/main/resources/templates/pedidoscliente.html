@@ -64,7 +64,7 @@
         .info-group {
             margin-bottom: 10px;
             position: relative;
-            z-index: 1; 
+            z-index: 1; /* Asegura que el texto esté por encima del pseudo-elemento */
         }
 
         label {
@@ -150,11 +150,12 @@
     <script>
         document.querySelectorAll('.pedido').forEach(function(pedido) {
             const precios = Array.from(pedido.querySelectorAll('span')).map(function(span) {
-                return parseFloat(span.innerText) || 0; 
+                return parseFloat(span.innerText) || 0; // Convertir a número, manejar NaN
             });
             const total = precios.reduce((acc, precio) => acc + precio, 0);
             const precioTotalElement = pedido.querySelector('.value[id^="precioTotal_"]');
-            precioTotalElement.innerText = total.toFixed(2) + ' €'; 
+            precioTotalElement.innerText = total.toFixed(2) + ' €'; // Redondear a 2 decimales
+        });
     </script>
 
 <a th:href="@{/menucliente/{id}(id=${idCliente})}" class="return-button">&#x21a9;</a>

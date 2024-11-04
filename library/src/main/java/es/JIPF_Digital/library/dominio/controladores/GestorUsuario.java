@@ -22,10 +22,6 @@ public class GestorUsuario {
 	@Autowired
 	private RepartidorDAO repartidorDAO;
 	
-	/*
-	 * GETMAPPINGS
-	 */
-	
 	@GetMapping("/")
 	public String redirigirLogin(Model model) {
 		return "redirect:/login";
@@ -35,11 +31,6 @@ public class GestorUsuario {
 	public String loginForm(Model model) {
 		model.addAttribute("usuario", new Usuario());
 		return "login";
-	}
-	@GetMapping("/registro")
-	public String registroForm(Model model) {
-	model.addAttribute("usuario", new Usuario());
-	return "registro";
 	}
 	
 	@PostMapping("/login")
@@ -75,9 +66,11 @@ public class GestorUsuario {
 		}
 	}
 	
-	/*
-	 * POSTMAPPINGS
-	 */
+	@GetMapping("/registro")
+		public String registroForm(Model model) {
+		model.addAttribute("usuario", new Usuario());
+		return "registro";
+		}
 	
 	@PostMapping("/registro")
 	public String registroSubmit(

@@ -1,88 +1,74 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Menu Restaurante</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #e0f7df; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
+<title>Menu Restaurante</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+body {
+	font-family: sans-serif;
+	margin: 0;
+	padding-top: 5px;
+	background-color: #e0f7df; /* Fondo verde aclarado */
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	text-align: center;
+}
 
-        h1 {
-            padding-top: 5px;
-            font-size: 48px;
-            color: #4CAF50;
-            border-bottom: 2px solid #4CAF50;
-            margin-bottom: 20px;
-            text-align: center;
-            width: 100%;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-        }
+h1 {
+	padding-top: 5px;
+	font-size: 48px;
+	color: #333;
+	margin-bottom: 40px;
+}
 
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 30px; 
-            align-items: center; 
-            margin-top: 100px; 
-        }
+.button-container {
+	display: flex;
+	flex-direction: column;
+	gap: 30px; /* Espacio entre los botones */
+}
 
-        .btn {
-            padding: 15px 25px;
-            background-color: #4CAF50;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 24px; 
-            color: #e0f7df;
-            width: 300px; 
-            text-decoration: none;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
-        }
+button {
+	padding: 15px 30px;
+	background-color: #4CAF50;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 20px;
+	color: #e0f7df;
+	width: 250px;
+}
 
-        .btn:hover {
-            background-color: #e0a800;
-            transform: scale(1.05); 
-        }
+button:hover {
+	background-color: #e0a800;
+}
 
-        .return-button {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #4CAF50;
-            color: white;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%; 
-            text-decoration: none;
-            font-size: 28px; 
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
+a {
+	display: block;
+	padding: 15px 30px;
+	background-color: #4CAF50;
+	color: white;
+	text-decoration: none;
+	border-radius: 8px;
+	font-size: 20px;
+	width: 150px;
+	text-align: center;
+}
 
-        .return-button:hover {
-            background-color: #d9534f;
-            transform: scale(1.1); 
-        }
-    </style>
+a:hover {
+	background-color: #d9534f;
+}
+</style>
 </head>
 <body>
-    <h1>Menu Restaurante</h1>
-    <div class="button-container">
-        <a th:href="@{/altamenu/{id}(id=${restaurante.idUsuario})}" class="btn">Dar Alta Menu</a>
-        <a th:href="@{/modificarmenu/{id}(id=${restaurante.idUsuario})}" class="btn">Modificar Menu</a>
-    </div>
-    <a th:href="@{/login}" class="return-button">&#x21a9;</a>
+	<h1>Menu Restaurante</h1>
+	<!--<p th:text="'Hola ' + ${usuario.nombre}"> </p>-->
+	<a th:href="@{/altamenu/{id}(id=${restaurante.idUsuario})}" class="btn">Dar Alta Menu</a>
+	<a th:href="@{/modificarmenu/{id}(id=${restaurante.idUsuario})}" class="btn">Modificar Menu</a>
+	<br>
+	<br>
+	<a href="/login">Volver al login</a>
 </body>
 </html>

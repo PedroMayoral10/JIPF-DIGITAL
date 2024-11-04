@@ -44,7 +44,8 @@ public class GestorPedidos {
 	private static List<ItemMenu> itemsPedidos = new ArrayList<>();
 	
 	/*
-	 * GETMAPPINGS
+	 * GETMAPPINGS------------------------------------
+	 * ---------------------------------------------
 	 */
 	
 	@GetMapping("/realizarpedido/{id_cliente}/{id_restaurante}")
@@ -101,9 +102,10 @@ public class GestorPedidos {
 	}
  
 	/*
-	 * POSTMAPPINGS
+	 * POSTMAPPINGS------------------------------------
+	 * ---------------------------------------------
 	 */
-
+	
 	@PostMapping("/realizarpedido/{id_cliente}/{id_restaurante}")
 	public String procesarPedido(@PathVariable("id_cliente") String idCliente,
 			@PathVariable("id_restaurante") String idRestaurante, Model model,
