@@ -36,6 +36,10 @@
 
 	<properties>
 		<java.version>23</java.version>
+		<sonar.organization>jipf-digital</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+  		<sonar.projectKey>jipf-digital</sonar.projectKey>
+  		
 	</properties>
 
 	<dependencies>
