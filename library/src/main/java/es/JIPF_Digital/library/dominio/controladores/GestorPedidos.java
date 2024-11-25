@@ -50,8 +50,8 @@ public class GestorPedidos {
 	@GetMapping("/realizarpedido/{id_cliente}/{id_restaurante}")
 	public String detalleRestaurante(@PathVariable("id_cliente") String idCliente,
 			@PathVariable("id_restaurante") String idRestaurante, Model model) {
-		Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
-		Cliente cliente = clienteDAO.findById(idCliente).orElse(null);
+		Restaurante restaurante = restauranteDAO.findById(idRestaurante).get();
+		Cliente cliente = clienteDAO.findById(idCliente).get();
 		model.addAttribute("menus", cartamenuDAO.findAllByRestauranteId(idRestaurante));
 		model.addAttribute("restaurante", restaurante);
 		model.addAttribute("cliente", cliente);
@@ -108,9 +108,7 @@ public class GestorPedidos {
 	public String procesarPedido(@PathVariable("id_cliente") String idCliente,
 			@PathVariable("id_restaurante") String idRestaurante, Model model,
 			@RequestParam(value = "menuId", required = false) Long idMenu, RedirectAttributes redirectAttributes) {
-		Cliente cliente = clienteDAO.findById(idCliente).orElse(null);
-		Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
-		CartaMenu cartamenu = cartamenuDAO.findById(idMenu).orElse(null);
+		CartaMenu cartamenu = cartamenuDAO.findById(idMenu).get();
 		List<CartaMenu> menus = cartamenuDAO.findAll();
 		if (!cartamenu.getItems().isEmpty())
 			redirectAttributes.addFlashAttribute("items", cartamenu.getItems());
@@ -134,8 +132,8 @@ public class GestorPedidos {
 
 		LocalDate fechaTransaccion = LocalDate.now();
 
-		Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
-		Cliente cliente = clienteDAO.findById(idCliente).orElse(null);
+		Restaurante restaurante = restauranteDAO.findById(idRestaurante).get();
+		Cliente cliente = clienteDAO.findById(idCliente).get();
 		Pedido pedido = new Pedido();
 
 		pedido.setCliente(cliente);
@@ -167,7 +165,7 @@ public class GestorPedidos {
 		int index = 0;
 		while (params.containsKey("id" + index)) {
 			Long id_item = Long.parseLong(params.get("id" + index));
-			ItemMenu item = itemMenuDAO.findById(id_item).orElse(null);
+			ItemMenu item = itemMenuDAO.findById(id_item).get();
 			itemsPedidos.add(item);
 			index++;
 		}
