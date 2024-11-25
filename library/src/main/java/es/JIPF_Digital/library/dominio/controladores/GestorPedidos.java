@@ -22,7 +22,13 @@ import es.JIPF_Digital.library.persistencia.*;
 
 @Controller
 public class GestorPedidos {
-
+	
+	
+	private static final String IDCLIENTE = "idCliente";
+	private static List<Long> itemIds = new ArrayList<>();
+	private static List<ItemMenu> itemsPedidos = new ArrayList<>();
+	
+	
 	@Autowired
 	private ItemMenuDAO itemMenuDAO;
 	@Autowired
@@ -38,10 +44,6 @@ public class GestorPedidos {
 	@Autowired
 	private DireccionDAO direccionDAO;
 	
-	private static final String IDCLIENTE = "idCliente";
-	
-	private static List<Long> itemIds = new ArrayList<>();
-	private static List<ItemMenu> itemsPedidos = new ArrayList<>();
 	
 	/*
 	 * GETMAPPINGS

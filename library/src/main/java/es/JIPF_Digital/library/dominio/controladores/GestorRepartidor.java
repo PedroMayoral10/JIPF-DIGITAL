@@ -25,6 +25,9 @@ import es.JIPF_Digital.library.persistencia.ServicioEntregaDAO;
 @Controller
 public class GestorRepartidor {
 	
+	private static final String IDREPARTIDOR = "idRepartidor";
+	private static final String SERVICIOS = "servicios";
+	
 	@Autowired
 	RepartidorDAO repartidorDAO;
 	@Autowired
@@ -32,8 +35,6 @@ public class GestorRepartidor {
 	@Autowired
 	ServicioEntregaDAO servicioentregaDAO;
 	
-	private static final String IDREPARTIDOR = "idRepartidor";
-	private static final String SERVICIOS = "servicios";
 	
 	/*
 	 * GETMAPPINGS
