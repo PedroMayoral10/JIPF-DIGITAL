@@ -3,7 +3,6 @@ package es.JIPF_Digital.library.dominio.controladores;
 import es.JIPF_Digital.library.dominio.entidades.*;
 import es.JIPF_Digital.library.persistencia.*;
 import es.JIPF_Digital.library.persistencia.RestauranteDAO;
-import es.JIPF_Digital.library.persistencia.ClienteDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.http.ResponseEntity;
-import java.util.Optional;
 
 @Controller
 public class GestorRestaurantes {
@@ -34,14 +32,14 @@ public class GestorRestaurantes {
 
 	@GetMapping("menurestaurante/{id}")
 	public String MenuRestaurante(@PathVariable("id") String idRestaurante, Model model) {
-		Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
+		Restaurante restaurante = restauranteDAO.findById(idRestaurante).get();
 		model.addAttribute(restaurante);
 		return "menurestaurante";
 	}
 
 	@GetMapping("altamenu/{id}")
 	public String darAltaMenu(@PathVariable("id") String idRestaurante, Model model) {
-		Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElse(null);
+		Restaurante restaurante = restauranteDAO.findById(idRestaurante).get();
 		model.addAttribute(restaurante);
 		return "altamenu";
 	}
@@ -58,7 +56,7 @@ public class GestorRestaurantes {
 	@GetMapping("nuevoitem/{id}")
 	public String nuevoItem(@PathVariable("id") Long idMenu, Model model) {
 		// Obtener todos los menús del restaurante por su ID, incluyendo los ítems
-		CartaMenu menu = cartamenuDAO.findById(idMenu).orElse(null);
+		CartaMenu menu = cartamenuDAO.findById(idMenu).get();
 		model.addAttribute("menu", menu);
 		model.addAttribute("idRestaurante", menu.getRestaurante().getIdUsuario());
 		return "nuevoitem"; // Asegúrate de que el nombre de la vista coincide
@@ -118,7 +116,7 @@ public class GestorRestaurantes {
 	public String postModMenu(@PathVariable("id") String idRestaurante,
 			@RequestParam(value = "menuId", required = false) Long idMenu, Model model,
 			RedirectAttributes redirectAttributes) {
-		CartaMenu cartamenu = cartamenuDAO.findById(idMenu).orElse(null);
+		CartaMenu cartamenu = cartamenuDAO.findById(idMenu).get();
 		List<CartaMenu> menus = cartamenuDAO.findAll();
 		if (!cartamenu.getItems().isEmpty())
 			redirectAttributes.addFlashAttribute("items", cartamenu.getItems());
@@ -143,7 +141,7 @@ public class GestorRestaurantes {
 			item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);
 		}
 		
-		CartaMenu menu = cartamenuDAO.findById(idMenu).orElse(null);
+		CartaMenu menu = cartamenuDAO.findById(idMenu).get();
 		menu.getItems().add(item);
 		cartamenuDAO.save(menu);
 		redirectAttributes.addFlashAttribute("success","Item añadido con exito");
@@ -156,7 +154,7 @@ public class GestorRestaurantes {
 
 	@DeleteMapping("/eliminaritem/{itemId}")
 	public ResponseEntity<Void> deleteItem(@PathVariable("itemId") Long itemId) {
-		ItemMenu item = itemDAO.findById(itemId).orElse(null);
+		ItemMenu item = itemDAO.findById(itemId).get();
 		if (item != null) {
 			itemDAO.delete(item);
 			return ResponseEntity.ok().build(); // Responde con 200 OK si se eliminó correctamente
@@ -167,7 +165,7 @@ public class GestorRestaurantes {
 	
 	@DeleteMapping("/eliminarmenu/{menuId}")
 	public ResponseEntity<Void> deleteMenu(@PathVariable("menuId") Long menuId) {
-		CartaMenu menu = cartamenuDAO.findById(menuId).orElse(null);
+		CartaMenu menu = cartamenuDAO.findById(menuId).get();
 		if (menu != null) {
 			Collection <ItemMenu> items = menu.getItems();
 			for (ItemMenu item : items) {
