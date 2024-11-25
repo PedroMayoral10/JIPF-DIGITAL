@@ -57,9 +57,9 @@ public class GestorUsuario {
 	@PostMapping("/login")
 	public String loginSubmit(@ModelAttribute Usuario usuario, Model model) {
 		model.addAttribute("usuario", usuario);
-		Cliente cliente = clienteDAO.findById(usuario.getIdUsuario()).orElse(null);
-	    Restaurante restaurante = restauranteDAO.findById(usuario.getIdUsuario()).orElse(null);
-	    Repartidor repartidor = repartidorDAO.findById(usuario.getIdUsuario()).orElse(null);
+		Cliente cliente = clienteDAO.findById(usuario.getIdUsuario()).get();
+	    Restaurante restaurante = restauranteDAO.findById(usuario.getIdUsuario()).get();
+	    Repartidor repartidor = repartidorDAO.findById(usuario.getIdUsuario()).get();
 		if(cliente != null) {
 			if(cliente.getPass().equals(usuario.getPass())) {
 				return "redirect:/menucliente/"+cliente.getIdUsuario();
@@ -123,8 +123,8 @@ public class GestorUsuario {
 			return "login";
 		}
 	
-	
-	
-	
-	
+
+
+
+		
 }
