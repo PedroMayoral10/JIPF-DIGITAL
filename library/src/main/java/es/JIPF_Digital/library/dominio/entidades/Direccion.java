@@ -1,12 +1,16 @@
 package es.JIPF_Digital.library.dominio.entidades;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Direccion {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_direccion;
+    private Long idDireccion;
 	@Column(nullable = false)
 	private String codigoPostal;
 	@Column(nullable = false)
