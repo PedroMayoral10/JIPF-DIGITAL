@@ -46,7 +46,8 @@ public class GestorClientes {
 	 */
     
     @PostMapping("/listarestaurantes/{id}")
-    public String favorito(Model model, @PathVariable("id") String idCliente, @RequestParam(value = "id_restaurante", required = false) String idRestaurante) {
+    public String favorito(Model model, @PathVariable("id") String idCliente, 
+    @RequestParam(value = "id_restaurante", required = false) String idRestaurante) {
         Restaurante restaurante = restauranteDAO.findById(idRestaurante).get();
         Cliente cliente = clienteDAO.findById(idCliente).get();
         if(cliente.getFavoritos().contains(restaurante)) {
