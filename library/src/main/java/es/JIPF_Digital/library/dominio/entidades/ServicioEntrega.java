@@ -1,14 +1,22 @@
 package es.JIPF_Digital.library.dominio.entidades;
 
 import java.time.LocalDate;
-import jakarta.persistence.*;
-import java.util.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class ServicioEntrega {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_servicioEntrega;
+    private Long id_servicioentrega;
     @OneToOne
     @JoinColumn(name = "id_pedido", referencedColumnName = "id_pedido")
     private Pedido pedido;
@@ -27,7 +35,7 @@ public class ServicioEntrega {
 		
 	}
 	public Long getId_servicioEntrega() {
-		return id_servicioEntrega;
+		return id_servicioentrega;
 	}
 	
 	

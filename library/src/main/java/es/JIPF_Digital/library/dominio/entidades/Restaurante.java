@@ -1,7 +1,15 @@
 package es.JIPF_Digital.library.dominio.entidades;
 
-import java.util.*;
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Restaurante {
@@ -51,7 +59,12 @@ public class Restaurante {
     }
 
     public CartaMenu getMenuPrincipal() {
-        return cartasMenu.isEmpty() ? null : cartasMenu.iterator().next();
+        if (cartasMenu.isEmpty()){
+            return null;
+        }else{
+            return  cartasMenu.iterator().next();
+        }
+       
     }
 
 
