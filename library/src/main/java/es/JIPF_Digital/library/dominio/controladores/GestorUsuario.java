@@ -1,15 +1,22 @@
 package es.JIPF_Digital.library.dominio.controladores;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import es.JIPF_Digital.library.dominio.entidades.*;
-import es.JIPF_Digital.library.persistencia.*;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import es.JIPF_Digital.library.dominio.entidades.Cliente;
+import es.JIPF_Digital.library.dominio.entidades.Direccion;
+import es.JIPF_Digital.library.dominio.entidades.Repartidor;
+import es.JIPF_Digital.library.dominio.entidades.Restaurante;
+import es.JIPF_Digital.library.dominio.entidades.Usuario;
+import es.JIPF_Digital.library.persistencia.ClienteDAO;
+import es.JIPF_Digital.library.persistencia.RepartidorDAO;
+import es.JIPF_Digital.library.persistencia.RestauranteDAO;
 
 
 @Controller
@@ -94,7 +101,7 @@ public class GestorUsuario {
             @RequestParam(value = "municipioRestaurante", required = false) String municipioRestaurante,
             @RequestParam(value = "apellidosRepartidor", required = false) String apellidosRepartidor,
             @RequestParam(value = "nifRepartidor", required = false) String nifRepartidor,
-            @RequestParam(value = "rol", required = false) int rol,
+            @RequestParam(value = "rol", required = false) Integer rol,
             Model model) {
 			System.out.println(rol);
 			switch(rol) {

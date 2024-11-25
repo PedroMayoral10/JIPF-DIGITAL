@@ -1,20 +1,26 @@
 package es.JIPF_Digital.library.dominio.controladores;
 
-import es.JIPF_Digital.library.dominio.entidades.*;
-import es.JIPF_Digital.library.persistencia.*;
-import es.JIPF_Digital.library.persistencia.RestauranteDAO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Collection;
 import java.util.List;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import es.JIPF_Digital.library.dominio.entidades.CartaMenu;
+import es.JIPF_Digital.library.dominio.entidades.ItemMenu;
+import es.JIPF_Digital.library.dominio.entidades.Restaurante;
+import es.JIPF_Digital.library.dominio.entidades.TipoItemMenu;
+import es.JIPF_Digital.library.persistencia.CartaMenuDAO;
+import es.JIPF_Digital.library.persistencia.ItemMenuDAO;
+import es.JIPF_Digital.library.persistencia.RestauranteDAO;
 
 @Controller
 public class GestorRestaurantes {
@@ -70,7 +76,7 @@ public class GestorRestaurantes {
 	public String postAltaMenu(@PathVariable("id") String idRestaurante,
 			@RequestParam(value = "nombreMenu", required = false) String nombreMenu,
 			@RequestParam(value = "nombre", required = false) String nombreItem,
-			@RequestParam(value = "precio", required = false) double precio,
+			@RequestParam(value = "precio", required = false) Double precio,
 			@RequestParam(value = "tipo", required = false) String tipo_menu, RedirectAttributes redirectAttributes) {
 		Restaurante restaurante = restauranteDAO.getById(idRestaurante);
 		if (!comprobarSiNoExiste(nombreMenu, idRestaurante)) {
@@ -129,7 +135,7 @@ public class GestorRestaurantes {
 	@PostMapping("nuevoitem/{id}")
 	public String postAltaMenu(@PathVariable("id") Long idMenu,
 			@RequestParam(value = "nombre", required = false) String nombreItem,
-			@RequestParam(value = "precio", required = false) double precio,
+			@RequestParam(value = "precio", required = false) Double precio,
 			@RequestParam(value = "tipo", required = false) String tipo_item,
 			RedirectAttributes redirectAttributes, Model model) {
 		ItemMenu item;
