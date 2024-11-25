@@ -177,7 +177,7 @@ public class GestorPedidos {
 	private Repartidor calcularRepartidorOptimo() {
 		List<Repartidor> repartidores = repartidorDAO.findAll();
 
-		Repartidor repartidorOptimo = null;
+		Repartidor repartidorOptimo = repartidores.get(0);
 		int minServicios = Integer.MAX_VALUE;
 
 		for (Repartidor repartidor : repartidores) {
@@ -193,9 +193,7 @@ public class GestorPedidos {
 				}
 			}
 		}
-
 		return repartidorOptimo;
-
 	}
 
 }
