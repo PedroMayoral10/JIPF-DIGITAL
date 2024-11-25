@@ -32,28 +32,31 @@ public class GestorRepartidor {
 	@Autowired
 	ServicioEntregaDAO servicioentregaDAO;
 	
+	private static final String IDREPARTIDOR = "idRepartidor";
+	private static final String SERVICIOS = "servicios";
+	
 	/*
 	 * GETMAPPINGS
 	 */
 	
 	@GetMapping("/menurepartidor/{idRepartidor}")
 	public String menuRepartidor(@PathVariable("idRepartidor") String idRepartidor, Model model) {
-		model.addAttribute("idRepartidor", idRepartidor);
+		model.addAttribute(IDREPARTIDOR, idRepartidor);
 		return "menurepartidor";
 	}
 	
 	@GetMapping("/pedidosrepartidor/{idRepartidor}")
 	public String mostrarPedidos(@PathVariable("idRepartidor") String idRepartidor, Model model) {
-		model.addAttribute("idRepartidor", idRepartidor);
+		model.addAttribute(IDREPARTIDOR, idRepartidor);
 		Repartidor repartidor = repartidorDAO.findById(idRepartidor).get();
 		Collection<ServicioEntrega> servicios = repartidor.getServicios();
-		model.addAttribute("servicios", servicios);
+		model.addAttribute(SERVICIOS, servicios);
 		return "pedidosrepartidor";
 	}
 	
 	@GetMapping("/registrar_recogida/{idRepartidor}")
 	public String menuRegistroRecogida(@PathVariable("idRepartidor") String idRepartidor, Model model) {
-		model.addAttribute("idRepartidor", idRepartidor);
+		model.addAttribute(IDREPARTIDOR, idRepartidor);
 		Repartidor repartidor = repartidorDAO.findById(idRepartidor).get();
 		Collection<ServicioEntrega> servicios = repartidor.getServicios();
 		List<ServicioEntrega> serviciosPagados = new ArrayList<>();
@@ -62,13 +65,13 @@ public class GestorRepartidor {
 				serviciosPagados.add(servicio);
 			}
 		}
-		model.addAttribute("servicios", serviciosPagados);
+		model.addAttribute(SERVICIOS, serviciosPagados);
 		return "registrar_recogida";
 	}
 	
 	@GetMapping("/registrar_entrega/{idRepartidor}")
 	public String menuRegistroEntrega(@PathVariable("idRepartidor") String idRepartidor, Model model) {
-		model.addAttribute("idRepartidor", idRepartidor);
+		model.addAttribute(IDREPARTIDOR, idRepartidor);
 		Repartidor repartidor = repartidorDAO.findById(idRepartidor).get();
 		Collection<ServicioEntrega> servicios = repartidor.getServicios();
 		List<ServicioEntrega> serviciosPagados = new ArrayList<>();
@@ -77,7 +80,7 @@ public class GestorRepartidor {
 				serviciosPagados.add(servicio);
 			}
 		}
-		model.addAttribute("servicios", serviciosPagados);
+		model.addAttribute(SERVICIOS, serviciosPagados);
 		return "registrar_entrega";
 	}
 	
@@ -87,10 +90,10 @@ public class GestorRepartidor {
 	
 	@PostMapping("/registrar_recogida/{idRepartidor}")
 	public String submitRecogida(@PathVariable("idRepartidor") String idRepartidor, Model model,
-			@RequestParam(value = "id_pedido", required = false) Long id_pedido,
+			@RequestParam(value = "id_pedido", required = false) Long idPedido,
 			RedirectAttributes redirectAttributes) {
-		model.addAttribute("idRepartidor", idRepartidor);
-		Pedido pedido = pedidoDAO.findById(id_pedido).get();
+		model.addAttribute(IDREPARTIDOR, idRepartidor);
+		Pedido pedido = pedidoDAO.findById(idPedido).get();
 		pedido.setEstado(EstadoPedido.RECOGIDO);
 		pedidoDAO.save(pedido);
 		ServicioEntrega servicio = pedido.getEntrega();
@@ -103,11 +106,11 @@ public class GestorRepartidor {
 	
 	@PostMapping("/registrar_entrega/{idRepartidor}")
 	public String submitEntrega(@PathVariable("idRepartidor") String idRepartidor, Model model,
-			@RequestParam(value = "id_pedido", required = false) Long id_pedido,
+			@RequestParam(value = "id_pedido", required = false) Long idPedido,
 			RedirectAttributes redirectAttributes) {
-		model.addAttribute("idRepartidor", idRepartidor);
+		model.addAttribute(IDREPARTIDOR, idRepartidor);
 		
-		Pedido pedido = pedidoDAO.findById(id_pedido).get();
+		Pedido pedido = pedidoDAO.findById(idPedido).get();
 		pedido.setEstado(EstadoPedido.ENTREGADO);
 		pedidoDAO.save(pedido);
 		
