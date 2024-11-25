@@ -29,6 +29,11 @@ public class GestorUsuario {
 	private RestauranteDAO restauranteDAO;
 	@Autowired
 	private RepartidorDAO repartidorDAO;
+	final String UsuarioStr = "usuario";
+	final String LoginStr = "login";
+	final String ErrorStr = "error";
+	final String ContasenaStr = "Contraseña incorrecta, pruebe otra vez";
+	
 	
 	/*
 	 * GETMAPPINGS
@@ -41,13 +46,13 @@ public class GestorUsuario {
 	
 	@GetMapping("/login")
 	public String loginForm(Model model) {
-		model.addAttribute("usuario", new Usuario());
-		return "login";
+		model.addAttribute(UsuarioStr, new Usuario());
+		return LoginStr;
 	}
 	
 	@GetMapping("/registro")
 	public String registroForm(Model model) {
-		model.addAttribute("usuario", new Usuario());
+		model.addAttribute(UsuarioStr, new Usuario());
 		return "registro";
 	}
 
@@ -57,7 +62,7 @@ public class GestorUsuario {
 	
 	@PostMapping("/login")
 	public String loginSubmit(@ModelAttribute Usuario usuario, Model model) {
-		model.addAttribute("usuario", usuario);
+		model.addAttribute(UsuarioStr, usuario);
 		Optional <Cliente> clienteOpt = clienteDAO.findById(usuario.getIdUsuario());
 	    Optional <Restaurante> restauranteOpt = restauranteDAO.findById(usuario.getIdUsuario());
 	    Optional <Repartidor> repartidorOpt = repartidorDAO.findById(usuario.getIdUsuario());
@@ -66,28 +71,28 @@ public class GestorUsuario {
 			if(cliente.getPass().equals(usuario.getPass())) {
 				return "redirect:/menucliente/"+cliente.getIdUsuario();
 			}else {
-				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
-				 return "login";
+				model.addAttribute( ErrorStr, ContasenaStr);
+				return LoginStr;
 			}
 		}else if(restauranteOpt.isPresent()) {
 			Restaurante restaurante = restauranteOpt.get();
 			if(restaurante.getPass().equals(usuario.getPass())) {
 				return "redirect:/menurestaurante/"+restaurante.getIdUsuario();
 			}else {
-				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
-				 return "login";
+				model.addAttribute(ErrorStr, ContasenaStr);
+				return LoginStr;
 			}
 		}else if(repartidorOpt.isPresent()) {
 			Repartidor repartidor = repartidorOpt.get();
 			if(repartidor.getPass().equals(usuario.getPass())) {
 				return "redirect:/menurepartidor/"+repartidor.getIdUsuario();
 			}else {
-				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
-				 return "login";
+				model.addAttribute(ErrorStr, ContasenaStr);
+				return LoginStr;
 			}
 		}else {
-			model.addAttribute("error", "El usuario no existe, pruebe otra vez");
-			return "login";
+			model.addAttribute(ErrorStr, "El usuario no existe, pruebe otra vez");
+			return LoginStr;
 		}
 	}
 	
@@ -107,7 +112,7 @@ public class GestorUsuario {
             @RequestParam(value = "nifRepartidor", required = false) String nifRepartidor,
             @RequestParam(value = "rol", required = false) Integer rol,
             Model model) {
-			System.out.println(rol);
+        System.out.println(rol);
 			switch(rol) {
 			case 1:
 				Cliente cliente = new Cliente(usuario.getIdUsuario(), usuario.getNombre(), usuario.getPass(),
@@ -115,10 +120,8 @@ public class GestorUsuario {
 				clienteDAO.save(cliente);
 				break;
 			case 2:
-				Direccion dir = new Direccion(codigoPostalRestaurante, calleRestaurante, numeroRestaurante, complementoRestaurante,
-				 municipioRestaurante);
-				Restaurante restaurante = new Restaurante(usuario.getIdUsuario(), usuario.getNombre(),
-				 usuario.getPass(), dir, cifRestaurante);
+				Direccion dir = new Direccion(codigoPostalRestaurante, calleRestaurante, numeroRestaurante, complementoRestaurante, municipioRestaurante);
+				Restaurante restaurante = new Restaurante(usuario.getIdUsuario(), usuario.getNombre(), usuario.getPass(), dir, cifRestaurante);
 				restauranteDAO.save(restaurante);
 				break;
 			case 3:
@@ -128,7 +131,7 @@ public class GestorUsuario {
 				break;
 			}
 		
-			return "login";
+			return LoginStr;
 		}
 	
 
