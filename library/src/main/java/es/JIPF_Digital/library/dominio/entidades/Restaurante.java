@@ -30,7 +30,7 @@ public class Restaurante {
     private String pass;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "direccion_id", referencedColumnName = "id_direccion")
+    @JoinColumn(name = "direccion_id", referencedColumnName = "idDireccion")
     private Direccion direccion;
 
     @Column

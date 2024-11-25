@@ -21,7 +21,7 @@ public class ServicioEntrega {
     @JoinColumn(name = "id_pedido", referencedColumnName = "id_pedido")
     private Pedido pedido;
     @OneToOne
-    @JoinColumn(name = "id_direccion", referencedColumnName = "id_direccion")
+    @JoinColumn(name = "id_direccion", referencedColumnName = "idDireccion")
     private Direccion direccion; 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_repartidor") 
