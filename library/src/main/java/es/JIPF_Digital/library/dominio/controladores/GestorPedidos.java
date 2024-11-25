@@ -23,6 +23,8 @@ import es.JIPF_Digital.library.persistencia.*;
 @Controller
 public class GestorPedidos {
 
+	private static List<Long> itemIds = new ArrayList<>();
+	private static List<ItemMenu> itemsPedidos = new ArrayList<>();
 	@Autowired
 	private ItemMenuDAO itemMenuDAO;
 	@Autowired
@@ -37,16 +39,11 @@ public class GestorPedidos {
 	private RepartidorDAO repartidorDAO;
 	@Autowired
 	private DireccionDAO direccionDAO;
-	
-	
-	private static List<Long> itemIds = new ArrayList<>();
 
-	private static List<ItemMenu> itemsPedidos = new ArrayList<>();
-	
 	/*
 	 * GETMAPPINGS
 	 */
-	
+
 	@GetMapping("/realizarpedido/{id_cliente}/{id_restaurante}")
 	public String detalleRestaurante(@PathVariable("id_cliente") String idCliente,
 			@PathVariable("id_restaurante") String idRestaurante, Model model) {
@@ -57,8 +54,7 @@ public class GestorPedidos {
 		model.addAttribute("cliente", cliente);
 		return "realizarpedido";
 	}
-	
-	
+
 	@GetMapping("/realizarpago/{idCliente}/{idRestaurante}")
 	public String realizarPago(@PathVariable("idCliente") String idCliente,
 			@PathVariable("idRestaurante") String idRestaurante, @RequestParam Map<String, String> params,
@@ -75,7 +71,7 @@ public class GestorPedidos {
 			precioTotalPedido += item.getPrecio();
 		}
 		BigDecimal precioTotalRedondeado = BigDecimal.valueOf(precioTotalPedido).setScale(2, RoundingMode.HALF_UP);
-	    double precioTotal = precioTotalRedondeado.doubleValue();
+		double precioTotal = precioTotalRedondeado.doubleValue();
 
 		model.addAttribute("itemsPedidos", itemsPedidos);
 		model.addAttribute("idCliente", idCliente);
@@ -84,26 +80,26 @@ public class GestorPedidos {
 
 		return "realizarpago";
 	}
-	
+
 	@GetMapping("/confirmacionpago/{idCliente}")
 	public String confirmacionpago(@PathVariable("idCliente") String idCliente, Model model) {
-		model.addAttribute("idCliente", idCliente); 
+		model.addAttribute("idCliente", idCliente);
 		return "confirmacionPago";
 	}
-	
+
 	@GetMapping("/pedidoscliente/{idCliente}")
 	public String mostrarPedidos(@PathVariable("idCliente") String idCliente, Model model) {
-		List <Pedido> pedidos = pedidoDAO.findPedidosByCliente(idCliente);
+		List<Pedido> pedidos = pedidoDAO.findPedidosByCliente(idCliente);
 		model.addAttribute("pedidos", pedidos);
 		model.addAttribute("idCliente", idCliente);
-		
+
 		return "pedidoscliente";
 	}
- 
+
 	/*
 	 * POSTMAPPINGS
 	 */
-	
+
 	@PostMapping("/realizarpedido/{id_cliente}/{id_restaurante}")
 	public String procesarPedido(@PathVariable("id_cliente") String idCliente,
 			@PathVariable("id_restaurante") String idRestaurante, Model model,
@@ -118,8 +114,6 @@ public class GestorPedidos {
 		return "redirect:/realizarpedido/" + idCliente + "/" + idRestaurante;
 	}
 
-	
-	
 	@PostMapping("/realizarpago/{idCliente}/{idRestaurante}")
 	public String submitPago(@PathVariable("idCliente") String idCliente,
 			@PathVariable("idRestaurante") String idRestaurante, Model model,
@@ -155,7 +149,6 @@ public class GestorPedidos {
 		pedidoDAO.save(pedido);
 		model.addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
 		model.addAttribute("idCliente", idCliente);
-		
 
 		return "redirect:/confirmacionpago/" + idCliente;
 	}
