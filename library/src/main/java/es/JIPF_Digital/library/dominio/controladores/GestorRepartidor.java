@@ -1,11 +1,10 @@
 package es.JIPF_Digital.library.dominio.controladores;
 
-import es.JIPF_Digital.library.dominio.entidades.*;
-import es.JIPF_Digital.library.persistencia.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ArrayList;
-import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import es.JIPF_Digital.library.dominio.entidades.EstadoPedido;
+import es.JIPF_Digital.library.dominio.entidades.Pedido;
+import es.JIPF_Digital.library.dominio.entidades.Repartidor;
+import es.JIPF_Digital.library.dominio.entidades.ServicioEntrega;
+import es.JIPF_Digital.library.persistencia.PedidoDAO;
+import es.JIPF_Digital.library.persistencia.RepartidorDAO;
+import es.JIPF_Digital.library.persistencia.ServicioEntregaDAO;
 
 @Controller
 public class GestorRepartidor {
@@ -38,7 +45,7 @@ public class GestorRepartidor {
 	@GetMapping("/pedidosrepartidor/{idRepartidor}")
 	public String mostrarPedidos(@PathVariable("idRepartidor") String idRepartidor, Model model) {
 		model.addAttribute("idRepartidor", idRepartidor);
-		Repartidor repartidor = repartidorDAO.findById(idRepartidor).orElse(null);
+		Repartidor repartidor = repartidorDAO.findById(idRepartidor).get();
 		Collection<ServicioEntrega> servicios = repartidor.getServicios();
 		model.addAttribute("servicios", servicios);
 		return "pedidosrepartidor";
@@ -47,7 +54,7 @@ public class GestorRepartidor {
 	@GetMapping("/registrar_recogida/{idRepartidor}")
 	public String menuRegistroRecogida(@PathVariable("idRepartidor") String idRepartidor, Model model) {
 		model.addAttribute("idRepartidor", idRepartidor);
-		Repartidor repartidor = repartidorDAO.findById(idRepartidor).orElse(null);
+		Repartidor repartidor = repartidorDAO.findById(idRepartidor).get();
 		Collection<ServicioEntrega> servicios = repartidor.getServicios();
 		List<ServicioEntrega> serviciosPagados = new ArrayList<>();
 		for ( ServicioEntrega servicio : servicios) {
@@ -62,7 +69,7 @@ public class GestorRepartidor {
 	@GetMapping("/registrar_entrega/{idRepartidor}")
 	public String menuRegistroEntrega(@PathVariable("idRepartidor") String idRepartidor, Model model) {
 		model.addAttribute("idRepartidor", idRepartidor);
-		Repartidor repartidor = repartidorDAO.findById(idRepartidor).orElse(null);
+		Repartidor repartidor = repartidorDAO.findById(idRepartidor).get();
 		Collection<ServicioEntrega> servicios = repartidor.getServicios();
 		List<ServicioEntrega> serviciosPagados = new ArrayList<>();
 		for ( ServicioEntrega servicio : servicios) {
@@ -83,7 +90,7 @@ public class GestorRepartidor {
 			@RequestParam(value = "id_pedido", required = false) Long id_pedido,
 			RedirectAttributes redirectAttributes) {
 		model.addAttribute("idRepartidor", idRepartidor);
-		Pedido pedido = pedidoDAO.findById(id_pedido).orElse(null);
+		Pedido pedido = pedidoDAO.findById(id_pedido).get();
 		pedido.setEstado(EstadoPedido.RECOGIDO);
 		pedidoDAO.save(pedido);
 		ServicioEntrega servicio = pedido.getEntrega();
@@ -100,7 +107,7 @@ public class GestorRepartidor {
 			RedirectAttributes redirectAttributes) {
 		model.addAttribute("idRepartidor", idRepartidor);
 		
-		Pedido pedido = pedidoDAO.findById(id_pedido).orElse(null);
+		Pedido pedido = pedidoDAO.findById(id_pedido).get();
 		pedido.setEstado(EstadoPedido.ENTREGADO);
 		pedidoDAO.save(pedido);
 		
@@ -108,7 +115,7 @@ public class GestorRepartidor {
 		servicio.setFechaEntrega(LocalDate.now());
 		servicioentregaDAO.save(servicio);
 		
-		Repartidor repartidor = repartidorDAO.findById(idRepartidor).orElse(null);
+		Repartidor repartidor = repartidorDAO.findById(idRepartidor).get();
 		repartidor.actualizarEficiencia(1);
 		repartidorDAO.save(repartidor);
 		
