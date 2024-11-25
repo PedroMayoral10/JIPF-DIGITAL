@@ -17,6 +17,7 @@ import es.JIPF_Digital.library.dominio.entidades.Usuario;
 import es.JIPF_Digital.library.persistencia.ClienteDAO;
 import es.JIPF_Digital.library.persistencia.RepartidorDAO;
 import es.JIPF_Digital.library.persistencia.RestauranteDAO;
+import java.util.Optional;
 
 
 @Controller
@@ -57,24 +58,27 @@ public class GestorUsuario {
 	@PostMapping("/login")
 	public String loginSubmit(@ModelAttribute Usuario usuario, Model model) {
 		model.addAttribute("usuario", usuario);
-		Cliente cliente = clienteDAO.findById(usuario.getIdUsuario()).get();
-	    Restaurante restaurante = restauranteDAO.findById(usuario.getIdUsuario()).get();
-	    Repartidor repartidor = repartidorDAO.findById(usuario.getIdUsuario()).get();
-		if(cliente != null) {
+		Optional <Cliente> clienteOpt = clienteDAO.findById(usuario.getIdUsuario());
+	    Optional <Restaurante> restauranteOpt = restauranteDAO.findById(usuario.getIdUsuario());
+	    Optional <Repartidor> repartidorOpt = repartidorDAO.findById(usuario.getIdUsuario());
+		if(clienteOpt.isPresent()) {
+			Cliente cliente = clienteOpt.get(); 
 			if(cliente.getPass().equals(usuario.getPass())) {
 				return "redirect:/menucliente/"+cliente.getIdUsuario();
 			}else {
 				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
 				 return "login";
 			}
-		}else if(restaurante != null) {
+		}else if(restauranteOpt.isPresent()) {
+			Restaurante restaurante = restauranteOpt.get();
 			if(restaurante.getPass().equals(usuario.getPass())) {
 				return "redirect:/menurestaurante/"+restaurante.getIdUsuario();
 			}else {
 				 model.addAttribute("error", "Contraseña incorrecta, pruebe otra vez");
 				 return "login";
 			}
-		}else if(repartidor!=null) {
+		}else if(repartidorOpt.isPresent()) {
+			Repartidor repartidor = repartidorOpt.get();
 			if(repartidor.getPass().equals(usuario.getPass())) {
 				return "redirect:/menurepartidor/"+repartidor.getIdUsuario();
 			}else {

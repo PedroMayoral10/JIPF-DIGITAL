@@ -32,6 +32,9 @@ public class GestorRestaurantes {
 	@Autowired
 	private ItemMenuDAO itemDAO;
 
+	private String success = "success";
+	private String redirigirNuevoItem = "redirect:/nuevoitem/";
+
 	/*
 	 * GETMAPPINGS
 	 */
@@ -77,45 +80,30 @@ public class GestorRestaurantes {
 			@RequestParam(value = "nombreMenu", required = false) String nombreMenu,
 			@RequestParam(value = "nombre", required = false) String nombreItem,
 			@RequestParam(value = "precio", required = false) Double precio,
-			@RequestParam(value = "tipo", required = false) String tipo_menu, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "tipo", required = false) String tipoItem, RedirectAttributes redirectAttributes) {
 		Restaurante restaurante = restauranteDAO.getById(idRestaurante);
 		if (!comprobarSiNoExiste(nombreMenu, idRestaurante)) {
 			CartaMenu cartamenu = cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante);
-			ItemMenu item;
-			if (tipo_menu.equals("COMIDA")) {
-				item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
-			} else if (tipo_menu.equals("BEBIDA")) {
-				item = new ItemMenu(nombreItem, TipoItemMenu.BEBIDA, precio);
-			} else {
-				item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);
-			}
-
+			ItemMenu item = crearItem(nombreItem, tipoItem, precio);
 			cartamenu.getItems().add(item);
 			cartamenuDAO.save(cartamenu);
-			redirectAttributes.addFlashAttribute("success", "El item se ha creado correctamente.");
-			return "redirect:/nuevoitem/" + cartamenu.getId();
+			redirectAttributes.addFlashAttribute(success, "El item se ha creado correctamente.");
+			return redirigirNuevoItem + cartamenu.getId();
 		}
 		CartaMenu cartamenu = new CartaMenu();
 		cartamenu.setNombre(nombreMenu);
 		cartamenu.setRestaurante(restaurante);
 		cartamenuDAO.save(cartamenu);
 
-		ItemMenu item;
-		if (tipo_menu.equals("COMIDA")) {
-			item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
-		} else if (tipo_menu.equals("BEBIDA")) {
-			item = new ItemMenu(nombreItem, TipoItemMenu.BEBIDA, precio);
-		} else {
-			item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);
-		}
+		ItemMenu item = crearItem(nombreItem, tipoItem, precio);
 
 		cartamenu.getItems().add(item);
 		cartamenuDAO.save(cartamenu);
 
 		// Agregar mensaje de éxito
-		redirectAttributes.addFlashAttribute("success", "El menú se ha creado correctamente.");
+		redirectAttributes.addFlashAttribute(success, "El menú se ha creado correctamente.");
 
-		return "redirect:/nuevoitem/" + cartamenu.getId();
+		return redirigirNuevoItem + cartamenu.getId();
 	}
 
 	@PostMapping("modificarmenu/{id}")
@@ -136,22 +124,15 @@ public class GestorRestaurantes {
 	public String postAltaMenu(@PathVariable("id") Long idMenu,
 			@RequestParam(value = "nombre", required = false) String nombreItem,
 			@RequestParam(value = "precio", required = false) Double precio,
-			@RequestParam(value = "tipo", required = false) String tipo_item,
+			@RequestParam(value = "tipo", required = false) String tipoItem,
 			RedirectAttributes redirectAttributes, Model model) {
-		ItemMenu item;
-		if (tipo_item.equals("COMIDA")) {
-			item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
-		} else if (tipo_item.equals("BEBIDA")) {
-			item = new ItemMenu(nombreItem, TipoItemMenu.BEBIDA, precio);
-		} else {
-			item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);
-		}
+		ItemMenu item = crearItem(nombreItem, tipoItem, precio);
 		
 		CartaMenu menu = cartamenuDAO.findById(idMenu).get();
 		menu.getItems().add(item);
 		cartamenuDAO.save(menu);
-		redirectAttributes.addFlashAttribute("success","Item añadido con exito");
-		return "redirect:/nuevoitem/" + idMenu;
+		redirectAttributes.addFlashAttribute(success,"Item añadido con exito");
+		return redirigirNuevoItem + idMenu;
 	}
 
 	/*
@@ -193,5 +174,17 @@ public class GestorRestaurantes {
 		} else {
 			return true;
 		}
+	}
+
+	private ItemMenu crearItem(String nombreItem, String tipoItem, double precio){
+		ItemMenu item;
+		if (tipoItem.equals("COMIDA")) {
+			item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
+		} else if (tipoItem.equals("BEBIDA")) {
+			item = new ItemMenu(nombreItem, TipoItemMenu.BEBIDA, precio);
+		} else {
+			item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);
+		}
+		return item;
 	}
 }
