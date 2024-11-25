@@ -4,7 +4,7 @@ import java.util.*;
 import jakarta.persistence.*;
 
 @Entity
-public class Repartidor extends Usuario {
+public class Repartidor {
 	
 	@Id
 	String idUsuario;
