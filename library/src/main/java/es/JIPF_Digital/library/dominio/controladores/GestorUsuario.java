@@ -119,7 +119,8 @@ public class GestorUsuario {
 				Direccion dir = new Direccion(codigoPostalRestaurante, calleRestaurante, numeroRestaurante,
 						complementoRestaurante, municipioRestaurante);
 				Restaurante restaurante = new Restaurante(usuario.getIdUsuario(), usuario.getNombre(),
-						usuario.getPass(), dir, cifRestaurante); restauranteDAO.save(restaurante);
+						usuario.getPass(), dir, cifRestaurante); 
+						restauranteDAO.save(restaurante);
 				break;
 			case 3:
 				Repartidor repartidor = new Repartidor(usuario.getIdUsuario(), usuario.getNombre(),

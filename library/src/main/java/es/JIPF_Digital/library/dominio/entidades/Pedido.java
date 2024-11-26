@@ -16,15 +16,14 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+
 
 @Entity
 public class Pedido {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id_pedido;
+	private Long idpedido;
 	@ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
 	private Cliente cliente;
@@ -52,12 +51,12 @@ public class Pedido {
 		
 	}
 
-	public Long getId_pedido() {
-		return id_pedido;
+	public Long getIdpedido() {
+		return idpedido;
 	}
 
-	public void setId_pedido(Long id_pedido) {
-		this.id_pedido = id_pedido;
+	public void setIdpedido(Long id_pedido) {
+		this.idpedido = id_pedido;
 	}
 
 	public Cliente getCliente() {
