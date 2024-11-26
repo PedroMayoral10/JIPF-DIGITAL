@@ -1,6 +1,5 @@
 package es.JIPF_Digital.library.dominio.entidades;
 
-import java.util.*;
 import jakarta.persistence.*;
 
 @Entity
@@ -21,7 +20,7 @@ public class ItemMenu {
     private double precio;
     
     @ManyToOne
-    @JoinColumn(name = "carta_menu_id")
+    @JoinColumn(name = "carta_menu_id", referencedColumnName = "id")
     private CartaMenu cartaMenu;
 
     public ItemMenu() {}

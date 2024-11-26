@@ -15,8 +15,9 @@ public class CartaMenu {
     private Restaurante restaurante;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "carta_menu_id")
+    @JoinColumn(name = "carta_menu_id", referencedColumnName = "id") // Define explícitamente la columna
     private Collection<ItemMenu> items = new ArrayList<>();
+    
 
     @Column
     private String nombre;
