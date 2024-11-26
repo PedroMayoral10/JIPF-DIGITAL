@@ -109,7 +109,7 @@ public class GestorUsuario {
 			@RequestParam(value = "rol", required = false) Integer rol,
 			Model model) {
 		System.out.println(rol);
-    	switch (rol) {
+		switch (rol) {
 			case 1:
 				Cliente cliente = new Cliente(usuario.getIdUsuario(), usuario.getNombre(), usuario.getPass(),
 						apellidosCliente, dniCliente);
@@ -119,8 +119,8 @@ public class GestorUsuario {
 				Direccion dir = new Direccion(codigoPostalRestaurante, calleRestaurante, numeroRestaurante,
 						complementoRestaurante, municipioRestaurante);
 				Restaurante restaurante = new Restaurante(usuario.getIdUsuario(), usuario.getNombre(),
-						usuario.getPass(), dir, cifRestaurante); 
-						restauranteDAO.save(restaurante);
+						usuario.getPass(), dir, cifRestaurante);
+				restauranteDAO.save(restaurante);
 				break;
 			case 3:
 				Repartidor repartidor = new Repartidor(usuario.getIdUsuario(), usuario.getNombre(),
