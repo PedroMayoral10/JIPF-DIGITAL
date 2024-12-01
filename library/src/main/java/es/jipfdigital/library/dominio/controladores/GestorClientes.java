@@ -33,7 +33,7 @@ public class GestorClientes {
     }
 
     @GetMapping("/listarestaurantes/{id}")
-    public String ListaRestaurante(Model model, @PathVariable("id") String idCliente) {
+    public String listaRestaurante(Model model, @PathVariable("id") String idCliente) {
         List<Restaurante> restaurantes;
         Cliente cliente = clienteDAO.findById(idCliente).orElse(null);
         restaurantes = restauranteDAO.findAll();
