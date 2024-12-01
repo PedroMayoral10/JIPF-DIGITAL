@@ -112,25 +112,40 @@ public class GestorUsuario {
 		System.out.println(rol);
 		switch (rol) {
 			case 1:
-				Cliente cliente = new Cliente(usuario.getIdUsuario(), usuario.getNombre(), usuario.getPass(),
-						apellidosCliente, dniCliente);
-				clienteDAO.save(cliente);
+				registrarCliente(usuario, apellidosCliente, dniCliente);
 				break;
 			case 2:
-				Direccion dir = new Direccion(codigoPostalRestaurante, calleRestaurante, numeroRestaurante,
-						complementoRestaurante, municipioRestaurante);
-				Restaurante restaurante = new Restaurante(usuario.getIdUsuario(), usuario.getNombre(),
-						usuario.getPass(), dir, cifRestaurante);
-				restauranteDAO.save(restaurante);
+				registrarRestaurante(usuario, codigoPostalRestaurante, calleRestaurante, numeroRestaurante,
+						complementoRestaurante, municipioRestaurante, cifRestaurante);
 				break;
 			case 3:
-				Repartidor repartidor = new Repartidor(usuario.getIdUsuario(), usuario.getNombre(),
-						usuario.getPass(), apellidosRepartidor, nifRepartidor);
-				repartidorDAO.save(repartidor);
+				registrarRepartidor(usuario, apellidosRepartidor, nifRepartidor);
 				break;
 		}
 
 		return loginStr;
+	}
+
+	private void registrarCliente(Usuario usuario, String apellidosCliente, String dniCliente) {
+		Cliente cliente = new Cliente(usuario.getIdUsuario(), usuario.getNombre(), usuario.getPass(),
+				apellidosCliente, dniCliente);
+		clienteDAO.save(cliente);
+	}
+
+	private void registrarRestaurante(Usuario usuario, String codigoPostalRestaurante, String calleRestaurante,
+			String numeroRestaurante,
+			String complementoRestaurante, String municipioRestaurante, String cifRestaurante) {
+		Direccion dir = new Direccion(codigoPostalRestaurante, calleRestaurante, numeroRestaurante,
+				complementoRestaurante, municipioRestaurante);
+		Restaurante restaurante = new Restaurante(usuario.getIdUsuario(), usuario.getNombre(),
+				usuario.getPass(), dir, cifRestaurante);
+		restauranteDAO.save(restaurante);
+	}
+
+	private void registrarRepartidor(Usuario usuario, String apellidosRepartidor, String nifRepartidor) {
+		Repartidor repartidor = new Repartidor(usuario.getIdUsuario(), usuario.getNombre(),
+				usuario.getPass(), apellidosRepartidor, nifRepartidor);
+		repartidorDAO.save(repartidor);
 	}
 
 }
