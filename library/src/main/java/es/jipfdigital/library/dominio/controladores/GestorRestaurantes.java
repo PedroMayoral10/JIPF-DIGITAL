@@ -121,7 +121,7 @@ public class GestorRestaurantes {
 	}
 
 	@PostMapping("nuevoitem/{id}")
-	public String postAltaMenu(@PathVariable("id") Long idMenu,
+	public String postNuevoItem(@PathVariable("id") Long idMenu,
 			@RequestParam(value = "nombre", required = false) String nombreItem,
 			@RequestParam(value = "precio", required = false) Double precio,
 			@RequestParam(value = "tipo", required = false) String tipoItem,
