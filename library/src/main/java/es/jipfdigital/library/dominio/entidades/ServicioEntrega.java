@@ -63,4 +63,13 @@ public class ServicioEntrega {
 		this.fechaEntrega = fechaEntrega;
 	}
 	
+	public LocalDate getFechaRecepcion() {
+		return this.fechaRecepcion;
+	}
+	
+	public LocalDate getFechaEntrega() {
+		return this.fechaEntrega;
+	}
+	
+
 }
