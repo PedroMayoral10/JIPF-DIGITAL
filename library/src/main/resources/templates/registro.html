@@ -78,6 +78,14 @@
         .return-button:hover {
             background-color: #d9534f;
         }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+
     </style>
 
     <script>
@@ -104,6 +112,8 @@
 <body>
     <form action="#" th:action="@{/registro}" th:object="${usuario}" method="post">
         <h1>Registro</h1>
+        <div th:if="${rolNulo != null}" class="error-message" th:text="${rolNulo}"></div>
+        <div th:if="${error != null}" class="error-message" th:text="${error}"></div>
 
         <!-- Campo de selección para el tipo de usuario -->
         <p>

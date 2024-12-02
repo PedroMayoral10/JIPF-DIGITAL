@@ -49,6 +49,10 @@ public class Repartidor {
 	public void setIdUsuario(String idUsuario) {
 		this.idUsuario = idUsuario;
 	}
+
+	public void setServicios(Collection<ServicioEntrega> servicios) {
+        this.servicios = servicios;
+    }
 	
 	public String getPass() {
 		return pass;
