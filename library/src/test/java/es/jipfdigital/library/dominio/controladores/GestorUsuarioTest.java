@@ -1,5 +1,6 @@
 package es.jipfdigital.library.dominio.controladores;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,8 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 
-import es.jipfdigital.library.dominio.entidades.Cliente;
-import es.jipfdigital.library.dominio.entidades.Usuario;
+import es.jipfdigital.library.dominio.entidades.*;
 import es.jipfdigital.library.persistencia.ClienteDAO;
 import es.jipfdigital.library.persistencia.RepartidorDAO;
 import es.jipfdigital.library.persistencia.RestauranteDAO;
@@ -19,6 +19,7 @@ import es.jipfdigital.library.persistencia.RestauranteDAO;
 import java.util.Optional;
 
 public class GestorUsuarioTest {
+
     @Mock
     private ClienteDAO clienteDAO;
 
@@ -66,7 +67,6 @@ public class GestorUsuarioTest {
         when(restauranteDAO.findById("usuario2")).thenReturn(Optional.empty());
         when(repartidorDAO.findById("usuario2")).thenReturn(Optional.empty());
 
-
         String result = gestorUsuario.loginSubmit(usuario, model);
 
         assertEquals("login", result);
@@ -74,7 +74,7 @@ public class GestorUsuarioTest {
     }
 
     @Test
-    void testloginSubmitUsuarioNulo() {
+    void testLoginSubmitUsuarioNulo() {
         Model model = new ConcurrentModel();
         Usuario usuario = null;
 
@@ -107,6 +107,7 @@ public class GestorUsuarioTest {
         String result = gestorUsuario.registroSubmit(
                 usuario, "Fernández", "23405234", null, null, null, null, null, null, null, null, 1, model);
 
+        verify(clienteDAO, times(1)).save(any(Cliente.class));
         assertEquals("login", result);
     }
 
@@ -119,11 +120,11 @@ public class GestorUsuarioTest {
         usuario.setPass("test");
         Model model = new ConcurrentModel();
 
-  
         String result = gestorUsuario.registroSubmit(
-                usuario, null, null, "3459345394", "45677", "Jacinto Benavente", "3", "Bajo", "Madrid", null, null, 2, model);
+                usuario, null, null, "3459345394", "45677", "Jacinto Benavente", "3", "Bajo", "Madrid", null, null, 2,
+                model);
 
-
+        verify(restauranteDAO, times(1)).save(any(Restaurante.class));
         assertEquals("login", result);
     }
 
@@ -138,12 +139,8 @@ public class GestorUsuarioTest {
         String result = gestorUsuario.registroSubmit(
                 usuario, null, null, null, null, null, null, null, null, "López", "45346394", 3, model);
 
-
+        verify(repartidorDAO, times(1)).save(any(Repartidor.class));
         assertEquals("login", result);
     }
-
-
-
-
 
 }

@@ -21,19 +21,19 @@ import java.util.Optional;
 
 @Controller
 public class GestorUsuario {
-
-	@Autowired
-	private ClienteDAO clienteDAO;
-	@Autowired
-	private RestauranteDAO restauranteDAO;
-	@Autowired
-	private RepartidorDAO repartidorDAO;
 	private static final String USUARIO_STR = "usuario";
 	private static final String LOGIN_STR = "login";
 	private static final String REGISTRO_STR = "registro";
 	private static final String ERROR_STR = "error";
 	private static final String CONTRASENA_STR = "Contraseña incorrecta, pruebe otra vez";
 	private static final String RELLENA_CAMPOS = "Rellena todos los campos";
+	@Autowired
+	private ClienteDAO clienteDAO;
+	@Autowired
+	private RestauranteDAO restauranteDAO;
+	@Autowired
+	private RepartidorDAO repartidorDAO;
+	
 
 	/*
 	 * GETMAPPINGS
@@ -53,7 +53,7 @@ public class GestorUsuario {
 	@GetMapping("/registro")
 	public String registroForm(Model model) {
 		model.addAttribute(USUARIO_STR, new Usuario());
-		return "registro";
+		return REGISTRO_STR;
 	}
 
 	/*
@@ -134,7 +134,7 @@ public class GestorUsuario {
 				break;
 			default:
 				model.addAttribute("rolNulo", "Ingresa un tipo de usuario");
-				return "registro";
+				return REGISTRO_STR;
 		}
 
 		return LOGIN_STR;
@@ -147,7 +147,7 @@ public class GestorUsuario {
 			clienteDAO.save(cliente);
 			return 1;
 		} else {
-			model.addAttribute(ERROR_STR, "Rellena todos los campos");
+			model.addAttribute(ERROR_STR, RELLENA_CAMPOS);
 			return 0;
 		}
 
@@ -169,7 +169,7 @@ public class GestorUsuario {
 			restauranteDAO.save(restaurante);
 			return 1;
 		} else {
-			model.addAttribute(ERROR_STR, "Rellena todos los campos");
+			model.addAttribute(ERROR_STR, RELLENA_CAMPOS);
 			return 0;
 		}
 
@@ -183,7 +183,7 @@ public class GestorUsuario {
 			repartidorDAO.save(repartidor);
 			return 1;
 		}else{
-			model.addAttribute(ERROR_STR, "Rellena todos los campos");
+			model.addAttribute(ERROR_STR, RELLENA_CAMPOS);
 			return 0;
 		}
 
