@@ -162,7 +162,7 @@ public class GestorPedidos {
 		return "redirect:/confirmacionpago/" + idCliente;
 	}
 
-	private List<ItemMenu> obtenerItems(Map<String, String> params) {
+	public List<ItemMenu> obtenerItems(Map<String, String> params) {
 
 		int index = 0;
 		while (params.containsKey("id" + index)) {

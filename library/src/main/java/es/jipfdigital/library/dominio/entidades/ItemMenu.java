@@ -76,5 +76,9 @@ public class ItemMenu {
                 ", precio=" + precio +
                 '}';
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }
 
