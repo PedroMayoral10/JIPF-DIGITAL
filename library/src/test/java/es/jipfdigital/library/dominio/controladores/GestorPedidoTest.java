@@ -78,7 +78,7 @@ class GestorPedidoTestTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    void testDetalleRestaurante_CP1() {
+    void testDetalleRestauranteCP1() {
 
         String idCliente = "123";
         String idRestaurante = "456";
@@ -100,7 +100,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testDetalleRestaurante_CP2() {
+    void testDetalleRestauranteCP2() {
 
         String idCliente = "123";
         String idRestaurante = "456";
@@ -127,7 +127,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    public void testSubmitPago_CP1() {
+    public void testSubmitPagoCP1() {
 
         String idCliente = "12345";
         String idRestaurante = "67890";
@@ -161,7 +161,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    public void testSubmitPago_CP2() {
+    public void testSubmitPagoCP2() {
 
         // Parametros de entrada (caso CP2)
         String idCliente = "54321";
@@ -193,7 +193,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testRealizarPago_CP1() {
+    void testRealizarPagoCP1() {
 
         Map<String, String> params = new HashMap<>();
         String idCliente = "123";
@@ -210,7 +210,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testRealizarPago_CP2() {
+    void testRealizarPagoCP2() {
         // Mock de los items pedidos
         ItemMenu item1 = new ItemMenu();
         item1.setId(1L);
