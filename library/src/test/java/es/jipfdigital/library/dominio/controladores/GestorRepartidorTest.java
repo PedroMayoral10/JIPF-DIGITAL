@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
-
-
 class GestorRepartidorTest {
 
 	@Mock
