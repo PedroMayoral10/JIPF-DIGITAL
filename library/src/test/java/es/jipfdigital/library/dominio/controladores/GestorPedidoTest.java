@@ -67,11 +67,10 @@ class GestorPedidoTestTest {
     private MetodoPago metodoPago;
     @Mock
     private Pedido pedido;
-    @Mock
-    private GestorPedidos gestorPedidos;
+    
 
     @InjectMocks
-    private GestorPedidos GestorPedidos;
+    private GestorPedidos gestorPedidos;
 
     @BeforeEach
     void setUp() {
@@ -87,7 +86,7 @@ class GestorPedidoTestTest {
         when(clienteDAO.findById(idCliente)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(NoSuchElementException.class, () -> {
-            GestorPedidos.detalleRestaurante(idCliente, idRestaurante, model);
+            gestorPedidos.detalleRestaurante(idCliente, idRestaurante, model);
         });
 
         assertEquals("Restaurante o Cliente no encontrado", exception.getMessage());
@@ -113,7 +112,7 @@ class GestorPedidoTestTest {
         when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(mockCliente));
         when(cartamenuDAO.findAllByRestauranteId(idRestaurante)).thenReturn(mockMenus);
 
-        String viewName = GestorPedidos.detalleRestaurante(idCliente, idRestaurante, model);
+        String viewName = gestorPedidos.detalleRestaurante(idCliente, idRestaurante, model);
 
         assertEquals("realizarpedido", viewName);
 
@@ -132,7 +131,7 @@ class GestorPedidoTestTest {
         String idCliente = "12345";
         String idRestaurante = "67890";
         String codigoPostal = "45600";
-        String tipo = "PayPal";
+      
         String calle = "Calle Alcatraz";
         String numero = "98";
         String complemento = "A";
@@ -140,7 +139,7 @@ class GestorPedidoTestTest {
 
         Restaurante restaurante = new Restaurante();
         Cliente cliente = new Cliente();
-        LocalDate fechaTransaccion = LocalDate.now();
+       
 
         Repartidor repartidor = new Repartidor();
         repartidor.setServicios(new ArrayList<>());
@@ -150,7 +149,7 @@ class GestorPedidoTestTest {
         when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor));
 
         // Llamada al método
-        String resultado = GestorPedidos.submitPago(idCliente, idRestaurante, model,
+        String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
                 codigoPostal, MetodoPago.PAYPAL, calle, numero, complemento, municipio);
 
         // Verificaciones
@@ -183,7 +182,7 @@ class GestorPedidoTestTest {
         when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(cliente));
         when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor));
 
-        String resultado = GestorPedidos.submitPago(idCliente, idRestaurante, model,
+        String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
                 codigoPostal, MetodoPago.CREDIT_CARD, calle, numero, complemento, municipio);
 
         assertEquals("redirect:/confirmacionpago/" + idCliente, resultado);
@@ -199,7 +198,7 @@ class GestorPedidoTestTest {
         String idCliente = "123";
         String idRestaurante = "456";
 
-        String viewName = GestorPedidos.realizarPago(idCliente, idRestaurante, params, model);
+        String viewName = gestorPedidos.realizarPago(idCliente, idRestaurante, params, model);
 
         verify(model).addAttribute("itemsPedidos", Collections.emptyList());
         verify(model).addAttribute("idCliente", idCliente);
@@ -235,7 +234,7 @@ class GestorPedidoTestTest {
 
         Model model = new ConcurrentModel();
 
-        String result = GestorPedidos.realizarPago("cliente1", "restaurante1", params, model);
+        String result = gestorPedidos.realizarPago("cliente1", "restaurante1", params, model);
 
         assertEquals("realizarpago", result);
 
