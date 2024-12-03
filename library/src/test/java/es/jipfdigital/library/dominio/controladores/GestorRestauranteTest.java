@@ -103,6 +103,90 @@ public class GestorRestauranteTest {
             assertTrue(result.contains("/nuevoitem/"), "La URL de redirección no es la esperada.");
         }
 
+        public void testPostAltaMenu_CrearNuevoMenuConNuevoItem() {
+            // Preparar datos de entrada
+            String idRestaurante = "1";
+            String nombreMenu = "Menu Especial";
+            String nombreItem = "Ensalada";
+            Double precio = 12.5;
+            String tipoItem = "Entrante";
+    
+            // Simulamos que el restaurante existe
+            Restaurante restaurante = new Restaurante();
+            restaurante.setIdUsuario(idRestaurante);
+            when(restauranteDAO.getById(idRestaurante)).thenReturn(restaurante);
+            
+            // Simular que no existe el menú
+            when(cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante)).thenReturn(null);
+    
+            // Simular el comportamiento de la creación del menú
+            CartaMenu cartaMenu = new CartaMenu();
+            cartaMenu.setId(1001l);
+            when(cartamenuDAO.save(any(CartaMenu.class))).thenReturn(cartaMenu);
+    
+            // Llamar al método
+            String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, tipoItem, redirectAttributes);
+    
+            // Verificaciones
+            assertEquals("redirect:/nuevoItem/1001", result);
+            verify(cartamenuDAO).save(any(CartaMenu.class));
+            verify(redirectAttributes).addFlashAttribute("success", "El menú se ha creado correctamente.");
+        }
+    
+        @Test
+        public void testPostAltaMenu_AgregarItemAUnMenuExistente() {
+            String idRestaurante = "1";
+            String nombreMenu = "Menu Especial";
+            String nombreItem = "Ensalada";
+            Double precio = 12.5;
+            String tipoItem = "Entrante";
+
+            // Simulamos que el restaurante existe
+            Restaurante restaurante = new Restaurante();
+            restaurante.setIdUsuario(idRestaurante);
+            when(restauranteDAO.getById(idRestaurante)).thenReturn(restaurante);
+
+            // Simular que el menú ya existe
+            CartaMenu cartaMenuExistente = new CartaMenu();
+            cartaMenuExistente.setId(1001L);
+            when(cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante)).thenReturn(cartaMenuExistente);
+
+            // Simular que el item se agrega correctamente
+            ItemMenu itemMenu = new ItemMenu();
+            when(cartamenuDAO.save(any(CartaMenu.class))).thenReturn(cartaMenuExistente);
+
+            // Llamar al método
+            String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, tipoItem, redirectAttributes);
+
+            // Verificaciones
+            assertEquals("redirect:/nuevoitem/1001", result); // Ajustado a minúsculas
+            verify(cartamenuDAO).save(any(CartaMenu.class));
+            verify(redirectAttributes).addFlashAttribute("success", "El item se ha creado correctamente.");
+    }
+        
+    
+        @Test
+        public void testPostAltaMenu_FaltanDatos() {
+            // Preparar datos de entrada con algunos valores nulos
+            String idRestaurante = "1";
+            String nombreMenu = "Menu Especial";
+            String nombreItem = null;  // Faltan los datos
+            Double precio = null;
+            String tipoItem = "Entrante";
+    
+            // Simular que el restaurante existe
+            Restaurante restaurante = new Restaurante();
+            restaurante.setIdUsuario(idRestaurante);
+            when(restauranteDAO.getById(idRestaurante)).thenReturn(restaurante);
+    
+            // Llamar al método
+            String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, tipoItem, redirectAttributes);
+    
+            // Verificaciones
+            assertEquals("redirect:/errorPage", result);
+            verify(redirectAttributes).addFlashAttribute("error", "Faltan datos obligatorios.");
+        }
+    
 
     @Test
     void testPostModMenuIdMenuNull() {
@@ -224,6 +308,7 @@ public class GestorRestauranteTest {
         Mockito.verify(redirectAttributes).addFlashAttribute("success", "Item añadido con exito");
         assertEquals("redirect:/nuevoitem/" + idMenu, result);
     }
+    
     }
 
     
