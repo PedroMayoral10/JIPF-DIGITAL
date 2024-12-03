@@ -81,8 +81,8 @@ public class GestorRestaurantes {
 			@RequestParam(value = "nombre", required = false) String nombreItem,
 			@RequestParam(value = "precio", required = false) Double precio,
 			@RequestParam(value = "tipo", required = false) String tipoItem, RedirectAttributes redirectAttributes) {
-			if (nombreMenu == null || nombreItem == null || precio == null) {
-					redirectAttributes.addFlashAttribute("error", "Faltan datos obligatorios.");
+        if (nombreMenu == null || nombreItem == null || precio == null) {
+            redirectAttributes.addFlashAttribute("error", "Faltan datos obligatorios.");
 					return "redirect:/errorPage"; // Redirige a la página de error si faltan datos
 				}
 		Restaurante restaurante = restauranteDAO.getById(idRestaurante);

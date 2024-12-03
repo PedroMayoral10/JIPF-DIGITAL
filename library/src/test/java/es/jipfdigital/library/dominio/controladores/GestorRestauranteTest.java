@@ -40,7 +40,7 @@ public class GestorRestauranteTest {
     }
     
     @Test
-    public void testPostAltaMenu_EsNull() {            
+    public void testPostAltaMenuEsNull() {            
             // Configurar mocks
             String idRestaurante = "123";
     when(restauranteDAO.getById(idRestaurante)).thenReturn(new Restaurante());
@@ -63,7 +63,7 @@ public class GestorRestauranteTest {
 }
 
     @Test
-    public void testPostAltaMenu_NuevoMenu() {
+    public void testPostAltaMenuNuevoMenu() {
             // Datos de entrada
             String idRestaurante = "1";
             String nombreMenu = "Menu Especial";

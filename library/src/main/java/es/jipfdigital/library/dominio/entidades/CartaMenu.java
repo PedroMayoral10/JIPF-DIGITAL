@@ -69,8 +69,8 @@ public class CartaMenu {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public void setId(long Id){
-        this.id=Id;
+    public void setId(long id){
+        this.id=id;
     }
     
     @Override
