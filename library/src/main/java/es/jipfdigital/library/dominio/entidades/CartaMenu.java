@@ -1,7 +1,17 @@
 package es.jipfdigital.library.dominio.entidades;
 
-import java.util.*;
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class CartaMenu {
@@ -58,6 +68,9 @@ public class CartaMenu {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+    public void setId(long Id){
+        this.id=Id;
     }
     
     @Override

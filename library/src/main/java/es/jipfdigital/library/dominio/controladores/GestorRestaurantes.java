@@ -81,7 +81,14 @@ public class GestorRestaurantes {
 			@RequestParam(value = "nombre", required = false) String nombreItem,
 			@RequestParam(value = "precio", required = false) Double precio,
 			@RequestParam(value = "tipo", required = false) String tipoItem, RedirectAttributes redirectAttributes) {
+			if (nombreMenu == null || nombreItem == null || precio == null) {
+					redirectAttributes.addFlashAttribute("error", "Faltan datos obligatorios.");
+					return "redirect:/errorPage"; // Redirige a la página de error si faltan datos
+				}
 		Restaurante restaurante = restauranteDAO.getById(idRestaurante);
+		if (precio == null) {
+			precio = 0.0;
+		}
 		if (!comprobarSiNoExiste(nombreMenu, idRestaurante)) {
 			CartaMenu cartamenu = cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante);
 			ItemMenu item = crearItem(nombreItem, tipoItem, precio);
@@ -176,7 +183,10 @@ public class GestorRestaurantes {
 		}
 	}
 
-	private ItemMenu crearItem(String nombreItem, String tipoItem, double precio){
+	private ItemMenu crearItem(String nombreItem, String tipoItem, Double precio){
+		if (precio == null) {
+			precio = 0.0;
+		}
 		ItemMenu item;
 		if (tipoItem.equals("COMIDA")) {
 			item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);
