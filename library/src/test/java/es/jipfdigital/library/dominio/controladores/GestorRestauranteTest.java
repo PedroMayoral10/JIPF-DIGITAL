@@ -1,6 +1,11 @@
 package es.jipfdigital.library.dominio.controladores;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,20 +15,26 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
+import org.springframework.ui.ConcurrentModel;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import es.jipfdigital.library.dominio.entidades.CartaMenu;
+import es.jipfdigital.library.dominio.entidades.ItemMenu;
 import es.jipfdigital.library.dominio.entidades.Restaurante;
+import es.jipfdigital.library.dominio.entidades.TipoItemMenu;
 import es.jipfdigital.library.persistencia.CartaMenuDAO;
 import es.jipfdigital.library.persistencia.RestauranteDAO;
 
 public class GestorRestauranteTest {
     @InjectMocks
-    private GestorRestaurantes menuRestaurante; // Clase donde está el método `postAltaMenu`
+    private GestorRestaurantes menuController; 
 
     @Mock
     private RestauranteDAO restauranteDAO;
@@ -41,21 +52,21 @@ public class GestorRestauranteTest {
     
     @Test
     public void testPostAltaMenuEsNull() {            
-            // Configurar mocks
+            
             String idRestaurante = "123";
     when(restauranteDAO.getById(idRestaurante)).thenReturn(new Restaurante());
 
     // Ejecutar método
-    String result = menuRestaurante.postAltaMenu(
+    String result = menuController.postAltaMenu(
         idRestaurante,
-        null, // nombreMenu
-        null, // nombreItem
-        null, // precio
-        "COMIDA", // tipoItem
+        null, 
+        null, 
+        null, 
+        "COMIDA", 
         redirectAttributes
     );
 
-    // Verificar comportamiento esperado
+    
     verify(redirectAttributes).addFlashAttribute("error", "Faltan datos obligatorios.");
     assertEquals("redirect:/errorPage", result);
             
@@ -64,14 +75,14 @@ public class GestorRestauranteTest {
 
     @Test
     public void testPostAltaMenuNuevoMenu() {
-            // Datos de entrada
+            
             String idRestaurante = "1";
             String nombreMenu = "Menu Especial";
             String nombreItem = "Plato Fuerte";
             Double precio = 25.0;
             String tipoItem = "COMIDA";
         
-            // Configurar el mock
+            
             Restaurante restaurante = new Restaurante();
             restaurante.setIdUsuario(idRestaurante);
         
@@ -80,18 +91,139 @@ public class GestorRestauranteTest {
             cartaMenuMock.setItems(new ArrayList<>());
             when(cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante)).thenReturn(cartaMenuMock);
             
-            // Ejecución del método
-            String result = menuRestaurante.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, tipoItem, redirectAttributes);
+            
+            String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, tipoItem, redirectAttributes);
         
-            // Verificaciones
+            
             verify(restauranteDAO).getById(idRestaurante);
             verify(cartamenuDAO, times(1)).save(any(CartaMenu.class));  // Solo se debe llamar una vez
             verify(redirectAttributes).addFlashAttribute(eq("success"), anyString());
         
-            // Comprobar resultado
-            // Verificar que el resultado contiene la URL de redirección correcta
+            
             assertTrue(result.contains("/nuevoitem/"), "La URL de redirección no es la esperada.");
         }
+
+
+    @Test
+    void testPostModMenuIdMenuNull() {
+        
+        String idRestaurante = "1";
+        Long idMenu = null;
+        Model model = new ConcurrentModel();
+
+        
+        String resultado = menuController.postModMenu(idRestaurante, idMenu, model, redirectAttributes);
+
+        
+        
+        assertEquals("redirect:/modificarmenu/" + idRestaurante, resultado);
+        verify(redirectAttributes).addFlashAttribute("error", "ID del menú no proporcionado");
+    }
+
+    @Test
+    void testPostModMenuIdMenuNoNuloYCartaMenuCompleto() {
+       
+    String idRestaurante = "1";
+    Long idMenu = 100L;
+    CartaMenu cartamenuMock = new CartaMenu();
+    Model model = new ConcurrentModel();
+    cartamenuMock.setId(idMenu);
+
+    
+    Set<ItemMenu> items = new HashSet<>();
+
+    
+    ItemMenu item1 = new ItemMenu("Item 1", TipoItemMenu.BEBIDA, 5.0);
+    ItemMenu item2 = new ItemMenu("Item 2", TipoItemMenu.COMIDA, 10.0);
+
+    items.add(item1);
+    items.add(item2);
+    
+    cartamenuMock.setItems(items);
+
+    List<CartaMenu> menusMock = List.of(cartamenuMock);
+
+    
+    when(cartamenuDAO.findById(idMenu)).thenReturn(Optional.of(cartamenuMock));
+    when(cartamenuDAO.findAll()).thenReturn(menusMock);
+
+    
+    String resultado = menuController.postModMenu(idRestaurante, idMenu, model, redirectAttributes);
+
+    
+    assertEquals("redirect:/modificarmenu/" + idRestaurante, resultado);
+
+    
+    verify(cartamenuDAO).findById(idMenu);
+    verify(cartamenuDAO).findAll();
+    verify(redirectAttributes).addFlashAttribute("items", cartamenuMock.getItems());
+    verify(redirectAttributes).addFlashAttribute("menus", menusMock);
+    verify(redirectAttributes).addFlashAttribute("menu_seleccionado", idMenu);
+    }
+
+        @Test
+        void testPostModMenuIdMenuCompletolYCartaMenuVacio() {
+           
+            String idRestaurante = "1";
+            Long idMenu = 101L;
+            Model model = new ConcurrentModel();
+            CartaMenu cartamenuMock = new CartaMenu();
+            cartamenuMock.setId(idMenu);
+            cartamenuMock.setItems(Collections.emptyList());
+
+            List<CartaMenu> menusMock = List.of(cartamenuMock);
+
+            
+            when(cartamenuDAO.findById(idMenu)).thenReturn(Optional.of(cartamenuMock));
+            when(cartamenuDAO.findAll()).thenReturn(menusMock);
+
+            
+            String resultado = menuController.postModMenu(idRestaurante, idMenu, model, redirectAttributes);
+
+            
+            assertEquals("redirect:/modificarmenu/" + idRestaurante, resultado);
+
+            
+            verify(cartamenuDAO).findById(idMenu);
+            verify(cartamenuDAO).findAll();
+            verify(redirectAttributes, never()).addFlashAttribute(eq("items"), any());
+            verify(redirectAttributes).addFlashAttribute("menus", menusMock);
+            verify(redirectAttributes).addFlashAttribute("menu_seleccionado", idMenu);
+     }
+
+
+     @Test
+    void testPostNuevoItemVacio() {
+        
+        String tipoItem = "COMIDA";
+        Model model = new ConcurrentModel();
+        String result = menuController.postNuevoItem(null, null, null, tipoItem, redirectAttributes, model);
+
+        Mockito.verify(redirectAttributes).addFlashAttribute(Mockito.eq("error"), Mockito.anyString());
+        assertEquals("redirect:/error", result);
+    }
+
+    @Test
+    void testPostNuevoItemCompleto() {
+        Long idMenu = 1L;
+        String nombreItem = "Pizza";
+        Double precio = 12.50;
+        String tipoItem = "COMIDA";
+        Model model = new ConcurrentModel();
+        
+        CartaMenu mockMenu = new CartaMenu();
+        Mockito.when(cartamenuDAO.findById(idMenu)).thenReturn(Optional.of(mockMenu));
+        Mockito.when(cartamenuDAO.save(Mockito.any(CartaMenu.class))).thenReturn(mockMenu);
+
+        
+        String result = menuController.postNuevoItem(idMenu, nombreItem, precio, tipoItem, redirectAttributes, model);
+
+        
+        Mockito.verify(cartamenuDAO).findById(idMenu);
+        Mockito.verify(cartamenuDAO).save(mockMenu);
+        Mockito.verify(redirectAttributes).addFlashAttribute("success", "Item añadido con exito");
+        assertEquals("redirect:/nuevoitem/" + idMenu, result);
+    }
     }
 
     
