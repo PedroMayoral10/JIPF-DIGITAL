@@ -149,7 +149,7 @@ public class GestorRestauranteTest {
     }
 
     @Test
-    public void testPostAltaMenu_AgregarItemAUnMenuExistente() {
+    public void testPostAltaMenuAgregarItemAUnMenuExistente() {
         String idRestaurante = "1";
         String nombreMenu = "Menu Especial";
         String nombreItem = "Ensalada";
@@ -181,7 +181,7 @@ public class GestorRestauranteTest {
     }
 
     @Test
-    public void testPostAltaMenu_FaltanDatos() {
+    public void testPostAltaMenuFaltanDatos() {
         // Preparar datos de entrada con algunos valores nulos
         String idRestaurante = "1";
         String nombreMenu = "Menu Especial";
@@ -309,7 +309,7 @@ public class GestorRestauranteTest {
     }
 
     @Test
-    public void deleteItemItemExistss() throws Exception {
+    public void deleteItemExiste() throws Exception {
 
         Long itemId = 1L;
         ItemMenu mockItem = new ItemMenu(); // Asume que tienes un objeto ItemMenu
@@ -322,7 +322,7 @@ public class GestorRestauranteTest {
 
     // Intentar eliminar un elemento inexistente
     @Test
-    public void deleteItemItemNoExiste() throws Exception {
+    public void deleteItemNoExiste() throws Exception {
         // Arrange
         Long itemId = 1L;
         when(itemDAO.findById(itemId)).thenReturn(Optional.empty());
@@ -336,8 +336,8 @@ public class GestorRestauranteTest {
     }
 
     @Test
-    void testDeleteMenuWithItems() {
-        // El menuId existe y contiene elementos
+    void testDeleteMenuConItems() {
+        
         Long menuId = 1L;
 
         CartaMenu mockMenu = new CartaMenu();
@@ -357,7 +357,7 @@ public class GestorRestauranteTest {
     }
 
     @Test
-    void testDeleteMenuWithoutItems() {
+    void testDeleteMenuSinItems() {
 
         Long menuId = 2L;
 
@@ -375,7 +375,7 @@ public class GestorRestauranteTest {
     }
 
     @Test
-    void testDeleteMenuNotFound() {
+    void testDeleteMenuNoEncontrado() {
         // El menuId no existe
         Long menuId = 3L;
 
@@ -391,7 +391,7 @@ public class GestorRestauranteTest {
     // TEST de los Getmapping
     // Restaurante existe
     @Test
-    public void testMenuRestauranteElRestauranteExiste() {
+    public void testMenuRestauranteExiste() {
 
         String idRestaurante = "123";
         Restaurante mockRestaurante = new Restaurante();
@@ -406,7 +406,7 @@ public class GestorRestauranteTest {
 
     // Restaurante no existe
     @Test
-    public void testMenuRestauranteElRestauranteNoExiste() {
+    public void testMenuRestauranteNoExiste() {
 
         String idRestaurante = "123";
         Model model = new ConcurrentModel();
