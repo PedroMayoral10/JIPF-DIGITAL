@@ -2,6 +2,8 @@ package es.jipfdigital.library.dominio.controladores;
 
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -67,7 +69,6 @@ class GestorPedidoTestTest {
     private MetodoPago metodoPago;
     @Mock
     private Pedido pedido;
-    
 
     @InjectMocks
     private GestorPedidos gestorPedidos;
@@ -131,7 +132,7 @@ class GestorPedidoTestTest {
         String idCliente = "12345";
         String idRestaurante = "67890";
         String codigoPostal = "45600";
-      
+
         String calle = "Calle Alcatraz";
         String numero = "98";
         String complemento = "A";
@@ -139,7 +140,6 @@ class GestorPedidoTestTest {
 
         Restaurante restaurante = new Restaurante();
         Cliente cliente = new Cliente();
-       
 
         Repartidor repartidor = new Repartidor();
         repartidor.setServicios(new ArrayList<>());
@@ -249,4 +249,64 @@ class GestorPedidoTestTest {
         assertNotNull(precioTotal);
         assertEquals(15.0, precioTotal, 0.01);
     }
+
+    @Test
+    void testProcesarPedidoCP1() {
+
+        String idCliente = "123";
+        String idRestaurante = "restaurante1";
+        Long idMenu = 1L;
+
+        Direccion direccion = new Direccion("28001", "Calle Falsa", "123", "Apartamento 1A", "Madrid");
+
+        Restaurante restaurante = new Restaurante(idRestaurante, "Restaurante de Prueba", "pass123", direccion,
+                "CIF12345");
+
+        ItemMenu item1 = new ItemMenu();
+        item1.setId(1L);
+        item1.setNombre("Pizza");
+        item1.setPrecio(8.50);
+
+        ItemMenu item2 = new ItemMenu();
+        item2.setId(2L);
+        item2.setNombre("Pasta");
+        item2.setPrecio(7.50);
+
+        CartaMenu cartaMenu = new CartaMenu(restaurante, "Menú Especial");
+        cartaMenu.setId(idMenu);
+        cartaMenu.setItems(List.of(item1, item2));
+        restaurante.setCartasMenu(List.of(cartaMenu));
+
+        List<CartaMenu> menus = List.of(cartaMenu);
+        when(cartamenuDAO.findById(idMenu)).thenReturn(Optional.of(cartaMenu));
+        when(cartamenuDAO.findAll()).thenReturn(menus);
+
+        RedirectAttributes flashAttributes = mock(RedirectAttributes.class);
+
+        String result = gestorPedidos.procesarPedido(idCliente, idRestaurante, new ConcurrentModel(), idMenu,
+                flashAttributes);
+
+        assertEquals("redirect:/realizarpedido/123/restaurante1", result);
+        verify(flashAttributes).addFlashAttribute("items", cartaMenu.getItems());
+        verify(flashAttributes).addFlashAttribute("menus", menus);
+        verify(flashAttributes).addFlashAttribute("menu_seleccionado", idMenu);
+    }
+
+    @Test
+    void testProcesarPedidoCP2() {
+
+        String idCliente = "123";
+        String idRestaurante = "456";
+        Long idMenu = null;
+        RedirectAttributes flashAttributes = mock(RedirectAttributes.class);
+
+        when(cartamenuDAO.findById(idMenu)).thenThrow(new IllegalArgumentException("El idMenu no puede ser nulo"));
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            gestorPedidos.procesarPedido(idCliente, idRestaurante, new ConcurrentModel(), idMenu, flashAttributes);
+        });
+
+        assertEquals("El idMenu no puede ser nulo", exception.getMessage());
+    }
+
 }
