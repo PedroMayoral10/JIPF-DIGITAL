@@ -38,7 +38,7 @@ public class GestorUsuarioTest {
     }
 
     @Test
-    void testLoginSubmitUsuarioExistente() {
+    void testLoginSubmitClienteExistente() {
         Model model = new ConcurrentModel();
         Usuario usuario = new Usuario();
         usuario.setIdUsuario("usuario1");
@@ -53,6 +53,43 @@ public class GestorUsuarioTest {
         String result = gestorUsuario.loginSubmit(usuario, model);
 
         assertEquals("redirect:/menucliente/usuario1", result);
+    }
+
+    @Test
+    void testLoginSubmitRestauranteExistente() {
+        Model model = new ConcurrentModel();
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario("usuario1");
+        usuario.setNombre("usuario1");
+        usuario.setPass("password123");
+        Direccion direccion = new Direccion("12345","Calle","2","nada","test");
+        Restaurante restaurante = new Restaurante("usuario1", "usuario1", "password123", direccion, "123456");
+        
+        when(clienteDAO.findById("usuario1")).thenReturn(Optional.empty());
+        when(restauranteDAO.findById("usuario1")).thenReturn(Optional.of(restaurante));
+        when(repartidorDAO.findById("usuario1")).thenReturn(Optional.empty());
+
+        String result = gestorUsuario.loginSubmit(usuario, model);
+
+        assertEquals("redirect:/menurestaurante/usuario1", result);
+    }
+
+    @Test
+    void testLoginSubmitRepartidorExistente() {
+        Model model = new ConcurrentModel();
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario("usuario1");
+        usuario.setNombre("usuario1");
+        usuario.setPass("password123");
+        Repartidor repartidor = new Repartidor("usuario1", "usuario1", "password123", "apellidos", "123456");
+        
+        when(clienteDAO.findById("usuario1")).thenReturn(Optional.empty());
+        when(restauranteDAO.findById("usuario1")).thenReturn(Optional.empty());
+        when(repartidorDAO.findById("usuario1")).thenReturn(Optional.of(repartidor));
+
+        String result = gestorUsuario.loginSubmit(usuario, model);
+
+        assertEquals("redirect:/menurepartidor/usuario1", result);
     }
 
     @Test
