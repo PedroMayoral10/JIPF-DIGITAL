@@ -42,20 +42,31 @@ public class GestorRestaurantes {
 
 	@GetMapping("menurestaurante/{id}")
 	public String MenuRestaurante(@PathVariable("id") String idRestaurante, Model model) {
-		Restaurante restaurante = restauranteDAO.findById(idRestaurante).get();
-		model.addAttribute(restaurante);
+		Optional <Restaurante> restauranteOptional = restauranteDAO.findById(idRestaurante);
+		if(restauranteOptional.isPresent()){
+		model.addAttribute(restauranteOptional.get());
 		return "menurestaurante";
+		}else{
+			throw new IllegalArgumentException("Restaurante no encontrado");
+		}
 	}
 
 	@GetMapping("altamenu/{id}")
 	public String darAltaMenu(@PathVariable("id") String idRestaurante, Model model) {
-		Restaurante restaurante = restauranteDAO.findById(idRestaurante).get();
+		Optional <Restaurante> restauranteOptional = restauranteDAO.findById(idRestaurante);
+		if(restauranteOptional.isEmpty()){
+			return "error"; 
+		}
+		Restaurante restaurante = restauranteOptional.get();
 		model.addAttribute(restaurante);
 		return "altamenu";
 	}
 
 	@GetMapping("modificarmenu/{id}")
 	public String modificarMenu(@PathVariable("id") String idRestaurante, Model model) {
+		if(idRestaurante == null || idRestaurante.trim().isEmpty()){
+			throw new IllegalArgumentException("El ID del restaurante no puede estar vacio");
+		}
 		// Obtener todos los menús del restaurante por su ID, incluyendo los ítems
 		List<CartaMenu> menus = cartamenuDAO.findAllByRestauranteId(idRestaurante);
 		model.addAttribute("menus", menus);
@@ -167,9 +178,9 @@ public class GestorRestaurantes {
 
 	@DeleteMapping("/eliminaritem/{itemId}")
 	public ResponseEntity<Void> deleteItem(@PathVariable("itemId") Long itemId) {
-		ItemMenu item = itemDAO.findById(itemId).get();
-		if (item != null) {
-			itemDAO.delete(item);
+		Optional <ItemMenu> item = itemDAO.findById(itemId);
+		if (item.isPresent()) {
+			itemDAO.delete(item.get());
 			return ResponseEntity.ok().build(); // Responde con 200 OK si se eliminó correctamente
 		} else {
 			return ResponseEntity.notFound().build(); 
@@ -178,8 +189,9 @@ public class GestorRestaurantes {
 	
 	@DeleteMapping("/eliminarmenu/{menuId}")
 	public ResponseEntity<Void> deleteMenu(@PathVariable("menuId") Long menuId) {
-		CartaMenu menu = cartamenuDAO.findById(menuId).get();
-		if (menu != null) {
+		Optional <CartaMenu> Optionalmenu = cartamenuDAO.findById(menuId);
+		if (Optionalmenu.isPresent()) {
+			CartaMenu menu = Optionalmenu.get();
 			Collection <ItemMenu> items = menu.getItems();
 			for (ItemMenu item : items) {
 				itemDAO.delete(item);
