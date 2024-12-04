@@ -41,55 +41,74 @@ public class GestorUsuarioTest {
     void testLoginSubmitClienteExistente() {
         Model model = new ConcurrentModel();
         Usuario usuario = new Usuario();
-        usuario.setIdUsuario("usuario1");
+        usuario.setIdUsuario("cliente");
         usuario.setNombre("usuario1");
         usuario.setPass("password123");
-        Cliente cliente = new Cliente("usuario1", "usuario1", "password123", "apellidos", "12345678A");
+        Cliente cliente = new Cliente("cliente", "usuario1", "password123", "apellidos", "12345678A");
 
-        when(clienteDAO.findById("usuario1")).thenReturn(Optional.of(cliente));
-        when(restauranteDAO.findById("usuario1")).thenReturn(Optional.empty());
-        when(repartidorDAO.findById("usuario1")).thenReturn(Optional.empty());
+        when(clienteDAO.findById("cliente")).thenReturn(Optional.of(cliente));
+        when(restauranteDAO.findById("cliente")).thenReturn(Optional.empty());
+        when(repartidorDAO.findById("cliente")).thenReturn(Optional.empty());
 
         String result = gestorUsuario.loginSubmit(usuario, model);
 
-        assertEquals("redirect:/menucliente/usuario1", result);
+        assertEquals("redirect:/menucliente/cliente", result);
     }
 
     @Test
     void testLoginSubmitRestauranteExistente() {
         Model model = new ConcurrentModel();
         Usuario usuario = new Usuario();
-        usuario.setIdUsuario("usuario1");
+        usuario.setIdUsuario("restaurante");
         usuario.setNombre("usuario1");
         usuario.setPass("password123");
         Direccion direccion = new Direccion("12345","Calle","2","nada","test");
-        Restaurante restaurante = new Restaurante("usuario1", "usuario1", "password123", direccion, "123456");
+        Restaurante restaurante = new Restaurante("restaurante", "usuario1", "password123", direccion, "123456");
         
-        when(clienteDAO.findById("usuario1")).thenReturn(Optional.empty());
-        when(restauranteDAO.findById("usuario1")).thenReturn(Optional.of(restaurante));
-        when(repartidorDAO.findById("usuario1")).thenReturn(Optional.empty());
+        when(clienteDAO.findById("restaurante")).thenReturn(Optional.empty());
+        when(restauranteDAO.findById("restaurante")).thenReturn(Optional.of(restaurante));
+        when(repartidorDAO.findById("restaurante")).thenReturn(Optional.empty());
 
         String result = gestorUsuario.loginSubmit(usuario, model);
 
-        assertEquals("redirect:/menurestaurante/usuario1", result);
+        assertEquals("redirect:/menurestaurante/restaurante", result);
     }
 
     @Test
     void testLoginSubmitRepartidorExistente() {
         Model model = new ConcurrentModel();
         Usuario usuario = new Usuario();
-        usuario.setIdUsuario("usuario1");
+        usuario.setIdUsuario("repartidor");
         usuario.setNombre("usuario1");
         usuario.setPass("password123");
-        Repartidor repartidor = new Repartidor("usuario1", "usuario1", "password123", "apellidos", "123456");
+        Repartidor repartidor = new Repartidor("repartidor", "usuario1", "password123", "apellidos", "123456");
         
-        when(clienteDAO.findById("usuario1")).thenReturn(Optional.empty());
-        when(restauranteDAO.findById("usuario1")).thenReturn(Optional.empty());
-        when(repartidorDAO.findById("usuario1")).thenReturn(Optional.of(repartidor));
+        when(clienteDAO.findById("repartidor")).thenReturn(Optional.empty());
+        when(restauranteDAO.findById("repartidor")).thenReturn(Optional.empty());
+        when(repartidorDAO.findById("repartidor")).thenReturn(Optional.of(repartidor));
 
         String result = gestorUsuario.loginSubmit(usuario, model);
 
-        assertEquals("redirect:/menurepartidor/usuario1", result);
+        assertEquals("redirect:/menurepartidor/repartidor", result);
+    }
+
+    @Test
+    void testLoginSubmitContrasenaIncorrecta() {
+        Model model = new ConcurrentModel();
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario("cliente");
+        usuario.setNombre("usuario1");
+        usuario.setPass("incorrecta");
+        Cliente cliente = new Cliente("cliente", "usuario1", "password123", "apellidos", "12345678A");
+
+        when(clienteDAO.findById("cliente")).thenReturn(Optional.of(cliente));
+        when(restauranteDAO.findById("cliente")).thenReturn(Optional.empty());
+        when(repartidorDAO.findById("cliente")).thenReturn(Optional.empty());
+
+        String result = gestorUsuario.loginSubmit(usuario, model);
+
+        assertEquals("login", result);
+        assertEquals("Contraseña incorrecta, pruebe otra vez", model.getAttribute("error"));
     }
 
     @Test
