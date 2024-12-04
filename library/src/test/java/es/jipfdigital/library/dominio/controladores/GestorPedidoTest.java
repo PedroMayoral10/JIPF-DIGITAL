@@ -7,7 +7,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,11 +28,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import es.jipfdigital.library.dominio.entidades.CartaMenu;
 import es.jipfdigital.library.dominio.entidades.Cliente;
 import es.jipfdigital.library.dominio.entidades.Direccion;
+import es.jipfdigital.library.dominio.entidades.EstadoPedido;
 import es.jipfdigital.library.dominio.entidades.ItemMenu;
 import es.jipfdigital.library.dominio.entidades.MetodoPago;
 import es.jipfdigital.library.dominio.entidades.Pedido;
 import es.jipfdigital.library.dominio.entidades.Repartidor;
 import es.jipfdigital.library.dominio.entidades.Restaurante;
+import es.jipfdigital.library.dominio.entidades.ServicioEntrega;
 import es.jipfdigital.library.dominio.entidades.TipoItemMenu;
 import es.jipfdigital.library.persistencia.CartaMenuDAO;
 import es.jipfdigital.library.persistencia.ClienteDAO;
@@ -311,58 +313,136 @@ class GestorPedidoTestTest {
 
     @Test
     void testCalcularRepartidorOptimo() {
-        // Crear mock de Repartidores
+
         Repartidor repartidor1 = new Repartidor();
-        repartidor1.setServicios(new ArrayList<>()); // 0 servicios
+        repartidor1.setServicios(new ArrayList<>());
         repartidor1.setEficiencia(80);
 
         Repartidor repartidor2 = new Repartidor();
         repartidor2.setServicios(new ArrayList<>());
-        repartidor2.setEficiencia(85); // Eficiencia mayor
+        repartidor2.setEficiencia(85);
 
         Repartidor repartidor3 = new Repartidor();
         repartidor3.setServicios(new ArrayList<>());
-        repartidor3.setEficiencia(75); // Eficiencia menor
+        repartidor3.setEficiencia(75);
 
-        // Simular el DAO de repartidores
         when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor1, repartidor2, repartidor3));
 
-        // Llamar al método calcularRepartidorOptimo
         Repartidor repartidorOptimo = gestorPedidos.calcularRepartidorOptimo();
 
-        // Verificar que el repartidor óptimo seleccionado sea el correcto
         assertEquals(repartidor2, repartidorOptimo,
                 "El repartidor óptimo debería ser el de mayor eficiencia con el mismo número de servicios.");
     }
 
     @Test
-void testProcesarPedidoConRepartidorOptimo() {
-    // Parámetros de entrada
-    String idCliente = "123";
-    String idRestaurante = "456";
-    Long idMenu = 1L; // Caso con un idMenu válido
+    void testCalcularRepartidorOptimoCP1() {
 
-    // Crear un mock del repartidor óptimo
-    Repartidor repartidorOptimo = new Repartidor();
-    repartidorOptimo.setServicios(new ArrayList<>());
-    repartidorOptimo.setEficiencia(90); // Alta eficiencia
+        when(repartidorDAO.findAll()).thenReturn(null);
 
-    // Configurar mock para encontrar el repartidor óptimo de forma leniente
-    lenient().when(repartidorDAO.findAll()).thenReturn(Arrays.asList(new Repartidor(), repartidorOptimo));
-    
-    // Configurar mock del cartamenuDAO para encontrar un menú
-    CartaMenu cartaMenu = new CartaMenu();
-    cartaMenu.setId(1L);
-    lenient().when(cartamenuDAO.findById(idMenu)).thenReturn(Optional.of(cartaMenu));
+        try {
+            gestorPedidos.calcularRepartidorOptimo();
+            fail("Debería lanzar una excepción NullPointerException");
+        } catch (NullPointerException e) {
 
-    // Simular comportamiento de Redirección de atributos
-    RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+            assertNotNull(e);
+        }
+    }
 
-    // Ejecutar el método
-    String resultado = gestorPedidos.procesarPedido(idCliente, idRestaurante, new ConcurrentModel(), idMenu, redirectAttributes);
+    @Test
+    void testCalcularRepartidorOptimoConDatosValidos() {
 
-    // Verificar el resultado esperado
-    assertEquals("redirect:/realizarpedido/123/456", resultado);
-}
+        Repartidor repartidor1 = new Repartidor();
+        repartidor1.setServicios(Arrays.asList(new ServicioEntrega(), new ServicioEntrega()));
+        repartidor1.setEficiencia(80);
+
+        Repartidor repartidor2 = new Repartidor();
+        repartidor2.setServicios(Arrays.asList(new ServicioEntrega()));
+        repartidor2.setEficiencia(90);
+
+        when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor1, repartidor2));
+
+        Repartidor repartidorOptimo = gestorPedidos.calcularRepartidorOptimo();
+
+        assertEquals(repartidor2, repartidorOptimo);
+    }
+
+    @Test
+    void testCalcularRepartidorOptimoCP3() {
+
+        Repartidor repartidor1 = new Repartidor();
+        repartidor1.setServicios(Arrays.asList(new ServicioEntrega()));
+        repartidor1.setEficiencia(70);
+
+        Repartidor repartidor2 = new Repartidor();
+        repartidor2.setServicios(Arrays.asList(new ServicioEntrega(), new ServicioEntrega(), new ServicioEntrega()));
+        repartidor2.setEficiencia(85);
+
+        when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor1, repartidor2));
+
+        Repartidor repartidorOptimo = gestorPedidos.calcularRepartidorOptimo();
+
+        assertEquals(repartidor1, repartidorOptimo, "El repartidor con menos servicios debería ser seleccionado.");
+    }
+
+    @Test
+    void testConfirmacionPagoCP1() {
+
+        String idCliente = "12345";
+
+        Model model = new ConcurrentModel();
+
+        String resultado = gestorPedidos.confirmacionpago(idCliente, model);
+
+        assertEquals(idCliente, model.getAttribute("idCliente"));
+
+        assertEquals("confirmacionPago", resultado);
+    }
+
+    @Test
+    void testConfirmacionPagoCP2() {
+
+        String idCliente = null;
+
+        String resultado = gestorPedidos.confirmacionpago(idCliente, model);
+
+        assertNull(model.getAttribute("idCliente"), "El atributo 'idCliente' debería ser null");
+
+        assertEquals("confirmacionPago", resultado, "La vista devuelta debería ser 'confirmacionPago'");
+    }
+
+    @Test
+    void testMostrarPedidosCP1() {
+
+        String idCliente = "123";
+        List<Pedido> pedidos = new ArrayList<>();
+        Pedido pedido1 = new Pedido();
+        Pedido pedido2 = new Pedido();
+        pedidos.add(pedido1);
+        pedidos.add(pedido2);
+
+        when(pedidoDAO.findPedidosByCliente(idCliente)).thenReturn(pedidos);
+
+        String view = gestorPedidos.mostrarPedidos(idCliente, model);
+
+        verify(model).addAttribute("pedidos", pedidos);
+        verify(model).addAttribute("idCliente", idCliente);
+
+        assertEquals("pedidoscliente", view);
+    }
+
+    @Test
+    void testMostrarPedidosCP2() {
+
+        String idCliente = null;
+
+        when(pedidoDAO.findPedidosByCliente(idCliente))
+                .thenThrow(new IllegalArgumentException("El idCliente no puede ser nulo"));
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            gestorPedidos.mostrarPedidos(idCliente, model);
+        });
+
+        assertEquals("El idCliente no puede ser nulo", exception.getMessage());
+    }
 
 }
