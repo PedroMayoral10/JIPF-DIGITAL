@@ -309,4 +309,60 @@ class GestorPedidoTestTest {
         assertEquals("El idMenu no puede ser nulo", exception.getMessage());
     }
 
+    @Test
+    void testCalcularRepartidorOptimo() {
+        // Crear mock de Repartidores
+        Repartidor repartidor1 = new Repartidor();
+        repartidor1.setServicios(new ArrayList<>()); // 0 servicios
+        repartidor1.setEficiencia(80);
+
+        Repartidor repartidor2 = new Repartidor();
+        repartidor2.setServicios(new ArrayList<>());
+        repartidor2.setEficiencia(85); // Eficiencia mayor
+
+        Repartidor repartidor3 = new Repartidor();
+        repartidor3.setServicios(new ArrayList<>());
+        repartidor3.setEficiencia(75); // Eficiencia menor
+
+        // Simular el DAO de repartidores
+        when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor1, repartidor2, repartidor3));
+
+        // Llamar al método calcularRepartidorOptimo
+        Repartidor repartidorOptimo = gestorPedidos.calcularRepartidorOptimo();
+
+        // Verificar que el repartidor óptimo seleccionado sea el correcto
+        assertEquals(repartidor2, repartidorOptimo,
+                "El repartidor óptimo debería ser el de mayor eficiencia con el mismo número de servicios.");
+    }
+
+    @Test
+void testProcesarPedidoConRepartidorOptimo() {
+    // Parámetros de entrada
+    String idCliente = "123";
+    String idRestaurante = "456";
+    Long idMenu = 1L; // Caso con un idMenu válido
+
+    // Crear un mock del repartidor óptimo
+    Repartidor repartidorOptimo = new Repartidor();
+    repartidorOptimo.setServicios(new ArrayList<>());
+    repartidorOptimo.setEficiencia(90); // Alta eficiencia
+
+    // Configurar mock para encontrar el repartidor óptimo de forma leniente
+    lenient().when(repartidorDAO.findAll()).thenReturn(Arrays.asList(new Repartidor(), repartidorOptimo));
+    
+    // Configurar mock del cartamenuDAO para encontrar un menú
+    CartaMenu cartaMenu = new CartaMenu();
+    cartaMenu.setId(1L);
+    lenient().when(cartamenuDAO.findById(idMenu)).thenReturn(Optional.of(cartaMenu));
+
+    // Simular comportamiento de Redirección de atributos
+    RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
+    // Ejecutar el método
+    String resultado = gestorPedidos.procesarPedido(idCliente, idRestaurante, new ConcurrentModel(), idMenu, redirectAttributes);
+
+    // Verificar el resultado esperado
+    assertEquals("redirect:/realizarpedido/123/456", resultado);
+}
+
 }

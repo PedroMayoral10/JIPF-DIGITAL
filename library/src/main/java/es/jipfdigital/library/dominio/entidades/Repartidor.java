@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class Repartidor {
-	
+
 	@Id
 	String idUsuario;
 	@OneToMany(mappedBy = "repartidor", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -22,48 +22,50 @@ public class Repartidor {
 	String nombre;
 	@Column
 	String pass;
-	
+
 	public Repartidor() {
-		
+
 	}
-	
-	
+
 	public Repartidor(String idUsuario, String nombre, String pass, String apellidos, String nif) {
 		this.idUsuario = idUsuario;
-        this.nombre = nombre;
-        this.pass = pass;
-        this.apellidos = apellidos;
-        this.nif = nif;
-        eficiencia = 0;
-    }
-	
+		this.nombre = nombre;
+		this.pass = pass;
+		this.apellidos = apellidos;
+		this.nif = nif;
+		eficiencia = 0;
+	}
+
 	public String getIdUsuario() {
 		return idUsuario;
 	}
-	
-	public Collection<ServicioEntrega> getServicios(){
+
+	public Collection<ServicioEntrega> getServicios() {
 		return servicios;
 	}
-	
-	
+
 	public void setIdUsuario(String idUsuario) {
 		this.idUsuario = idUsuario;
 	}
 
 	public void setServicios(Collection<ServicioEntrega> servicios) {
-        this.servicios = servicios;
-    }
-	
+		this.servicios = servicios;
+	}
+
 	public String getPass() {
 		return pass;
 	}
-	
+
 	public int getEficiencia() {
 		return eficiencia;
 	}
-	
+
 	public void actualizarEficiencia(int num) {
 		eficiencia += num;
+	}
+
+	public void setEficiencia(int eficiencia) {
+		this.eficiencia = eficiencia;
 	}
 
 }

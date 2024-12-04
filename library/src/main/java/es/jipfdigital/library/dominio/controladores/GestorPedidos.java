@@ -176,7 +176,7 @@ public class GestorPedidos {
 
 	}
 
-	private Repartidor calcularRepartidorOptimo() {
+	public Repartidor calcularRepartidorOptimo() {
 		List<Repartidor> repartidores = repartidorDAO.findAll();
 
 		Repartidor repartidorOptimo = repartidores.get(0);
