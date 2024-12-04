@@ -54,6 +54,7 @@ public class Repartidor {
 
 	public String getPass() {
 		return pass;
+
 	}
 
 	public int getEficiencia() {
