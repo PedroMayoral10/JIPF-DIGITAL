@@ -117,7 +117,6 @@ class GestorRepartidorTest {
 
 	    // Repartidor con ID "1"
 	    String idRepartidor = "1";
-	    Repartidor repartidor = mock(Repartidor.class);
 
 	    // Servicios asociados al repartidor
 	    ServicioEntrega servicioPagado = new ServicioEntrega();
@@ -148,7 +147,6 @@ class GestorRepartidorTest {
 
 	    // Repartidor con ID "1"
 	    String idRepartidor = "1";
-	    Repartidor repartidor = mock(Repartidor.class);
 
 	    // Simular que los servicios del repartidor son null
 	    when(repartidor.getServicios()).thenReturn(null);
@@ -174,7 +172,6 @@ class GestorRepartidorTest {
 
 	    // Repartidor con ID "1"
 	    String idRepartidor = "1";
-	    Repartidor repartidor = mock(Repartidor.class);
 
 	    // Servicios asociados al repartidor
 	    ServicioEntrega servicioPagado = new ServicioEntrega();
@@ -205,7 +202,6 @@ class GestorRepartidorTest {
 
 	    // Repartidor con ID "1"
 	    String idRepartidor = "1";
-	    Repartidor repartidor = mock(Repartidor.class);
 
 	    // Simular que los servicios del repartidor son null
 	    when(repartidor.getServicios()).thenReturn(null);
