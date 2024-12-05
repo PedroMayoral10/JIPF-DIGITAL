@@ -25,24 +25,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import es.jipfdigital.library.dominio.entidades.CartaMenu;
-import es.jipfdigital.library.dominio.entidades.Cliente;
-import es.jipfdigital.library.dominio.entidades.Direccion;
-import es.jipfdigital.library.dominio.entidades.EstadoPedido;
-import es.jipfdigital.library.dominio.entidades.ItemMenu;
-import es.jipfdigital.library.dominio.entidades.MetodoPago;
-import es.jipfdigital.library.dominio.entidades.Pedido;
-import es.jipfdigital.library.dominio.entidades.Repartidor;
-import es.jipfdigital.library.dominio.entidades.Restaurante;
-import es.jipfdigital.library.dominio.entidades.ServicioEntrega;
-import es.jipfdigital.library.dominio.entidades.TipoItemMenu;
-import es.jipfdigital.library.persistencia.CartaMenuDAO;
-import es.jipfdigital.library.persistencia.ClienteDAO;
-import es.jipfdigital.library.persistencia.DireccionDAO;
-import es.jipfdigital.library.persistencia.ItemMenuDAO;
-import es.jipfdigital.library.persistencia.PedidoDAO;
-import es.jipfdigital.library.persistencia.RepartidorDAO;
-import es.jipfdigital.library.persistencia.RestauranteDAO;
+import es.jipfdigital.library.dominio.entidades.*;
+import es.jipfdigital.library.persistencia.*;
 
 @ExtendWith(MockitoExtension.class)
 class GestorPedidoTestTest {
