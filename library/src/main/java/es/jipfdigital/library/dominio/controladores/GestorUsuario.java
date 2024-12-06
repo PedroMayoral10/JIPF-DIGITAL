@@ -61,7 +61,7 @@ public class GestorUsuario {
 	 */
 	
 	@PostMapping("/login")	
-	public String login(Usuario usuario, Model model) {
+	public String loginSubmit(Usuario usuario, Model model) {
 	    if (usuario == null) {
 	        model.addAttribute(ERROR_STR, "El usuario no existe, pruebe otra vez");
 	        return LOGIN_STR;
