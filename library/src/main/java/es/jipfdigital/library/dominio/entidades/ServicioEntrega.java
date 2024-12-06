@@ -16,7 +16,7 @@ import jakarta.persistence.OneToOne;
 public class ServicioEntrega {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_servicioentrega;
+    private Long idServicioEntrega;
     @OneToOne
     @JoinColumn(name = "id_pedido", referencedColumnName = "id_pedido")
     private Pedido pedido;
@@ -34,8 +34,8 @@ public class ServicioEntrega {
 	public ServicioEntrega() {
 		
 	}
-	public Long getId_servicioEntrega() {
-		return id_servicioentrega;
+	public Long getIdServicioEntrega() {
+		return idServicioEntrega;
 	}
 	
 	
