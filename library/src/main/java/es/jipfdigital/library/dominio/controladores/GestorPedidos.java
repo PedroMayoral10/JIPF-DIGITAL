@@ -61,6 +61,7 @@ public class GestorPedidos {
 	public String realizarPago(@PathVariable("idCliente") String idCliente,
 			@PathVariable("idRestaurante") String idRestaurante, @RequestParam Map<String, String> params,
 			Model model) {
+		Cliente cliente = clienteDAO.findById(idCliente).get();
 
 		itemsPedidos = obtenerItems(params);
 
@@ -79,6 +80,7 @@ public class GestorPedidos {
 		model.addAttribute(IDCLIENTE, idCliente);
 		model.addAttribute("idRestaurante", idRestaurante);
 		model.addAttribute("precioTotal", precioTotal);
+		model.addAttribute("direcciones", cliente.getDirecciones());
 
 		return "realizarpago";
 	}
@@ -141,15 +143,18 @@ public class GestorPedidos {
 		Pago pago = new Pago(pedido, tipo, fechaTransaccion);
 		pedido.setPago(pago);
 		Direccion direccion;
-		if(idDireccion != null){
+		if (idDireccion != null) {
 			direccion = direccionDAO.getById(idDireccion);
 
-		}else{
+		} else {
 			direccion = new Direccion(codigoPostal, calle, numero, complemento, municipio);
+			direccionDAO.save(direccion);
 			cliente.addDireccion(direccion);
+
 			clienteDAO.save(cliente);
+			System.out.println(idDireccion);
 		}
-		
+
 		ServicioEntrega servicioEntrega = new ServicioEntrega();
 		servicioEntrega.setPedido(pedido);
 		servicioEntrega.setDireccion(direccion);
@@ -159,6 +164,7 @@ public class GestorPedidos {
 		pedidoDAO.save(pedido);
 		model.addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
 		model.addAttribute(IDCLIENTE, idCliente);
+		System.out.println(cliente.getDirecciones().isEmpty());
 
 		return "redirect:/confirmacionpago/" + idCliente;
 	}

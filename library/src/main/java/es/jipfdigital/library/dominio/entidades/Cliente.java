@@ -18,7 +18,7 @@ public class Cliente {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "cliente_id") // Agrega una columna cliente_id en la tabla Direccion
-    private Collection<Direccion> direcciones;
+    private Collection<Direccion> direcciones = new HashSet<>();
 
     @Column
     private String nombre;
@@ -58,6 +58,9 @@ public class Cliente {
 
     public String getPass() {
         return pass;
+    }
+    public Collection<Direccion> getDirecciones(){
+        return direcciones;
     }
 
     public Collection<Restaurante> getFavoritos() {
