@@ -73,19 +73,19 @@ public class GestorUsuario {
 	    Optional<Repartidor> repartidorOpt = repartidorDAO.findById(usuario.getIdUsuario());
 
 	    String resultadoCliente = manejarCliente(clienteOpt, usuario, model);
-	    if (resultadoCliente != null) 
-	    	return resultadoCliente;
-
 	    String resultadoRestaurante = manejarRestaurante(restauranteOpt, usuario, model);
-	    if (resultadoRestaurante != null) 
-	    	return resultadoRestaurante;
-
 	    String resultadoRepartidor = manejarRepartidor(repartidorOpt, usuario, model);
-	    if (resultadoRepartidor != null) 
+	    
+	    if (resultadoCliente != null) { 
+	    	return resultadoCliente;
+	    }else if (resultadoRestaurante != null) { 
+	    	return resultadoRestaurante;
+	    }else if (resultadoRepartidor != null) {
 	    	return resultadoRepartidor;
-
-	    model.addAttribute(ERROR_STR, "El usuario no existe, pruebe otra vez");
-	    return LOGIN_STR;
+	    } else {
+		    model.addAttribute(ERROR_STR, "El usuario no existe, pruebe otra vez");
+	    	return LOGIN_STR;
+	    }
 	}
 
 	@PostMapping("/registro")
@@ -173,15 +173,18 @@ public class GestorUsuario {
 	}
 	
 	private boolean comprobarCondicionesRegistrarRestaurante(String codigoPostal, String calle, String numero, 
-			String complemento, String municipio, String cif) {
+		String complemento, String municipio, String cif) {
 		
-		    if (codigoPostal.isEmpty() || calle.isEmpty() || numero.isEmpty()) {
-		        return false;
-		    }
-		    if (complemento.isEmpty() || municipio.isEmpty() || cif.isEmpty()) {
-		        return false;
-		    }
-		    return true;
+		boolean correcto = true;
+		
+		if (codigoPostal.isEmpty() || calle.isEmpty() || numero.isEmpty()) {
+			correcto = false;
+		}
+		if (complemento.isEmpty() || municipio.isEmpty() || cif.isEmpty()) {
+		    correcto = false;
+		}
+		
+		return correcto;
 		
 	}
 	
@@ -192,9 +195,9 @@ public class GestorUsuario {
 	        if (cliente.getPass().equals(usuario.getPass())) {
 	            return "redirect:/menucliente/" + cliente.getIdUsuario();
 	        } else {
-	            model.addAttribute(ERROR_STR, CONTRASENA_STR);
-	            return LOGIN_STR;
-	        }
+				model.addAttribute(ERROR_STR, CONTRASENA_STR);
+				return LOGIN_STR;
+			}
 	    }
 	    return null;
 	}
@@ -205,9 +208,9 @@ public class GestorUsuario {
 	        if (restaurante.getPass().equals(usuario.getPass())) {
 	            return "redirect:/menurestaurante/" + restaurante.getIdUsuario();
 	        } else {
-	            model.addAttribute(ERROR_STR, CONTRASENA_STR);
-	            return LOGIN_STR;
-	        }
+				model.addAttribute(ERROR_STR, CONTRASENA_STR);
+				return LOGIN_STR;
+			}
 	    }
 	    return null;
 	}
@@ -218,9 +221,9 @@ public class GestorUsuario {
 	        if (repartidor.getPass().equals(usuario.getPass())) {
 	            return "redirect:/menurepartidor/" + repartidor.getIdUsuario();
 	        } else {
-	            model.addAttribute(ERROR_STR, CONTRASENA_STR);
-	            return LOGIN_STR;
-	        }
+				model.addAttribute(ERROR_STR, CONTRASENA_STR);
+				return LOGIN_STR;
+			}
 	    }
 	    return null;
 	}
