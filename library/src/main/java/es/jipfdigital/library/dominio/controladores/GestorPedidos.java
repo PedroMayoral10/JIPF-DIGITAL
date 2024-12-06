@@ -62,7 +62,7 @@ public class GestorPedidos {
 			@PathVariable("idRestaurante") String idRestaurante, @RequestParam Map<String, String> params,
 			Model model) {
 		Cliente cliente = clienteDAO.findById(idCliente).get();
-
+		
 		itemsPedidos = obtenerItems(params);
 
 		for (ItemMenu item : itemsPedidos) {
@@ -127,7 +127,7 @@ public class GestorPedidos {
 			@RequestParam(value = "numero", required = false) String numero,
 			@RequestParam(value = "complemento", required = false) String complemento,
 			@RequestParam(value = "municipio", required = false) String municipio,
-			@RequestParam(value = "idDireccion", required = false) Long idDireccion) {
+			@RequestParam(value = "direccionGuardada", required = false) Long idDireccion) {
 
 		LocalDate fechaTransaccion = LocalDate.now();
 
@@ -145,7 +145,6 @@ public class GestorPedidos {
 		Direccion direccion;
 		if (idDireccion != null) {
 			direccion = direccionDAO.getById(idDireccion);
-
 		} else {
 			direccion = new Direccion(codigoPostal, calle, numero, complemento, municipio);
 			direccionDAO.save(direccion);
@@ -164,13 +163,12 @@ public class GestorPedidos {
 		pedidoDAO.save(pedido);
 		model.addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
 		model.addAttribute(IDCLIENTE, idCliente);
-		System.out.println(cliente.getDirecciones().isEmpty());
 
 		return "redirect:/confirmacionpago/" + idCliente;
 	}
 
 	public List<ItemMenu> obtenerItems(Map<String, String> params) {
-
+		itemsPedidos.clear();
 		int index = 0;
 		while (params.containsKey("id" + index)) {
 			Long idItem = Long.parseLong(params.get("id" + index));

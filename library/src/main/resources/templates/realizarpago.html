@@ -164,9 +164,9 @@
                         <p>No hay direcciones disponibles.</p>
                     </div>
                     <div class="form-group">
-                        <label for="selectDireccion">Dirección Guardada:</label>
+                        <label for="selectDireccion">Selecciona una dirección:</label>
                         <select id="selectDireccion" name="direccionGuardada" onchange="autocompletarDireccion()">
-                            <option value="" disabled selected>Selecciona una dirección</option>
+                            <option value="">Introduce una direccion</option>
                             <option th:each="direccion : ${direcciones}" 
                                     th:value="${direccion.idDireccion}" 
                                     th:text="${direccion.codigoPostal} + ', ' + ${direccion.calle} + ' ' + ${direccion.numero} + ', ' + ${direccion.municipio}" 
