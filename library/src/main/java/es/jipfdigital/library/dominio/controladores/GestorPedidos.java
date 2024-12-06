@@ -124,7 +124,8 @@ public class GestorPedidos {
 			@RequestParam(value = "calle", required = false) String calle,
 			@RequestParam(value = "numero", required = false) String numero,
 			@RequestParam(value = "complemento", required = false) String complemento,
-			@RequestParam(value = "municipio", required = false) String municipio) {
+			@RequestParam(value = "municipio", required = false) String municipio,
+			@RequestParam(value = "idDireccion", required = false) Long idDireccion) {
 
 		LocalDate fechaTransaccion = LocalDate.now();
 
@@ -139,9 +140,16 @@ public class GestorPedidos {
 		pedido.setItems(itemsPedidos);
 		Pago pago = new Pago(pedido, tipo, fechaTransaccion);
 		pedido.setPago(pago);
+		Direccion direccion;
+		if(idDireccion != null){
+			direccion = direccionDAO.getById(idDireccion);
 
-		Direccion direccion = new Direccion(codigoPostal, calle, numero, complemento, municipio);
-		direccionDAO.save(direccion);
+		}else{
+			direccion = new Direccion(codigoPostal, calle, numero, complemento, municipio);
+			cliente.addDireccion(direccion);
+			clienteDAO.save(cliente);
+		}
+		
 		ServicioEntrega servicioEntrega = new ServicioEntrega();
 		servicioEntrega.setPedido(pedido);
 		servicioEntrega.setDireccion(direccion);

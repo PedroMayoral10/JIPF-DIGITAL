@@ -71,6 +71,12 @@ public class Cliente {
         }
     }
 
+    public void addDireccion(Direccion direccion){
+        if(direccion != null){
+            direcciones.add(direccion);
+        }
+    }
+
     public String toString() {
         return "Cliente{" +
                 "idUsuario='" + idUsuario + '\'' +
