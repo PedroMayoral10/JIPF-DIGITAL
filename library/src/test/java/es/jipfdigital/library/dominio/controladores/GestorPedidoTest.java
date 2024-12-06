@@ -1,4 +1,4 @@
-/**package es.jipfdigital.library.dominio.controladores;
+package es.jipfdigital.library.dominio.controladores;
 
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
@@ -182,21 +182,24 @@ class GestorPedidoTestTest {
     void testRealizarPagoCP1() {
 
         Map<String, String> params = new HashMap<>();
-        String idCliente = "123";
-        String idRestaurante = "456";
 
-        String viewName = gestorPedidos.realizarPago(idCliente, idRestaurante, params, model);
+        String idRestaurante = "456";
+        Cliente cliente = new Cliente("cliente", "usuario1", "password123", "apellidos", "12345678A");
+        when(clienteDAO.findById("cliente")).thenReturn(Optional.of(cliente));
+
+        String result = gestorPedidos.realizarPago("cliente", idRestaurante, params, model);
 
         verify(model).addAttribute("itemsPedidos", Collections.emptyList());
-        verify(model).addAttribute("idCliente", idCliente);
+        verify(model).addAttribute("idCliente", "cliente");
         verify(model).addAttribute("idRestaurante", idRestaurante);
         verify(model).addAttribute("precioTotal", 0.0);
 
-        assertEquals("realizarpago", viewName);
+        assertEquals("realizarpago", result);
     }
 
     @Test
     void testRealizarPagoCP2() {
+        Cliente cliente = new Cliente("cliente", "usuario1", "password123", "apellidos", "12345678A");
         // Mock de los items pedidos
         ItemMenu item1 = new ItemMenu();
         item1.setId(1L);
@@ -218,10 +221,10 @@ class GestorPedidoTestTest {
 
         when(itemMenuDAO.findById(1L)).thenReturn(Optional.of(item1));
         when(itemMenuDAO.findById(2L)).thenReturn(Optional.of(item2));
-
+        when(clienteDAO.findById("cliente")).thenReturn(Optional.of(cliente));
         Model model = new ConcurrentModel();
 
-        String result = gestorPedidos.realizarPago("cliente1", "restaurante1", params, model);
+        String result = gestorPedidos.realizarPago("cliente", "restaurante1", params, model);
 
         assertEquals("realizarpago", result);
 
@@ -431,4 +434,3 @@ class GestorPedidoTestTest {
     }
 
 }
-**/
