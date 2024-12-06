@@ -171,6 +171,10 @@ public class GestorPedidos {
 
 	public Repartidor calcularRepartidorOptimo() {
 	    List<Repartidor> repartidores = repartidorDAO.findAll();
+	    if (repartidores.isEmpty()) {
+	        return null; // Devuelve null si no hay repartidores
+	    }
+
 	    Repartidor repartidorOptimo = null;
 	    int minServicios = Integer.MAX_VALUE;
 
@@ -183,7 +187,8 @@ public class GestorPedidos {
 	            repartidorOptimo = repartidor;
 	        } 
 	        // Si hay empate en cantidad de servicios, usamos la eficiencia como criterio
-	        else if (cantidadServicios == minServicios && repartidor.getEficiencia() > repartidorOptimo.getEficiencia()) {
+	        if (cantidadServicios == minServicios && 
+	                 (repartidorOptimo == null || repartidor.getEficiencia() > repartidorOptimo.getEficiencia())) {
 	            repartidorOptimo = repartidor;
 	        }
 	    }

@@ -18,7 +18,7 @@ public class ServicioEntrega {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idServicioEntrega;
     @OneToOne
-    @JoinColumn(name = "id_pedido", referencedColumnName = "id_pedido")
+    @JoinColumn(name = "id_pedido", referencedColumnName = "idPedido")
     private Pedido pedido;
     @OneToOne
     @JoinColumn(name = "id_direccion", referencedColumnName = "idDireccion")
