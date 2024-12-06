@@ -59,47 +59,30 @@ public class GestorUsuario {
 	/*
 	 * POSTMAPPINGS
 	 */
+	
+	@PostMapping("/login")	
+	public String login(Usuario usuario, Model model) {
+	    if (usuario == null) {
+	        model.addAttribute(ERROR_STR, "El usuario no existe, pruebe otra vez");
+	        return LOGIN_STR;
+	    }
 
-	@PostMapping("/login")
-	public String loginSubmit(@ModelAttribute Usuario usuario, Model model) {
-		if (usuario != null) {
-			model.addAttribute(USUARIO_STR, usuario);
-			Optional<Cliente> clienteOpt = clienteDAO.findById(usuario.getIdUsuario());
-			Optional<Restaurante> restauranteOpt = restauranteDAO.findById(usuario.getIdUsuario());
-			Optional<Repartidor> repartidorOpt = repartidorDAO.findById(usuario.getIdUsuario());
-			if (clienteOpt.isPresent()) {
-				Cliente cliente = clienteOpt.get();
-				if (cliente.getPass().equals(usuario.getPass())) {
-					return "redirect:/menucliente/" + cliente.getIdUsuario();
-				} else {
-					model.addAttribute(ERROR_STR, CONTRASENA_STR);
-					return LOGIN_STR;
-				}
-			} else if (restauranteOpt.isPresent()) {
-				Restaurante restaurante = restauranteOpt.get();
-				if (restaurante.getPass().equals(usuario.getPass())) {
-					return "redirect:/menurestaurante/" + restaurante.getIdUsuario();
-				} else {
-					model.addAttribute(ERROR_STR, CONTRASENA_STR);
-					return LOGIN_STR;
-				}
-			} else if (repartidorOpt.isPresent()) {
-				Repartidor repartidor = repartidorOpt.get();
-				if (repartidor.getPass().equals(usuario.getPass())) {
-					return "redirect:/menurepartidor/" + repartidor.getIdUsuario();
-				} else {
-					model.addAttribute(ERROR_STR, CONTRASENA_STR);
-					return LOGIN_STR;
-				}
-			} else {
-				model.addAttribute(ERROR_STR, "El usuario no existe, pruebe otra vez");
-				return LOGIN_STR;
-			}
-		} else {
-			model.addAttribute(ERROR_STR, "El usuario no existe, pruebe otra vez");
-			return LOGIN_STR;
-		}
+	    model.addAttribute(USUARIO_STR, usuario);
+	    Optional<Cliente> clienteOpt = clienteDAO.findById(usuario.getIdUsuario());
+	    Optional<Restaurante> restauranteOpt = restauranteDAO.findById(usuario.getIdUsuario());
+	    Optional<Repartidor> repartidorOpt = repartidorDAO.findById(usuario.getIdUsuario());
 
+	    String resultadoCliente = manejarCliente(clienteOpt, usuario, model);
+	    if (resultadoCliente != null) return resultadoCliente;
+
+	    String resultadoRestaurante = manejarRestaurante(restauranteOpt, usuario, model);
+	    if (resultadoRestaurante != null) return resultadoRestaurante;
+
+	    String resultadoRepartidor = manejarRepartidor(repartidorOpt, usuario, model);
+	    if (resultadoRepartidor != null) return resultadoRepartidor;
+
+	    model.addAttribute(ERROR_STR, "El usuario no existe, pruebe otra vez");
+	    return LOGIN_STR;
 	}
 
 	@PostMapping("/registro")
@@ -193,6 +176,48 @@ public class GestorUsuario {
 	           !municipio.isEmpty() &&
 	           !cif.isEmpty();
 	}
+	
+	
+	private String manejarCliente(Optional<Cliente> clienteOpt, Usuario usuario, Model model) {
+	    if (clienteOpt.isPresent()) {
+	        Cliente cliente = clienteOpt.get();
+	        if (cliente.getPass().equals(usuario.getPass())) {
+	            return "redirect:/menucliente/" + cliente.getIdUsuario();
+	        } else {
+	            model.addAttribute(ERROR_STR, CONTRASENA_STR);
+	            return LOGIN_STR;
+	        }
+	    }
+	    return null;
+	}
+
+	private String manejarRestaurante(Optional<Restaurante> restauranteOpt, Usuario usuario, Model model) {
+	    if (restauranteOpt.isPresent()) {
+	        Restaurante restaurante = restauranteOpt.get();
+	        if (restaurante.getPass().equals(usuario.getPass())) {
+	            return "redirect:/menurestaurante/" + restaurante.getIdUsuario();
+	        } else {
+	            model.addAttribute(ERROR_STR, CONTRASENA_STR);
+	            return LOGIN_STR;
+	        }
+	    }
+	    return null;
+	}
+
+	private String manejarRepartidor(Optional<Repartidor> repartidorOpt, Usuario usuario, Model model) {
+	    if (repartidorOpt.isPresent()) {
+	        Repartidor repartidor = repartidorOpt.get();
+	        if (repartidor.getPass().equals(usuario.getPass())) {
+	            return "redirect:/menurepartidor/" + repartidor.getIdUsuario();
+	        } else {
+	            model.addAttribute(ERROR_STR, CONTRASENA_STR);
+	            return LOGIN_STR;
+	        }
+	    }
+	    return null;
+	}
+	
+	
 	
 
 }
