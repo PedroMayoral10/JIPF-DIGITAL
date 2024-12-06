@@ -61,7 +61,8 @@ public class GestorPedidos {
 	public String realizarPago(@PathVariable("idCliente") String idCliente,
 			@PathVariable("idRestaurante") String idRestaurante, @RequestParam Map<String, String> params,
 			Model model) {
-
+		Cliente cliente = clienteDAO.findById(idCliente).get();
+		
 		itemsPedidos = obtenerItems(params);
 
 		for (ItemMenu item : itemsPedidos) {
@@ -79,6 +80,7 @@ public class GestorPedidos {
 		model.addAttribute(IDCLIENTE, idCliente);
 		model.addAttribute("idRestaurante", idRestaurante);
 		model.addAttribute("precioTotal", precioTotal);
+		model.addAttribute("direcciones", cliente.getDirecciones());
 
 		return "realizarpago";
 	}
@@ -124,7 +126,8 @@ public class GestorPedidos {
 			@RequestParam(value = "calle", required = false) String calle,
 			@RequestParam(value = "numero", required = false) String numero,
 			@RequestParam(value = "complemento", required = false) String complemento,
-			@RequestParam(value = "municipio", required = false) String municipio) {
+			@RequestParam(value = "municipio", required = false) String municipio,
+			@RequestParam(value = "direccionGuardada", required = false) Long idDireccion) {
 
 		LocalDate fechaTransaccion = LocalDate.now();
 
@@ -139,9 +142,18 @@ public class GestorPedidos {
 		pedido.setItems(itemsPedidos);
 		Pago pago = new Pago(pedido, tipo, fechaTransaccion);
 		pedido.setPago(pago);
+		Direccion direccion;
+		if (idDireccion != null) {
+			direccion = direccionDAO.getById(idDireccion);
+		} else {
+			direccion = new Direccion(codigoPostal, calle, numero, complemento, municipio);
+			direccionDAO.save(direccion);
+			cliente.addDireccion(direccion);
 
-		Direccion direccion = new Direccion(codigoPostal, calle, numero, complemento, municipio);
-		direccionDAO.save(direccion);
+			clienteDAO.save(cliente);
+			System.out.println(idDireccion);
+		}
+
 		ServicioEntrega servicioEntrega = new ServicioEntrega();
 		servicioEntrega.setPedido(pedido);
 		servicioEntrega.setDireccion(direccion);
@@ -156,7 +168,7 @@ public class GestorPedidos {
 	}
 
 	public List<ItemMenu> obtenerItems(Map<String, String> params) {
-
+		itemsPedidos.clear();
 		int index = 0;
 		while (params.containsKey("id" + index)) {
 			Long idItem = Long.parseLong(params.get("id" + index));
