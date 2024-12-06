@@ -157,11 +157,7 @@ public class GestorUsuario {
 			String numeroRestaurante,
 			String complementoRestaurante, String municipioRestaurante, String cifRestaurante,
 			Model model) {
-		if (usuario != null && !codigoPostalRestaurante.isEmpty() &&
-				!calleRestaurante.isEmpty() && !numeroRestaurante.isEmpty() &&
-				!complementoRestaurante.isEmpty() &&
-				!municipioRestaurante.isEmpty() &&
-				!cifRestaurante.isEmpty()) {
+		if (usuario != null && comprobarCondicionesRegistrarRestaurante(codigoPostalRestaurante, calleRestaurante, numeroRestaurante, complementoRestaurante, municipioRestaurante, cifRestaurante)) {
 			Direccion dir = new Direccion(codigoPostalRestaurante, calleRestaurante, numeroRestaurante,
 					complementoRestaurante, municipioRestaurante);
 			Restaurante restaurante = new Restaurante(usuario.getIdUsuario(), usuario.getNombre(),
@@ -188,5 +184,15 @@ public class GestorUsuario {
 		}
 
 	}
+	
+	private boolean comprobarCondicionesRegistrarRestaurante(String codigoPostal, String calle, String numero, String complemento, String municipio, String cif) {
+	    return !codigoPostal.isEmpty() &&
+	           !calle.isEmpty() &&
+	           !numero.isEmpty() &&
+	           !complemento.isEmpty() &&
+	           !municipio.isEmpty() &&
+	           !cif.isEmpty();
+	}
+	
 
 }
