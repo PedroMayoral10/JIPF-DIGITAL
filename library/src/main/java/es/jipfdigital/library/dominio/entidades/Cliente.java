@@ -62,6 +62,9 @@ public class Cliente {
     public Collection<Direccion> getDirecciones(){
         return direcciones;
     }
+    public void setDirecciones(Collection<Direccion> direcciones){
+        this.direcciones = direcciones;
+    }
 
     public Collection<Restaurante> getFavoritos() {
         return favoritos;

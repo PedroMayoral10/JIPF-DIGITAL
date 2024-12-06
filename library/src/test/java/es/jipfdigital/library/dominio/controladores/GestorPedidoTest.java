@@ -27,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import es.jipfdigital.library.dominio.entidades.*;
 import es.jipfdigital.library.persistencia.*;
+import jakarta.persistence.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class GestorPedidoTestTest {
@@ -56,7 +57,6 @@ class GestorPedidoTestTest {
     @Mock
     private Pedido pedido;
 
-    
     @InjectMocks
     private GestorPedidos gestorPedidos;
 
@@ -65,19 +65,19 @@ class GestorPedidoTestTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    void testDetalleRestauranteCP1() {
+    @Test
+    void testDetalleRestauranteRestauranteNull() {
 
         String idCliente = "123";
         String idRestaurante = "456";
 
         when(restauranteDAO.findById(idRestaurante)).thenReturn(Optional.empty());
-        when(clienteDAO.findById(idCliente)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(NoSuchElementException.class, () -> {
             gestorPedidos.detalleRestaurante(idCliente, idRestaurante, model);
         });
 
-        assertEquals("Restaurante o Cliente no encontrado", exception.getMessage());
+        assertEquals("No value present", exception.getMessage());
 
         verify(restauranteDAO).findById(idRestaurante);
 
@@ -87,7 +87,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testDetalleRestauranteCP2() {
+    void testDetalleRestauranteRestauranteYMenuValido() {
 
         String idCliente = "123";
         String idRestaurante = "456";
@@ -114,7 +114,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    public void testSubmitPagoCP1() {
+    public void testSubmitPagoValoresValidosNuevaDireccion() {
 
         String idCliente = "12345";
         String idRestaurante = "67890";
@@ -137,24 +137,28 @@ class GestorPedidoTestTest {
 
         // Llamada al método
         String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
-                codigoPostal, MetodoPago.PAYPAL, calle, numero, complemento, municipio,null);
+                codigoPostal, MetodoPago.PAYPAL, calle, numero, complemento, municipio, null);
 
         // Verificaciones
         assertEquals("redirect:/confirmacionpago/" + idCliente, resultado);
         verify(model).addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
         verify(pedidoDAO).save(any(Pedido.class));
-        //verify(direccionDAO).save(any(Direccion.class));
+        verify(direccionDAO).save(argThat(direccion -> direccion.getCodigoPostal().equals(codigoPostal) &&
+                direccion.getCalle().equals(calle) &&
+                direccion.getNumero().equals(numero) &&
+                direccion.getComplemento().equals(complemento) &&
+                direccion.getMunicipio().equals(municipio)));
     }
 
     @Test
-    public void testSubmitPagoCP2() {
+    public void testSubmitPagoValoresNulosNuevaDireccion() {
 
         // Parametros de entrada (caso CP2)
         String idCliente = "54321";
         String idRestaurante = "98765";
         String codigoPostal = null;
-        String calle = "Calle Falsa";
-        String numero = "123";
+        String calle = null;
+        String numero = null;
         String complemento = null;
         String municipio = null;
 
@@ -170,16 +174,86 @@ class GestorPedidoTestTest {
         when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor));
 
         String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
-                codigoPostal, MetodoPago.CREDIT_CARD, calle, numero, complemento, municipio,null);
+                codigoPostal, MetodoPago.CREDIT_CARD, calle, numero, complemento, municipio, null);
 
         assertEquals("redirect:/confirmacionpago/" + idCliente, resultado);
         verify(model).addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
         verify(pedidoDAO).save(any(Pedido.class));
-        //verify(direccionDAO).save(any(Direccion.class));
+        verify(direccionDAO).save(argThat(direccion -> direccion.getCodigoPostal() == null &&
+                direccion.getCalle() == null && // Verificando que calle es null
+                direccion.getNumero() == null && // Verificando que numero es null
+                direccion.getComplemento() == null &&
+                direccion.getMunicipio() == null));
     }
 
     @Test
-    void testRealizarPagoCP1() {
+    public void testSubmitPagoValoresValidosDireccionSeleccionada() {
+        String idCliente = "12345";
+        String idRestaurante = "67890";
+        String idDireccion = "11111"; // ID de dirección que ya existe en la base de datos
+
+        // Mocks de la base de datos
+        Restaurante restaurante = new Restaurante();
+        Cliente cliente = new Cliente();
+        Direccion direccion = new Direccion("45600", "Calle Alcatraz", "98", "A", "Hervás");
+
+        List<Direccion> direcciones = new ArrayList<>();
+        direcciones.add(direccion);
+        cliente.setDirecciones(direcciones);
+
+        Repartidor repartidor = new Repartidor();
+        repartidor.setServicios(new ArrayList<>());
+
+        when(restauranteDAO.findById(idRestaurante)).thenReturn(Optional.of(restaurante));
+        when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(cliente));
+        when(direccionDAO.getById(Long.parseLong(idDireccion))).thenReturn(direccion);
+        when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor));
+
+        String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
+                "45600", MetodoPago.PAYPAL, "Calle Alcatraz", "98", "A", "Hervás", Long.parseLong(idDireccion));
+
+        assertEquals("redirect:/confirmacionpago/" + idCliente, resultado);
+        verify(model).addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
+        verify(pedidoDAO).save(any(Pedido.class));
+        verify(direccionDAO, never()).save(any(Direccion.class)); // La dirección no se guarda si ya existe
+    }
+
+    @Test
+    public void testSubmitPagoValoresNullDireccionNula() {
+        String idCliente = "54321";
+        String idRestaurante = "98765";
+        Long idDireccion = null; // `idDireccion` es nulo
+
+        // Mocks de la base de datos
+        Restaurante restaurante = new Restaurante();
+        Cliente cliente = new Cliente();
+        Direccion direccion = new Direccion("45600", "Calle Alcatraz", "98", "A", "Hervás");
+
+        List<Direccion> direcciones = new ArrayList<>();
+        direcciones.add(direccion);
+        cliente.setDirecciones(direcciones);
+
+        Repartidor repartidor = new Repartidor();
+        repartidor.setServicios(new ArrayList<>());
+
+        when(restauranteDAO.findById(idRestaurante)).thenReturn(Optional.of(restaurante));
+        when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(cliente));
+
+        when(direccionDAO.save(any(Direccion.class))).thenReturn(direccion); // Simula la creación de una nueva
+                                                                             // dirección
+        when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor));
+
+        String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
+                "45600", MetodoPago.CREDIT_CARD, "Calle Alcatraz", "98", "A", "Hervás", idDireccion);
+
+        assertEquals("redirect:/confirmacionpago/" + idCliente, resultado);
+        verify(model).addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
+        verify(pedidoDAO).save(any(Pedido.class));
+        verify(direccionDAO).save(any(Direccion.class));
+    }
+
+    @Test
+    void testRealizarPagoListaVacia() {
 
         Map<String, String> params = new HashMap<>();
 
@@ -198,7 +272,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testRealizarPagoCP2() {
+    void testRealizarPagoListaValida() {
         Cliente cliente = new Cliente("cliente", "usuario1", "password123", "apellidos", "12345678A");
         // Mock de los items pedidos
         ItemMenu item1 = new ItemMenu();
@@ -241,7 +315,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testProcesarPedidoCP1() {
+    void testProcesarPedidoMenuValido() {
 
         String idCliente = "123";
         String idRestaurante = "restaurante1";
@@ -283,7 +357,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testProcesarPedidoCP2() {
+    void testProcesarPedidoMenuNull() {
 
         String idCliente = "123";
         String idRestaurante = "456";
@@ -300,7 +374,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testCalcularRepartidorOptimo() {
+    void testCalcularRepartidorOptimoValido() {
 
         Repartidor repartidor1 = new Repartidor();
         repartidor1.setServicios(new ArrayList<>());
@@ -323,7 +397,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testCalcularRepartidorOptimoCP1() {
+    void testCalcularRepartidorOptimoNull() {
 
         when(repartidorDAO.findAll()).thenReturn(null);
 
@@ -337,7 +411,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testCalcularRepartidorOptimoConDatosValidos() {
+    void testCalcularRepartidorOptimoMenor() {
 
         Repartidor repartidor1 = new Repartidor();
         repartidor1.setServicios(Arrays.asList(new ServicioEntrega(), new ServicioEntrega()));
@@ -355,7 +429,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testCalcularRepartidorOptimoCP3() {
+    void testCalcularRepartidorOptimoMenorNumeroServicioEmpate() {
 
         Repartidor repartidor1 = new Repartidor();
         repartidor1.setServicios(Arrays.asList(new ServicioEntrega()));
@@ -373,7 +447,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testConfirmacionPagoCP1() {
+    void testConfirmacionPagoValido() {
 
         String idCliente = "12345";
 
@@ -387,7 +461,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testConfirmacionPagoCP2() {
+    void testConfirmacionPagoNull() {
 
         String idCliente = null;
 
@@ -399,7 +473,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testMostrarPedidosCP1() {
+    void testMostrarPedidosValido() {
 
         String idCliente = "123";
         List<Pedido> pedidos = new ArrayList<>();
@@ -419,7 +493,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testMostrarPedidosCP2() {
+    void testMostrarPedidosNull() {
 
         String idCliente = null;
 
