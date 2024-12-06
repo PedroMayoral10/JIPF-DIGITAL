@@ -73,13 +73,16 @@ public class GestorUsuario {
 	    Optional<Repartidor> repartidorOpt = repartidorDAO.findById(usuario.getIdUsuario());
 
 	    String resultadoCliente = manejarCliente(clienteOpt, usuario, model);
-	    if (resultadoCliente != null) return resultadoCliente;
+	    if (resultadoCliente != null) 
+	    	return resultadoCliente;
 
 	    String resultadoRestaurante = manejarRestaurante(restauranteOpt, usuario, model);
-	    if (resultadoRestaurante != null) return resultadoRestaurante;
+	    if (resultadoRestaurante != null) 
+	    	return resultadoRestaurante;
 
 	    String resultadoRepartidor = manejarRepartidor(repartidorOpt, usuario, model);
-	    if (resultadoRepartidor != null) return resultadoRepartidor;
+	    if (resultadoRepartidor != null) 
+	    	return resultadoRepartidor;
 
 	    model.addAttribute(ERROR_STR, "El usuario no existe, pruebe otra vez");
 	    return LOGIN_STR;
@@ -140,7 +143,8 @@ public class GestorUsuario {
 			String numeroRestaurante,
 			String complementoRestaurante, String municipioRestaurante, String cifRestaurante,
 			Model model) {
-		if (usuario != null && comprobarCondicionesRegistrarRestaurante(codigoPostalRestaurante, calleRestaurante, numeroRestaurante, complementoRestaurante, municipioRestaurante, cifRestaurante)) {
+		if (usuario != null && comprobarCondicionesRegistrarRestaurante(codigoPostalRestaurante, calleRestaurante, 
+				numeroRestaurante, complementoRestaurante, municipioRestaurante, cifRestaurante)) {
 			Direccion dir = new Direccion(codigoPostalRestaurante, calleRestaurante, numeroRestaurante,
 					complementoRestaurante, municipioRestaurante);
 			Restaurante restaurante = new Restaurante(usuario.getIdUsuario(), usuario.getNombre(),
@@ -168,13 +172,17 @@ public class GestorUsuario {
 
 	}
 	
-	private boolean comprobarCondicionesRegistrarRestaurante(String codigoPostal, String calle, String numero, String complemento, String municipio, String cif) {
-	    return !codigoPostal.isEmpty() &&
-	           !calle.isEmpty() &&
-	           !numero.isEmpty() &&
-	           !complemento.isEmpty() &&
-	           !municipio.isEmpty() &&
-	           !cif.isEmpty();
+	private boolean comprobarCondicionesRegistrarRestaurante(String codigoPostal, String calle, String numero, 
+			String complemento, String municipio, String cif) {
+		
+		    if (codigoPostal.isEmpty() || calle.isEmpty() || numero.isEmpty()) {
+		        return false;
+		    }
+		    if (complemento.isEmpty() || municipio.isEmpty() || cif.isEmpty()) {
+		        return false;
+		    }
+		    return true;
+		
 	}
 	
 	

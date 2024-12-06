@@ -29,6 +29,7 @@ public class GestorRepartidor {
 	private static final String IDREPARTIDOR = "idRepartidor";
 	private static final String SERVICIOS = "servicios";
 	private static final String REDIRIGIRREGISTRARENTREGA= "redirect:/registrar_entrega/";
+	private static final String REDIRIGIRREGISTRARRECOGICA = "redirect:/registrar_recogida/";
 	private static final String REGISTRARRECODIGA= "registrar_recogida";
 	private static final String ERROR = "error";
 	
@@ -108,7 +109,7 @@ public class GestorRepartidor {
 		
 	    if (optionalPedido.isEmpty()) {
 	        redirectAttributes.addFlashAttribute(ERROR, "El pedido no existe.");
-	        return "redirect:/registrar_recogida/" + idRepartidor;
+	        return REDIRIGIRREGISTRARRECOGICA + idRepartidor;
 	    }
 		
 	    Pedido pedido = optionalPedido.get();
@@ -119,14 +120,14 @@ public class GestorRepartidor {
 		
 		if (servicio == null) {
 	        redirectAttributes.addFlashAttribute(ERROR, "El pedido no tiene un servicio de entrega asociado.");
-	        return "redirect:/registrar_recogida/" + idRepartidor;
+	        return REDIRIGIRREGISTRARRECOGICA + idRepartidor;
 	    }	
 		
 		servicio.setFechaRecepcion(LocalDate.now());
 		servicioentregaDAO.save(servicio);
 		
 		redirectAttributes.addFlashAttribute("exito", "Recogida registrada con éxito");
-		return "redirect:/registrar_recogida/" + idRepartidor;
+		return REDIRIGIRREGISTRARRECOGICA + idRepartidor;
 		
 	}
 	
