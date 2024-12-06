@@ -23,7 +23,7 @@ public class Pedido {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id_pedido;
+	private Long idPedido;
 	@ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
 	private Cliente cliente;
@@ -52,11 +52,11 @@ public class Pedido {
 	}
 
 	public Long getId_pedido() {
-		return id_pedido;
+		return idPedido;
 	}
 
-	public void setId_pedido(Long id_pedido) {
-		this.id_pedido = id_pedido;
+	public void setId_pedido(Long idPedido) {
+		this.idPedido = idPedido;
 	}
 
 	public Cliente getCliente() {
