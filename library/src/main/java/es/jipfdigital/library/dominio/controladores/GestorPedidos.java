@@ -170,27 +170,25 @@ public class GestorPedidos {
 	}
 
 	public Repartidor calcularRepartidorOptimo() {
-		List<Repartidor> repartidores = repartidorDAO.findAll();
+	    List<Repartidor> repartidores = repartidorDAO.findAll();
+	    Repartidor repartidorOptimo = null;
+	    int minServicios = Integer.MAX_VALUE;
 
-		Repartidor repartidorOptimo = repartidores.get(0);
-		int minServicios = Integer.MAX_VALUE;
+	    for (Repartidor repartidor : repartidores) {
+	        int cantidadServicios = repartidor.getServicios().size();
 
-		for (Repartidor repartidor : repartidores) {
-			int cantidadServicios = repartidor.getServicios().size();
+	        // Si encontramos un repartidor con menos servicios, lo seleccionamos
+	        if (cantidadServicios < minServicios) {
+	            minServicios = cantidadServicios;
+	            repartidorOptimo = repartidor;
+	        } 
+	        // Si hay empate en cantidad de servicios, usamos la eficiencia como criterio
+	        else if (cantidadServicios == minServicios && repartidor.getEficiencia() > repartidorOptimo.getEficiencia()) {
+	            repartidorOptimo = repartidor;
+	        }
+	    }
 
-			if (cantidadServicios < minServicios) {
-				minServicios = cantidadServicios;
-				repartidorOptimo = repartidor;
-			} else {
-				if (cantidadServicios == minServicios) {
-					if (repartidor.getEficiencia() > repartidorOptimo.getEficiencia()) {
-						repartidorOptimo = repartidor;
-					}
-				}
-			}
-		}
-
-		return repartidorOptimo;
+	    return repartidorOptimo;
 	}
 
 }
