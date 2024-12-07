@@ -125,23 +125,42 @@
         }
     </style>
     <script>
-    function autocompletarDireccion() {
-    const select = document.getElementById('selectDireccion');
-    const inputs = ['codigoPostal', 'calle', 'numero', 'complemento', 'municipio'];
+        function formatearPrecio(precio) {
+            return precio.replace('.', ',');
+        }
 
-    if (select.value) {
-        // Desactiva los campos de entrada al seleccionar una dirección
-        inputs.forEach(id => {
-            document.getElementById(id).disabled = true;
-        });
-    } else {
-        // Activa los campos si no hay dirección seleccionada
-        inputs.forEach(id => {
-            document.getElementById(id).disabled = false;
-        });
-    }
-}
+        function autocompletarDireccion() {
+            const select = document.getElementById('selectDireccion');
+            const inputs = ['codigoPostal', 'calle', 'numero', 'complemento', 'municipio'];
 
+            if (select.value) {
+                // Desactiva los campos de entrada al seleccionar una dirección
+                inputs.forEach(id => {
+                    document.getElementById(id).disabled = true;
+                });
+            } else {
+                // Activa los campos si no hay dirección seleccionada
+                inputs.forEach(id => {
+                    document.getElementById(id).disabled = false;
+                });
+            }
+        }
+        window.onload = function () {
+
+            const precioItems = document.querySelectorAll('.form-group span');
+            precioItems.forEach(function (item) {
+                const precioTexto = item.innerText;
+                if (precioTexto.includes("€")) {
+                    item.innerText = formatearPrecio(precioTexto);
+                }
+            });
+
+            const precioTotalElement = document.querySelector('.form-container h3 span');
+            if (precioTotalElement) {
+                const precioTotal = precioTotalElement.innerText;
+                precioTotalElement.innerText = formatearPrecio(precioTotal);
+            }
+        }
 
 
     </script>
@@ -167,14 +186,13 @@
                         <label for="selectDireccion">Selecciona una dirección:</label>
                         <select id="selectDireccion" name="direccionGuardada" onchange="autocompletarDireccion()">
                             <option value="">Introduce una direccion</option>
-                            <option th:each="direccion : ${direcciones}" 
-                                    th:value="${direccion.idDireccion}" 
-                                    th:text="${direccion.codigoPostal} + ', ' + ${direccion.calle} + ' ' + ${direccion.numero} + ', ' + ${direccion.municipio}" 
-                                    th:selected="${direccion.idDireccion == selectedDireccionId}">
+                            <option th:each="direccion : ${direcciones}" th:value="${direccion.idDireccion}"
+                                th:text="${direccion.codigoPostal} + ', ' + ${direccion.calle} + ' ' + ${direccion.numero} + ', ' + ${direccion.municipio}"
+                                th:selected="${direccion.idDireccion == selectedDireccionId}">
                             </option>
                         </select>
                     </div>
-                    
+
 
                     <!-- Formulario de Dirección -->
                     <div class="form-group">
