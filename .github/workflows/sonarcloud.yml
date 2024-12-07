@@ -62,5 +62,5 @@ jobs:
           -Dsonar.projectKey=jipf-digital 
           -Dsonar.organization=jipf-digital 
           -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.java.binaries=library/src
+          -Dsonar.java.binaries=library/src/main/java,library/src/test/java
           -Dsonar.branch.name=desarrollo
