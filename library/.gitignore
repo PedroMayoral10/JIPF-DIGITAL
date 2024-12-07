@@ -1,5 +1,12 @@
 HELP.md
-target/
+
+target/**
+!target/site/
+!target/ste/jacoco
+!target/site/jacoco.xml
+
+
+
 library/database/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
