@@ -59,7 +59,8 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-          -Dsonar.projectKey=JIPF-DIGITAL 
-          -Dsonar.organization=tu-organizacion 
+          -Dsonar.projectKey=jipf-digital 
+          -Dsonar.organization=jipf-digital 
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.java.binaries=build
+          -Dsonar.branch.name=desarrollo
