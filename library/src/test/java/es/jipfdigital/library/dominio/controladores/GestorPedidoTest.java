@@ -7,7 +7,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import es.jipfdigital.library.dominio.entidades.*;
 import es.jipfdigital.library.persistencia.*;
-import jakarta.persistence.EntityNotFoundException;
+
 
 @ExtendWith(MockitoExtension.class)
 class GestorPedidoTestTest {
