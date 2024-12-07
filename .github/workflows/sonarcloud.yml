@@ -59,7 +59,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-          -Dsonar.projectKey=JIPF-DIGITAL # Nombre de tu proyecto en SonarCloud
-          -Dsonar.organization=tu-organizacion # Cambia por el ID de tu organización en SonarCloud
+          -Dsonar.projectKey=JIPF-DIGITAL 
+          -Dsonar.organization=tu-organizacion 
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.java.binaries=build
