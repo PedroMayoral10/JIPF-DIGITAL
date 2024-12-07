@@ -53,8 +53,9 @@ jobs:
         java-version: 23
     
     # 3. Ejecutar pruebas unitarias
-    - name: Run unit tests
+    - name: Run unit tests in /library
       run: mvn test
+      working-directory: ./library
       
     # 4. Ejecuta SonarCloud
     - name: SonarCloud Scan
