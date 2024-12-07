@@ -38,7 +38,7 @@ on:
 
 jobs:
   sonarcloud:
-    runs-on: windows-latest # Cambiado a un runner de Windows
+    runs-on: ubuntu-latest 
 
     steps:
     # 1. Configura el repositorio
