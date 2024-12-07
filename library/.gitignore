@@ -1,9 +1,9 @@
 HELP.md
 
-target/**
+/target
 !target/site/
-!target/ste/jacoco
-!target/site/jacoco.xml
+!target/site/jacoco/
+!target/site/jacoco/jacoco.xml
 
 
 
@@ -40,4 +40,3 @@ build/
 
 ### VS Code ###
 .vscode/
-/target/
