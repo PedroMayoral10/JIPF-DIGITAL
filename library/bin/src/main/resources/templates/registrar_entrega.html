@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Entrega</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #e0f7df;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .servicio {
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .registro-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 10px auto 0;
+        }
+        .registro-btn:hover {
+            background-color: #3e8e41;
+        }
+		
+		.return-button {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			background-color: #4CAF50;
+			color: white;
+			width: 50px;
+			height: 50px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
+			text-decoration: none;
+			font-size: 24px;
+			transition: background-color 0.3s ease;
+		}
+
+		.return-button:hover {
+			background-color: #d9534f;
+		}
+		
+		.mensaje-exito {
+			color: green;
+			margin-bottom: 20px;
+			font-weight: bold;
+		}
+		
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Registrar Entrega</h1>
+		<div th:if="${exito}" class="mensaje-exito" th:text="${exito}"></div>
+        <div th:each="servicio : ${servicios}" class="servicio">
+            <h3 th:text="'Servicio ID: ' + ${servicio.id_servicioEntrega}"></h3>
+            <p th:text="'ID del Pedido: ' + ${servicio.pedido.id_pedido}"></p>
+            <p th:text="'Estado Actual: ' + ${servicio.pedido.estado}"></p>
+            <form th:action="@{/registrar_entrega/{id}(id=${idRepartidor})}" method="post">
+                <input type="hidden" name="id_pedido" th:value="${servicio.pedido.id_pedido}" />
+                <button type="submit" class="registro-btn">Registrar Entrega</button>
+            </form>
+        </div>
+    </div>
+	<a th:href="@{/menurepartidor/{id}(id=${idRepartidor})}" class="return-button">&#x21a9;</a>
+</body>
+</html>

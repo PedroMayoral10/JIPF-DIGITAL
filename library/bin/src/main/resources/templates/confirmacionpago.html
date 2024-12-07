@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmación de Pago</title>
+    <style>
+        body {
+            background-color: #e0f7df;
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: linear-gradient(to bottom right, #e0f7df, #b2fbc4);
+        }
+        .card {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        p {
+            font-size: 18px;
+            margin: 20px 0;
+            color: #555;
+        }
+        .volver-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+        .volver-btn:hover {
+            background-color: #45a049;
+        }
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            .volver-btn {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1 th:text="${mensajeExito}">Pago realizado correctamente.</h1>
+        <p>¡Gracias por tu compra! Tu pedido ha sido procesado con éxito.</p>
+        <a th:href="@{/menucliente/{id}(id=${idCliente})}" class="volver-btn">Volver al menú principal</a>
+    </div>
+</body>
+</html>

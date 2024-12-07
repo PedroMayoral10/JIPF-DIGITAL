@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #e0f7df;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 350px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 90%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        input[type="submit"], input[type="reset"], .register-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            width: 100%;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        input[type="submit"] {
+            background-color: #5cb85c;
+        }
+
+        input[type="reset"] {
+            background-color: #d9534f;
+        }
+
+        .register-button {
+            background-color: #0275d8;
+        margin-top: 50px;
+        display: block;
+        text-align: center;
+        padding: 8px 16px;
+        border-radius: 15px;
+        width: auto;
+        color: white;
+        font-weight: bold;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        }
+
+        input[type="submit"]:hover, input[type="reset"]:hover, .register-button:hover {
+            transform: scale(1.05);
+        }
+
+        input[type="submit"]:active, input[type="reset"]:active, .register-button:active {
+            transform: scale(1);
+        }
+
+        .register-button::after {
+            content: ' 📝';
+        }
+    </style>
+</head>
+<body>
+    <form action="#" th:action="@{/login}" th:object="${usuario}" method="post">
+        <h1>Inicio de sesión</h1>
+        
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+        
+        <p>
+            Usuario: <input type="text" th:field="*{idUsuario}" />
+        </p>
+        <p>
+            Contraseña: <input type="password" th:field="*{pass}" />
+        </p>
+
+        <div class="button-container">
+            <input type="submit" value="Iniciar" />
+            <input type="reset" value="Cancelar" />
+        </div>
+
+        <a href="/registro" class="register-button">¿No tienes cuenta?</a>
+    </form>
+</body>
+</html>
