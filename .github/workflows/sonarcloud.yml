@@ -71,4 +71,4 @@ jobs:
           -Dsonar.java.binaries=library/src/main/java
           -Dsonar.exclusions=**library/src/test/java**,**library/src/main/resources**
           -Dsonar.branch.name=desarrollo
-          -Dsonar.coverageReportPaths=library/target/site/index.html
+          -Dsonar.coverageReportPaths=library/target/site/jacoco/jacoco.xml
