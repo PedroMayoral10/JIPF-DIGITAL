@@ -51,8 +51,12 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: 23
-
-    # 3. Ejecuta SonarCloud
+    
+    # 3. Ejecutar pruebas unitarias
+    - name: Run unit tests
+      run: mvn test
+      
+    # 4. Ejecuta SonarCloud
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@v2
       env:
@@ -62,6 +66,6 @@ jobs:
           -Dsonar.projectKey=jipf-digital 
           -Dsonar.organization=jipf-digital 
           -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.java.binaries=library/src/main/java
+          -Dsonar.sources=library/src/main/java
           -Dsonar.exclusions=**library/src/test/java**,**library/src/main/resources**
           -Dsonar.branch.name=desarrollo
