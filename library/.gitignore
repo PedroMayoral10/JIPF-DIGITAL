@@ -1,11 +1,9 @@
 HELP.md
 
-/target
-!target/site/
-!target/site/jacoco/
-!target/site/jacoco/jacoco.xml
-
-
+target/*
+!target/site
+target/site/*
+!target/site/jacoco
 
 library/database/
 !.mvn/wrapper/maven-wrapper.jar
@@ -40,3 +38,4 @@ build/
 
 ### VS Code ###
 .vscode/
+

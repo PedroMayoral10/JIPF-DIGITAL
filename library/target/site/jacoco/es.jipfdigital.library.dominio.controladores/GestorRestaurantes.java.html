@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestorRestaurantes.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">es.jipfdigital.library.dominio.controladores</a> &gt; <span class="el_source">GestorRestaurantes.java</span></div><h1>GestorRestaurantes.java</h1><pre class="source lang-java linenums">package es.jipfdigital.library.dominio.controladores;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import es.jipfdigital.library.dominio.entidades.CartaMenu;
+import es.jipfdigital.library.dominio.entidades.ItemMenu;
+import es.jipfdigital.library.dominio.entidades.Restaurante;
+import es.jipfdigital.library.dominio.entidades.TipoItemMenu;
+import es.jipfdigital.library.persistencia.CartaMenuDAO;
+import es.jipfdigital.library.persistencia.ItemMenuDAO;
+import es.jipfdigital.library.persistencia.RestauranteDAO;
+
+@Controller
+<span class="fc" id="L27">public class GestorRestaurantes {</span>
+
+	private static final String SUCCESS = &quot;success&quot;;
+	private static final String ERROR = &quot;error&quot;;
+	private static final String REDIRIGIRNUEVOITEM = &quot;redirect:/nuevoitem/&quot;;
+	private static final String REDIRIGIRMODIFICARMENU = &quot;redirect:/modificarmenu/&quot;;
+	
+	
+	@Autowired
+	private RestauranteDAO restauranteDAO;
+	@Autowired
+	private CartaMenuDAO cartamenuDAO;
+	@Autowired
+	private ItemMenuDAO itemDAO;
+
+
+	/*
+	 * GETMAPPINGS
+	 */
+
+	@GetMapping(&quot;menurestaurante/{id}&quot;)
+	public String MenuRestaurante(@PathVariable(&quot;id&quot;) String idRestaurante, Model model) {
+<span class="fc" id="L49">		Optional &lt;Restaurante&gt; restauranteOptional = restauranteDAO.findById(idRestaurante);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		if(restauranteOptional.isPresent()){</span>
+<span class="fc" id="L51">			model.addAttribute(restauranteOptional.get());</span>
+<span class="fc" id="L52">			return &quot;menurestaurante&quot;;</span>
+		}else{
+<span class="fc" id="L54">			throw new IllegalArgumentException(&quot;Restaurante no encontrado&quot;);</span>
+		}
+	}
+
+	@GetMapping(&quot;altamenu/{id}&quot;)
+	public String darAltaMenu(@PathVariable(&quot;id&quot;) String idRestaurante, Model model) {
+<span class="fc" id="L60">		Optional &lt;Restaurante&gt; restauranteOptional = restauranteDAO.findById(idRestaurante);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		if(restauranteOptional.isEmpty()){</span>
+<span class="fc" id="L62">			return ERROR; </span>
+		}
+<span class="fc" id="L64">		Restaurante restaurante = restauranteOptional.get();</span>
+<span class="fc" id="L65">		model.addAttribute(restaurante);</span>
+<span class="fc" id="L66">		return &quot;altamenu&quot;;</span>
+	}
+
+	@GetMapping(&quot;modificarmenu/{id}&quot;)
+	public String modificarMenu(@PathVariable(&quot;id&quot;) String idRestaurante, Model model) {
+<span class="fc bfc" id="L71" title="All 4 branches covered.">		if(idRestaurante == null || idRestaurante.trim().isEmpty()){</span>
+<span class="fc" id="L72">			throw new IllegalArgumentException(&quot;El ID del restaurante no puede estar vacio&quot;);</span>
+		}
+		// Obtener todos los menús del restaurante por su ID, incluyendo los ítems
+<span class="fc" id="L75">		List&lt;CartaMenu&gt; menus = cartamenuDAO.findAllByRestauranteId(idRestaurante);</span>
+<span class="fc" id="L76">		model.addAttribute(&quot;menus&quot;, menus);</span>
+<span class="fc" id="L77">		model.addAttribute(&quot;idRestaurante&quot;, idRestaurante);</span>
+<span class="fc" id="L78">		return &quot;modificarmenu&quot;; </span>
+	}
+
+	@GetMapping(&quot;nuevoitem/{id}&quot;)
+	public String nuevoItem(@PathVariable(&quot;id&quot;) Long idMenu, Model model) {
+		// Obtener todos los menús del restaurante por su ID, incluyendo los ítems
+<span class="fc" id="L84">		CartaMenu menu = cartamenuDAO.findById(idMenu).get();</span>
+<span class="fc" id="L85">		model.addAttribute(&quot;menu&quot;, menu);</span>
+<span class="fc" id="L86">		model.addAttribute(&quot;idRestaurante&quot;, menu.getRestaurante().getIdUsuario());</span>
+<span class="fc" id="L87">		return &quot;nuevoitem&quot;; </span>
+	}
+
+	/*
+	 * POSTMAPPINGS
+	 */
+
+	@PostMapping(&quot;altamenu/{id}&quot;)
+	public String postAltaMenu(@PathVariable(&quot;id&quot;) String idRestaurante,
+			@RequestParam(value = &quot;nombreMenu&quot;, required = false) String nombreMenu,
+			@RequestParam(value = &quot;nombre&quot;, required = false) String nombreItem,
+			@RequestParam(value = &quot;precio&quot;, required = false) Double precio,
+			@RequestParam(value = &quot;tipo&quot;, required = false) String tipoItem, RedirectAttributes redirectAttributes) {
+<span class="pc bpc" id="L100" title="1 of 6 branches missed.">        if (nombreMenu == null || nombreItem == null || precio == null) {</span>
+<span class="fc" id="L101">            redirectAttributes.addFlashAttribute(ERROR, &quot;Faltan datos obligatorios.&quot;);</span>
+<span class="fc" id="L102">			return &quot;redirect:/errorPage&quot;; </span>
+		}
+<span class="fc" id="L104">		Restaurante restaurante = restauranteDAO.getById(idRestaurante);</span>
+		
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		if (!comprobarSiNoExiste(nombreMenu, idRestaurante)) {</span>
+<span class="fc" id="L107">			CartaMenu cartamenu = cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante);</span>
+<span class="fc" id="L108">			ItemMenu item = crearItem(nombreItem, tipoItem, precio);</span>
+<span class="fc" id="L109">			cartamenu.getItems().add(item);</span>
+<span class="fc" id="L110">			cartamenuDAO.save(cartamenu);</span>
+<span class="fc" id="L111">			redirectAttributes.addFlashAttribute(SUCCESS, &quot;El item se ha creado correctamente.&quot;);</span>
+<span class="fc" id="L112">			return REDIRIGIRNUEVOITEM + cartamenu.getId();</span>
+		}
+<span class="fc" id="L114">		CartaMenu cartamenu = new CartaMenu();</span>
+<span class="fc" id="L115">		cartamenu.setNombre(nombreMenu);</span>
+<span class="fc" id="L116">		cartamenu.setRestaurante(restaurante);</span>
+<span class="fc" id="L117">		cartamenuDAO.save(cartamenu);</span>
+
+<span class="fc" id="L119">		ItemMenu item = crearItem(nombreItem, tipoItem, precio);</span>
+
+<span class="fc" id="L121">		cartamenu.getItems().add(item);</span>
+<span class="fc" id="L122">		cartamenuDAO.save(cartamenu);</span>
+
+		// Agregar mensaje de éxito
+<span class="fc" id="L125">		redirectAttributes.addFlashAttribute(SUCCESS, &quot;El menú se ha creado correctamente.&quot;);</span>
+
+<span class="fc" id="L127">		return REDIRIGIRNUEVOITEM + cartamenu.getId();</span>
+	}
+
+	@PostMapping(&quot;modificarmenu/{id}&quot;)
+	public String postModMenu(@PathVariable(&quot;id&quot;) String idRestaurante,
+			@RequestParam(value = &quot;menuId&quot;, required = false) Long idMenu, Model model,
+			RedirectAttributes redirectAttributes) {
+				
+<span class="fc bfc" id="L135" title="All 2 branches covered.">		if (idMenu == null) {</span>
+<span class="fc" id="L136">			redirectAttributes.addFlashAttribute(ERROR, &quot;ID del menú no proporcionado&quot;);</span>
+<span class="fc" id="L137">			return REDIRIGIRMODIFICARMENU + idRestaurante;</span>
+		}
+
+<span class="fc" id="L140">		Optional&lt;CartaMenu&gt; optionalCartaMenu = cartamenuDAO.findById(idMenu);</span>
+    
+				
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">		if (optionalCartaMenu.isEmpty()) {</span>
+<span class="nc" id="L144">			redirectAttributes.addFlashAttribute(ERROR, &quot;Menú no encontrado&quot;);</span>
+<span class="nc" id="L145">			return REDIRIGIRMODIFICARMENU + idRestaurante;</span>
+		}
+		
+<span class="fc" id="L148">		CartaMenu cartamenu = optionalCartaMenu.get();</span>
+<span class="fc" id="L149">		List&lt;CartaMenu&gt; menus = cartamenuDAO.findAll();</span>
+		
+<span class="fc bfc" id="L151" title="All 2 branches covered.">		if (!cartamenu.getItems().isEmpty())</span>
+<span class="fc" id="L152">			redirectAttributes.addFlashAttribute(&quot;items&quot;, cartamenu.getItems());</span>
+<span class="fc" id="L153">		redirectAttributes.addFlashAttribute(&quot;menus&quot;, menus);</span>
+<span class="fc" id="L154">		redirectAttributes.addFlashAttribute(&quot;menu_seleccionado&quot;, cartamenu.getId());</span>
+
+<span class="fc" id="L156">		return REDIRIGIRMODIFICARMENU + idRestaurante;</span>
+	}
+
+	@PostMapping(&quot;nuevoitem/{id}&quot;)
+	public String postNuevoItem(@PathVariable(&quot;id&quot;) Long idMenu,
+			@RequestParam(value = &quot;nombre&quot;, required = false) String nombreItem,
+			@RequestParam(value = &quot;precio&quot;, required = false) Double precio,
+			@RequestParam(value = &quot;tipo&quot;, required = false) String tipoItem,
+			RedirectAttributes redirectAttributes, Model model) {
+<span class="fc bfc" id="L165" title="All 2 branches covered.">		if (idMenu == null) {</span>
+<span class="fc" id="L166">			redirectAttributes.addFlashAttribute(ERROR, &quot;El ID del menú no puede ser nulo&quot;);</span>
+<span class="fc" id="L167">			return &quot;redirect:/error&quot;; </span>
+		}
+<span class="fc" id="L169">		ItemMenu item = crearItem(nombreItem, tipoItem, precio);</span>
+		
+<span class="fc" id="L171">		CartaMenu menu = cartamenuDAO.findById(idMenu).get();</span>
+<span class="fc" id="L172">		menu.getItems().add(item);</span>
+<span class="fc" id="L173">		cartamenuDAO.save(menu);</span>
+<span class="fc" id="L174">		redirectAttributes.addFlashAttribute(SUCCESS,&quot;Item añadido con exito&quot;);</span>
+<span class="fc" id="L175">		return REDIRIGIRNUEVOITEM + idMenu;</span>
+	}
+
+	/*
+	 * DELETEMAPPINGS
+	 */
+
+	@DeleteMapping(&quot;/eliminaritem/{itemId}&quot;)
+	public ResponseEntity&lt;Void&gt; deleteItem(@PathVariable(&quot;itemId&quot;) Long itemId) {
+<span class="fc" id="L184">		Optional &lt;ItemMenu&gt; item = itemDAO.findById(itemId);</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">		if (item.isPresent()) {</span>
+<span class="fc" id="L186">			itemDAO.delete(item.get());</span>
+<span class="fc" id="L187">			return ResponseEntity.ok().build(); // Responde con 200 OK si se eliminó correctamente</span>
+		} else {
+<span class="fc" id="L189">			return ResponseEntity.notFound().build(); </span>
+		}
+	}
+	
+	@DeleteMapping(&quot;/eliminarmenu/{menuId}&quot;)
+	public ResponseEntity&lt;Void&gt; deleteMenu(@PathVariable(&quot;menuId&quot;) Long menuId) {
+<span class="fc" id="L195">		Optional &lt;CartaMenu&gt; optionalMenu = cartamenuDAO.findById(menuId);</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">		if (optionalMenu.isPresent()) {</span>
+<span class="fc" id="L197">			CartaMenu menu = optionalMenu.get();</span>
+<span class="fc" id="L198">			Collection &lt;ItemMenu&gt; items = menu.getItems();</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">			for (ItemMenu item : items) {</span>
+<span class="fc" id="L200">				itemDAO.delete(item);</span>
+<span class="fc" id="L201">			}</span>
+<span class="fc" id="L202">			cartamenuDAO.delete(menu);</span>
+			
+<span class="fc" id="L204">			return ResponseEntity.ok().build(); // Responde con 200 OK si se eliminó correctamente</span>
+		} else {
+<span class="fc" id="L206">			return ResponseEntity.notFound().build(); // Responde con 404 si el ítem no existe</span>
+		}
+	}
+
+	private boolean comprobarSiNoExiste(String nombre, String idRestaurante) {
+<span class="fc" id="L211">		CartaMenu cartamenu = cartamenuDAO.findByNombreAndRestauranteId(nombre, idRestaurante);</span>
+
+<span class="fc bfc" id="L213" title="All 2 branches covered.">		if (cartamenu != null) {</span>
+<span class="fc" id="L214">			return false;</span>
+		} else {
+<span class="fc" id="L216">			return true;</span>
+		}
+	}
+
+	private ItemMenu crearItem(String nombreItem, String tipoItem, Double precio){
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">		if (precio == null) {</span>
+<span class="nc" id="L222">			precio = 0.0;</span>
+		}
+		ItemMenu item;
+<span class="fc bfc" id="L225" title="All 2 branches covered.">		if (tipoItem.equals(&quot;COMIDA&quot;)) {</span>
+<span class="fc" id="L226">			item = new ItemMenu(nombreItem, TipoItemMenu.COMIDA, precio);</span>
+<span class="pc bpc" id="L227" title="1 of 2 branches missed.">		} else if (tipoItem.equals(&quot;BEBIDA&quot;)) {</span>
+<span class="nc" id="L228">			item = new ItemMenu(nombreItem, TipoItemMenu.BEBIDA, precio);</span>
+		} else {
+<span class="fc" id="L230">			item = new ItemMenu(nombreItem, TipoItemMenu.POSTRE, precio);</span>
+		}
+<span class="fc" id="L232">		return item;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

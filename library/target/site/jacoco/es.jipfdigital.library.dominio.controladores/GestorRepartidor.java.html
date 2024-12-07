@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestorRepartidor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">es.jipfdigital.library.dominio.controladores</a> &gt; <span class="el_source">GestorRepartidor.java</span></div><h1>GestorRepartidor.java</h1><pre class="source lang-java linenums">package es.jipfdigital.library.dominio.controladores;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import es.jipfdigital.library.dominio.entidades.EstadoPedido;
+import es.jipfdigital.library.dominio.entidades.Pedido;
+import es.jipfdigital.library.dominio.entidades.Repartidor;
+import es.jipfdigital.library.dominio.entidades.ServicioEntrega;
+import es.jipfdigital.library.persistencia.PedidoDAO;
+import es.jipfdigital.library.persistencia.RepartidorDAO;
+import es.jipfdigital.library.persistencia.ServicioEntregaDAO;
+
+@Controller
+<span class="fc" id="L27">public class GestorRepartidor {</span>
+	
+	private static final String IDREPARTIDOR = &quot;idRepartidor&quot;;
+	private static final String SERVICIOS = &quot;servicios&quot;;
+	private static final String REDIRIGIRREGISTRARENTREGA= &quot;redirect:/registrar_entrega/&quot;;
+	private static final String REDIRIGIRREGISTRARRECOGICA = &quot;redirect:/registrar_recogida/&quot;;
+	private static final String REGISTRARRECODIGA= &quot;registrar_recogida&quot;;
+	private static final String ERROR = &quot;error&quot;;
+	
+	@Autowired
+	RepartidorDAO repartidorDAO;
+	@Autowired
+	PedidoDAO pedidoDAO;
+	@Autowired
+	ServicioEntregaDAO servicioentregaDAO;
+	
+	
+	/*
+	 * GETMAPPINGS
+	 */
+	
+	@GetMapping(&quot;/menurepartidor/{idRepartidor}&quot;)
+	public String menuRepartidor(@PathVariable(&quot;idRepartidor&quot;) String idRepartidor, Model model) {
+<span class="nc" id="L50">		model.addAttribute(IDREPARTIDOR, idRepartidor);</span>
+<span class="nc" id="L51">		return &quot;menurepartidor&quot;;</span>
+	}
+	
+	@GetMapping(&quot;/pedidosrepartidor/{idRepartidor}&quot;)
+	public String mostrarPedidos(@PathVariable(&quot;idRepartidor&quot;) String idRepartidor, Model model) {
+<span class="fc" id="L56">		model.addAttribute(IDREPARTIDOR, idRepartidor);</span>
+<span class="fc" id="L57">		Repartidor repartidor = repartidorDAO.findById(idRepartidor).get();</span>
+<span class="fc" id="L58">		Collection&lt;ServicioEntrega&gt; servicios = repartidor.getServicios();</span>
+<span class="fc" id="L59">		model.addAttribute(SERVICIOS, servicios);</span>
+<span class="fc" id="L60">		return &quot;pedidosrepartidor&quot;;</span>
+	}
+	
+	@GetMapping(&quot;/registrar_recogida/{idRepartidor}&quot;)
+	public String menuRegistroRecogida(@PathVariable(&quot;idRepartidor&quot;) String idRepartidor, Model model) {
+<span class="fc" id="L65">		model.addAttribute(IDREPARTIDOR, idRepartidor);</span>
+<span class="fc" id="L66">		Repartidor repartidor = repartidorDAO.findById(idRepartidor).get();</span>
+<span class="fc" id="L67">		Collection&lt;ServicioEntrega&gt; servicios = repartidor.getServicios();</span>
+<span class="fc" id="L68">		List&lt;ServicioEntrega&gt; serviciosPagados = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">		if(servicios!=null) {</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">			for ( ServicioEntrega servicio : servicios) {</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">				if(servicio.getPedido().getEstado() == EstadoPedido.PAGADO) {</span>
+<span class="fc" id="L72">					serviciosPagados.add(servicio);</span>
+				}
+<span class="fc" id="L74">			}</span>
+		}
+<span class="fc" id="L76">		model.addAttribute(SERVICIOS, serviciosPagados);</span>
+<span class="fc" id="L77">		return REGISTRARRECODIGA;</span>
+	}
+	
+	@GetMapping(&quot;/registrar_entrega/{idRepartidor}&quot;)
+	public String menuRegistroEntrega(@PathVariable(&quot;idRepartidor&quot;) String idRepartidor, Model model) {
+<span class="fc" id="L82">		model.addAttribute(IDREPARTIDOR, idRepartidor);</span>
+<span class="fc" id="L83">		Repartidor repartidor = repartidorDAO.findById(idRepartidor).get();</span>
+<span class="fc" id="L84">		Collection&lt;ServicioEntrega&gt; servicios = repartidor.getServicios();</span>
+<span class="fc" id="L85">		List&lt;ServicioEntrega&gt; serviciosPagados = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">		if(servicios!=null) {</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">			for ( ServicioEntrega servicio : servicios) {</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">				if(servicio.getPedido().getEstado() == EstadoPedido.RECOGIDO) {</span>
+<span class="fc" id="L89">					serviciosPagados.add(servicio);</span>
+				}
+<span class="fc" id="L91">			}</span>
+		}
+<span class="fc" id="L93">		model.addAttribute(SERVICIOS, serviciosPagados);</span>
+<span class="fc" id="L94">		return &quot;registrar_entrega&quot;;</span>
+	}
+	
+	/*
+	 * POSTMAPPINGS
+	 */
+	
+	@PostMapping(&quot;/registrar_recogida/{idRepartidor}&quot;)
+	public String submitRecogida(@PathVariable(&quot;idRepartidor&quot;) String idRepartidor, Model model,
+			@RequestParam(value = &quot;id_pedido&quot;, required = false) Long idPedido,
+			RedirectAttributes redirectAttributes) {
+		
+<span class="fc" id="L106">		model.addAttribute(IDREPARTIDOR, idRepartidor);</span>
+		
+<span class="fc" id="L108">		Optional &lt;Pedido&gt; optionalPedido = pedidoDAO.findById(idPedido);</span>
+		
+<span class="fc bfc" id="L110" title="All 2 branches covered.">	    if (optionalPedido.isEmpty()) {</span>
+<span class="fc" id="L111">	        redirectAttributes.addFlashAttribute(ERROR, &quot;El pedido no existe.&quot;);</span>
+<span class="fc" id="L112">	        return REDIRIGIRREGISTRARRECOGICA + idRepartidor;</span>
+	    }
+		
+<span class="fc" id="L115">	    Pedido pedido = optionalPedido.get();</span>
+<span class="fc" id="L116">		pedido.setEstado(EstadoPedido.RECOGIDO);</span>
+<span class="fc" id="L117">		pedidoDAO.save(pedido);</span>
+		
+<span class="fc" id="L119">		ServicioEntrega servicio = pedido.getEntrega();</span>
+		
+<span class="fc bfc" id="L121" title="All 2 branches covered.">		if (servicio == null) {</span>
+<span class="fc" id="L122">	        redirectAttributes.addFlashAttribute(ERROR, &quot;El pedido no tiene un servicio de entrega asociado.&quot;);</span>
+<span class="fc" id="L123">	        return REDIRIGIRREGISTRARRECOGICA + idRepartidor;</span>
+	    }	
+		
+<span class="fc" id="L126">		servicio.setFechaRecepcion(LocalDate.now());</span>
+<span class="fc" id="L127">		servicioentregaDAO.save(servicio);</span>
+		
+<span class="fc" id="L129">		redirectAttributes.addFlashAttribute(&quot;exito&quot;, &quot;Recogida registrada con éxito&quot;);</span>
+<span class="fc" id="L130">		return REDIRIGIRREGISTRARRECOGICA + idRepartidor;</span>
+		
+	}
+	
+	@PostMapping(&quot;/registrar_entrega/{idRepartidor}&quot;)
+	public String submitEntrega(@PathVariable(&quot;idRepartidor&quot;) String idRepartidor, Model model,
+			@RequestParam(value = &quot;id_pedido&quot;, required = false) Long idPedido,
+			RedirectAttributes redirectAttributes) {
+<span class="fc" id="L138">		model.addAttribute(IDREPARTIDOR, idRepartidor);</span>
+		
+<span class="fc" id="L140">		Optional &lt;Pedido&gt; optionalPedido = pedidoDAO.findById(idPedido);</span>
+		
+<span class="fc bfc" id="L142" title="All 2 branches covered.">	    if (optionalPedido.isEmpty()) {</span>
+<span class="fc" id="L143">	        redirectAttributes.addFlashAttribute(ERROR, &quot;El pedido no existe.&quot;);</span>
+<span class="fc" id="L144">	        return REDIRIGIRREGISTRARENTREGA + idRepartidor;</span>
+	    }
+		
+<span class="fc" id="L147">	    Pedido pedido = optionalPedido.get();</span>
+<span class="fc" id="L148">		pedido.setEstado(EstadoPedido.ENTREGADO);</span>
+		
+<span class="fc" id="L150">		ServicioEntrega servicio = pedido.getEntrega();</span>
+		
+<span class="fc bfc" id="L152" title="All 2 branches covered.">		if (servicio == null) {</span>
+<span class="fc" id="L153">		    redirectAttributes.addFlashAttribute(ERROR, &quot;El pedido no tiene un servicio de entrega asociado.&quot;);</span>
+<span class="fc" id="L154">		    return REDIRIGIRREGISTRARENTREGA + idRepartidor;</span>
+		}
+		
+<span class="fc" id="L157">		servicio.setFechaEntrega(LocalDate.now());</span>
+<span class="fc" id="L158">		servicioentregaDAO.save(servicio);</span>
+		
+<span class="fc" id="L160">		Optional &lt;Repartidor&gt; optRepartidor = repartidorDAO.findById(idRepartidor);</span>
+		
+<span class="fc bfc" id="L162" title="All 2 branches covered.">		if (optRepartidor.isEmpty()) {</span>
+<span class="fc" id="L163">	        redirectAttributes.addFlashAttribute(ERROR, &quot;El repartidor no existe.&quot;);</span>
+<span class="fc" id="L164">	        return REDIRIGIRREGISTRARENTREGA + idRepartidor;</span>
+	    }
+		
+<span class="fc" id="L167">		Repartidor repartidor = optRepartidor.get();</span>
+<span class="fc" id="L168">		repartidor.actualizarEficiencia(1);</span>
+<span class="fc" id="L169">		repartidorDAO.save(repartidor);</span>
+		
+<span class="fc" id="L171">		pedidoDAO.save(pedido); //Si no ha habido ningún error anteriormente, se guarda ya el pedido- </span>
+<span class="fc" id="L172">		redirectAttributes.addFlashAttribute(&quot;exito&quot;, &quot;Entrega registrada con éxito&quot;);</span>
+<span class="fc" id="L173">		return REDIRIGIRREGISTRARENTREGA + idRepartidor;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
