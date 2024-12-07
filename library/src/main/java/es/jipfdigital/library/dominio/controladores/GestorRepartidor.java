@@ -28,6 +28,10 @@ public class GestorRepartidor {
 	
 	private static final String IDREPARTIDOR = "idRepartidor";
 	private static final String SERVICIOS = "servicios";
+	private static final String REDIRIGIRREGISTRARENTREGA= "redirect:/registrar_entrega/";
+	private static final String REDIRIGIRREGISTRARRECOGICA = "redirect:/registrar_recogida/";
+	private static final String REGISTRARRECODIGA= "registrar_recogida";
+	private static final String ERROR = "error";
 	
 	@Autowired
 	RepartidorDAO repartidorDAO;
@@ -64,13 +68,13 @@ public class GestorRepartidor {
 		List<ServicioEntrega> serviciosPagados = new ArrayList<>();
 		if(servicios!=null) {
 			for ( ServicioEntrega servicio : servicios) {
-				if(EstadoPedido.PAGADO.equals(servicio.getPedido().getEstado())) {
+				if(servicio.getPedido().getEstado() == EstadoPedido.PAGADO) {
 					serviciosPagados.add(servicio);
 				}
 			}
 		}
 		model.addAttribute(SERVICIOS, serviciosPagados);
-		return "registrar_recogida";
+		return REGISTRARRECODIGA;
 	}
 	
 	@GetMapping("/registrar_entrega/{idRepartidor}")
@@ -104,8 +108,8 @@ public class GestorRepartidor {
 		Optional <Pedido> optionalPedido = pedidoDAO.findById(idPedido);
 		
 	    if (optionalPedido.isEmpty()) {
-	        redirectAttributes.addFlashAttribute("error", "El pedido no existe.");
-	        return "redirect:/registrar_recogida/" + idRepartidor;
+	        redirectAttributes.addFlashAttribute(ERROR, "El pedido no existe.");
+	        return REDIRIGIRREGISTRARRECOGICA + idRepartidor;
 	    }
 		
 	    Pedido pedido = optionalPedido.get();
@@ -115,15 +119,15 @@ public class GestorRepartidor {
 		ServicioEntrega servicio = pedido.getEntrega();
 		
 		if (servicio == null) {
-	        redirectAttributes.addFlashAttribute("error", "El pedido no tiene un servicio de entrega asociado.");
-	        return "redirect:/registrar_recogida/" + idRepartidor;
+	        redirectAttributes.addFlashAttribute(ERROR, "El pedido no tiene un servicio de entrega asociado.");
+	        return REDIRIGIRREGISTRARRECOGICA + idRepartidor;
 	    }	
 		
 		servicio.setFechaRecepcion(LocalDate.now());
 		servicioentregaDAO.save(servicio);
 		
 		redirectAttributes.addFlashAttribute("exito", "Recogida registrada con éxito");
-		return "redirect:/registrar_recogida/" + idRepartidor;
+		return REDIRIGIRREGISTRARRECOGICA + idRepartidor;
 		
 	}
 	
@@ -136,8 +140,8 @@ public class GestorRepartidor {
 		Optional <Pedido> optionalPedido = pedidoDAO.findById(idPedido);
 		
 	    if (optionalPedido.isEmpty()) {
-	        redirectAttributes.addFlashAttribute("error", "El pedido no existe.");
-	        return "redirect:/registrar_entrega/" + idRepartidor;
+	        redirectAttributes.addFlashAttribute(ERROR, "El pedido no existe.");
+	        return REDIRIGIRREGISTRARENTREGA + idRepartidor;
 	    }
 		
 	    Pedido pedido = optionalPedido.get();
@@ -146,8 +150,8 @@ public class GestorRepartidor {
 		ServicioEntrega servicio = pedido.getEntrega();
 		
 		if (servicio == null) {
-		    redirectAttributes.addFlashAttribute("error", "El pedido no tiene un servicio de entrega asociado.");
-		    return "redirect:/registrar_entrega/" + idRepartidor;
+		    redirectAttributes.addFlashAttribute(ERROR, "El pedido no tiene un servicio de entrega asociado.");
+		    return REDIRIGIRREGISTRARENTREGA + idRepartidor;
 		}
 		
 		servicio.setFechaEntrega(LocalDate.now());
@@ -156,8 +160,8 @@ public class GestorRepartidor {
 		Optional <Repartidor> optRepartidor = repartidorDAO.findById(idRepartidor);
 		
 		if (optRepartidor.isEmpty()) {
-	        redirectAttributes.addFlashAttribute("error", "El repartidor no existe.");
-	        return "redirect:/registrar_entrega/" + idRepartidor;
+	        redirectAttributes.addFlashAttribute(ERROR, "El repartidor no existe.");
+	        return REDIRIGIRREGISTRARENTREGA + idRepartidor;
 	    }
 		
 		Repartidor repartidor = optRepartidor.get();
@@ -166,7 +170,7 @@ public class GestorRepartidor {
 		
 		pedidoDAO.save(pedido); //Si no ha habido ningún error anteriormente, se guarda ya el pedido- 
 		redirectAttributes.addFlashAttribute("exito", "Entrega registrada con éxito");
-		return "redirect:/registrar_entrega/" + idRepartidor;
+		return REDIRIGIRREGISTRARENTREGA + idRepartidor;
 	}
 
 }

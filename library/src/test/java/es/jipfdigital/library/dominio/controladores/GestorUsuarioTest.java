@@ -93,7 +93,7 @@ public class GestorUsuarioTest {
     }
 
     @Test
-    void testLoginSubmitContrasenaIncorrecta() {
+    void testLoginSubmitContrasenaIncorrectaCliente() {
         Model model = new ConcurrentModel();
         Usuario usuario = new Usuario();
         usuario.setIdUsuario("cliente");
@@ -110,7 +110,46 @@ public class GestorUsuarioTest {
         assertEquals("login", result);
         assertEquals("Contraseña incorrecta, pruebe otra vez", model.getAttribute("error"));
     }
+    
+    @Test
+    void testLoginSubmitContrasenaIncorrectaRetaurante() {
+        Model model = new ConcurrentModel();
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario("restaurante1");
+        usuario.setNombre("restaurante1");
+        usuario.setPass("incorrecta");
+        Direccion direccion = new Direccion("12345","Calle","2","nada","test");
+        Restaurante restaurante = new Restaurante("restaurante1","restaurante1","password123",direccion , "3459345394");
 
+        when(clienteDAO.findById("restaurante1")).thenReturn(Optional.empty());
+        when(restauranteDAO.findById("restaurante1")).thenReturn(Optional.of(restaurante));
+        when(repartidorDAO.findById("restaurante1")).thenReturn(Optional.empty());
+
+        String result = gestorUsuario.loginSubmit(usuario, model);
+
+        assertEquals("login", result);
+        assertEquals("Contraseña incorrecta, pruebe otra vez", model.getAttribute("error"));
+    }
+    
+    @Test
+    void testLoginSubmitContrasenaIncorrectaRepartidor() {
+        Model model = new ConcurrentModel();
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario("repartidor");
+        usuario.setNombre("usuario1");
+        usuario.setPass("incorrecta");
+        Repartidor repartidor = new Repartidor("repartidor", "usuario1", "password123", "apellidos", "123456");
+
+        when(clienteDAO.findById("repartidor")).thenReturn(Optional.empty());
+        when(restauranteDAO.findById("repartidor")).thenReturn(Optional.empty());
+        when(repartidorDAO.findById("repartidor")).thenReturn(Optional.of(repartidor));
+
+        String result = gestorUsuario.loginSubmit(usuario, model);
+
+        assertEquals("login", result);
+        assertEquals("Contraseña incorrecta, pruebe otra vez", model.getAttribute("error"));
+    }
+    
     @Test
     void testLoginSubmitUsuarioNoExistente() {
         Model model = new ConcurrentModel();
@@ -198,5 +237,52 @@ public class GestorUsuarioTest {
         verify(repartidorDAO, times(1)).save(any(Repartidor.class));
         assertEquals("login", result);
     }
+    
+    @Test
+    void testRegistroSubmitClienteCampoVacio() {
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario("cliente1");
+        usuario.setNombre("cliente1");
+        usuario.setPass("test");
+        Model model = new ConcurrentModel();
+
+        String result = gestorUsuario.registroSubmit(
+                usuario, "", "23405234", null, null, null, null, null, null, null, null, 1, model);
+
+        assertEquals("registro", result);
+    }
+
+    @Test
+    void testRegistroSubmitRolRestauranteCampoVacio() {
+
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario("restaurante1");
+        usuario.setNombre("restaurante1");
+        usuario.setPass("test");
+        Model model = new ConcurrentModel();
+
+        String result = gestorUsuario.registroSubmit(
+                usuario, null, null, "", "", "Jacinto Benavente", "3", "Bajo", "Madrid", null, null, 2,
+                model);
+
+        assertEquals("registro", result);
+    }
+
+    @Test
+    void testRegistroSubmitRolRepartidorCampoVacio() {
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario("repartidor1");
+        usuario.setNombre("repartidor1");
+        usuario.setPass("test");
+        Model model = new ConcurrentModel();
+
+        String result = gestorUsuario.registroSubmit(
+                usuario, null, null, null, null, null, null, null, null, "", "45346394", 3, model);
+
+        assertEquals("registro", result);
+    }
+    
+    
+    
 
 }

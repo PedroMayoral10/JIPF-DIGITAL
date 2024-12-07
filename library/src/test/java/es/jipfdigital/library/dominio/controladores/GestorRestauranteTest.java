@@ -126,7 +126,7 @@ public class GestorRestauranteTest {
 
     // En tu clase de prueba
     @Test
-    public void testPostAltaMenu_crearNuevoMenu() {
+    public void testPostAltaMenuCrearNuevoMenu() {
         // Datos de prueba
         String idRestaurante = "restaurante1";
         String nombreMenu = "Nuevo Menú";
@@ -274,7 +274,7 @@ public class GestorRestauranteTest {
     }
 
     @Test
-    public void testModificarMenu_idRestauranteVacio() {
+    public void testModificarMenuIdRestauranteVacio() {
         String idRestaurante = ""; // O también puede ser null
         Model model = new BindingAwareModelMap();
 
@@ -380,7 +380,7 @@ public class GestorRestauranteTest {
     }
 
     @Test
-    public void deleteItemExiste() throws Exception {
+    public void testDeleteItemExiste() throws Exception {
 
         Long itemId = 1L;
         ItemMenu mockItem = new ItemMenu(); // Asume que tienes un objeto ItemMenu
@@ -393,7 +393,7 @@ public class GestorRestauranteTest {
 
     // Intentar eliminar un elemento inexistente
     @Test
-    public void deleteItemNoExiste() throws Exception {
+    public void testDeleteItemNoExiste() throws Exception {
         // Arrange
         Long itemId = 1L;
         when(itemDAO.findById(itemId)).thenReturn(Optional.empty());
