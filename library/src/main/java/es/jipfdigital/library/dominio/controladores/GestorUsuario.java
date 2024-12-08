@@ -1,5 +1,7 @@
 package es.jipfdigital.library.dominio.controladores;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,8 +18,6 @@ import es.jipfdigital.library.dominio.entidades.Usuario;
 import es.jipfdigital.library.persistencia.ClienteDAO;
 import es.jipfdigital.library.persistencia.RepartidorDAO;
 import es.jipfdigital.library.persistencia.RestauranteDAO;
-
-import java.util.Optional;
 
 @Controller
 public class GestorUsuario {
@@ -106,15 +106,28 @@ public class GestorUsuario {
 		System.out.println(rol);
 		switch (rol) {
 			case 1:
+			if (clienteDAO.findById(usuario.getIdUsuario()).isPresent()) {
+                model.addAttribute("error", "El nombre de usuario ya existe.");
+                return REGISTRO_STR;
+            }
 				if(registrarCliente(usuario, apellidosCliente, dniCliente, model) == 0)
 					return REGISTRO_STR;
+				
 				break;
 			case 2:
+			if (restauranteDAO.findById(usuario.getIdUsuario()).isPresent()) {
+                model.addAttribute("error", "El nombre de usuario ya existe.");
+                return REGISTRO_STR;
+            }
 				if(registrarRestaurante(usuario, codigoPostalRestaurante, calleRestaurante, numeroRestaurante,
 						complementoRestaurante, municipioRestaurante, cifRestaurante, model) == 0)
 						return REGISTRO_STR;
 				break;
 			case 3:
+			if (repartidorDAO.findById(usuario.getIdUsuario()).isPresent()) {
+                model.addAttribute("error", "El nombre de usuario ya existe.");
+                return REGISTRO_STR;
+            }
 				if(registrarRepartidor(usuario, apellidosRepartidor, nifRepartidor, model) == 0)
 					return REGISTRO_STR;
 				break;
