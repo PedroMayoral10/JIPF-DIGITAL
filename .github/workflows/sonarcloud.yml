@@ -72,3 +72,4 @@ jobs:
           -Dsonar.exclusions=**library/src/test/java**,**library/src/main/resources**
           -Dsonar.branch.name=desarrollo
           -Dsonar.coverage.jacoco.xmlReportPaths=library/target/site/jacoco/jacoco.xml
+          -Dsonar.scanner.forceFullAnalysis=true
