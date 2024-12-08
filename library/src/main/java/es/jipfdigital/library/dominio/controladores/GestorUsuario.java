@@ -126,7 +126,11 @@ public class GestorUsuario {
 	            return REGISTRO_STR;
 	    }
 
-	    return registroExitoso ? LOGIN_STR : REGISTRO_STR;
+	    if (registroExitoso) {
+	        return LOGIN_STR;
+	    } else {
+	        return REGISTRO_STR;
+	    }
 	}
 
 	private boolean procesarRegistroCliente(Usuario usuario, String apellidosCliente, String dniCliente, Model model) {
@@ -146,7 +150,8 @@ public class GestorUsuario {
 	    return registrarRestaurante(usuario, codigoPostal, calle, numero, complemento, municipio, cif, model) != 0;
 	}
 
-	private boolean procesarRegistroRepartidor(Usuario usuario, String apellidosRepartidor, String nifRepartidor, Model model) {
+	private boolean procesarRegistroRepartidor(Usuario usuario, String apellidosRepartidor, 
+											   String nifRepartidor, Model model) {
 	    if (repartidorDAO.findById(usuario.getIdUsuario()).isPresent()) {
 	        model.addAttribute(ERROR_STR, USUARIO_EXISTE_STR);
 	        return false;
