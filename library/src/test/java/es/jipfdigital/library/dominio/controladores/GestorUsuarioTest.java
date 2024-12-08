@@ -282,6 +282,55 @@ public class GestorUsuarioTest {
         assertEquals("registro", result);
     }
     
+    @Test
+    public void testUsuarioClienteYaExiste() {
+    	
+    	Usuario usuario = new Usuario ();
+    	usuario = new Usuario();
+        usuario.setIdUsuario("testUser");
+    		
+        Model model = mock(Model.class); 
+        when(clienteDAO.findById(usuario.getIdUsuario())).thenReturn(Optional.of(new Cliente()));
+
+        String result = gestorUsuario.registroSubmit(usuario, "", "", null, null, null, null, null, null, null, null, 1, model);
+
+        verify(model).addAttribute("error", "El nombre de usuario ya existe."); 
+        assertEquals("registro", result);
+    }
+
+    @Test
+    public void testRestauranteYaExiste() {
+    	
+    	Usuario usuario = new Usuario ();
+    	usuario = new Usuario();
+        usuario.setIdUsuario("testUser");
+    	  	
+        Model model = mock(Model.class); 
+        when(restauranteDAO.findById(usuario.getIdUsuario())).thenReturn(Optional.of(new Restaurante()));
+
+        String result = gestorUsuario.registroSubmit(usuario, null, null, null, null, null, null, null, null, null, null, 2, model);
+
+        verify(model).addAttribute("error", "El nombre de usuario ya existe."); 
+        assertEquals("registro", result);
+    }
+
+    @Test
+    public void testRepartidorYaExiste() {
+    	
+    	Usuario usuario = new Usuario ();
+    	usuario = new Usuario();
+        usuario.setIdUsuario("testUser");
+        
+        Model model = mock(Model.class); 
+        when(repartidorDAO.findById(usuario.getIdUsuario())).thenReturn(Optional.of(new Repartidor()));
+
+        String result = gestorUsuario.registroSubmit(usuario, null, null, null, null, null, null, null, null, null, null, 3, model);
+
+        verify(model).addAttribute("error", "El nombre de usuario ya existe."); 
+        assertEquals("registro", result);
+    }
+    
+    
     
     
 

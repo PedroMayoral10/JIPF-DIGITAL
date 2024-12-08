@@ -122,7 +122,7 @@ public class GestorUsuario {
 	            registroExitoso = procesarRegistroRepartidor(usuario, apellidosRepartidor, nifRepartidor, model);
 	            break;
 	        default:
-	            model.addAttribute("rolNulo", "Ingresa un tipo de usuario válido");
+	            model.addAttribute("rolNulo", "Ingresa un tipo de usuario");
 	            return REGISTRO_STR;
 	    }
 
