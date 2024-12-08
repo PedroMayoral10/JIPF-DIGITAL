@@ -90,53 +90,68 @@ public class GestorUsuario {
 
 	@PostMapping("/registro")
 	public String registroSubmit(
-			@ModelAttribute Usuario usuario,
-			@RequestParam(value = "apellidosCliente", required = false) String apellidosCliente,
-			@RequestParam(value = "dniCliente", required = false) String dniCliente,
-			@RequestParam(value = "cifRestaurante", required = false) String cifRestaurante,
-			@RequestParam(value = "codigoPostalRestaurante", required = false) String codigoPostalRestaurante,
-			@RequestParam(value = "calleRestaurante", required = false) String calleRestaurante,
-			@RequestParam(value = "numeroRestaurante", required = false) String numeroRestaurante,
-			@RequestParam(value = "complementoRestaurante", required = false) String complementoRestaurante,
-			@RequestParam(value = "municipioRestaurante", required = false) String municipioRestaurante,
-			@RequestParam(value = "apellidosRepartidor", required = false) String apellidosRepartidor,
-			@RequestParam(value = "nifRepartidor", required = false) String nifRepartidor,
-			@RequestParam(value = "rol", required = false) Integer rol,
-			Model model) {
-		System.out.println(rol);
-		switch (rol) {
-			case 1:
-				if (clienteDAO.findById(usuario.getIdUsuario()).isPresent()) {
-					model.addAttribute(ERROR_STR, USUARIO_EXISTE_STR);
-					return REGISTRO_STR;
-				}
-				if (registrarCliente(usuario, apellidosCliente, dniCliente, model) == 0)
-					return REGISTRO_STR;
+	        @ModelAttribute Usuario usuario,
+	        @RequestParam(value = "apellidosCliente", required = false) String apellidosCliente,
+	        @RequestParam(value = "dniCliente", required = false) String dniCliente,
+	        @RequestParam(value = "cifRestaurante", required = false) String cifRestaurante,
+	        @RequestParam(value = "codigoPostalRestaurante", required = false) String codigoPostalRestaurante,
+	        @RequestParam(value = "calleRestaurante", required = false) String calleRestaurante,
+	        @RequestParam(value = "numeroRestaurante", required = false) String numeroRestaurante,
+	        @RequestParam(value = "complementoRestaurante", required = false) String complementoRestaurante,
+	        @RequestParam(value = "municipioRestaurante", required = false) String municipioRestaurante,
+	        @RequestParam(value = "apellidosRepartidor", required = false) String apellidosRepartidor,
+	        @RequestParam(value = "nifRepartidor", required = false) String nifRepartidor,
+	        @RequestParam(value = "rol", required = false) Integer rol,
+	        Model model) {
 
-				break;
-			case 2:
-				if (restauranteDAO.findById(usuario.getIdUsuario()).isPresent()) {
-					model.addAttribute(ERROR_STR, USUARIO_EXISTE_STR);
-					return REGISTRO_STR;
-				}
-				if (registrarRestaurante(usuario, codigoPostalRestaurante, calleRestaurante, numeroRestaurante,
-						complementoRestaurante, municipioRestaurante, cifRestaurante, model) == 0)
-					return REGISTRO_STR;
-				break;
-			case 3:
-				if (repartidorDAO.findById(usuario.getIdUsuario()).isPresent()) {
-					model.addAttribute(ERROR_STR, USUARIO_EXISTE_STR);
-					return REGISTRO_STR;
-				}
-				if (registrarRepartidor(usuario, apellidosRepartidor, nifRepartidor, model) == 0)
-					return REGISTRO_STR;
-				break;
-			default:
-				model.addAttribute("rolNulo", "Ingresa un tipo de usuario");
-				return REGISTRO_STR;
-		}
+	    if (rol == null) {
+	        model.addAttribute("rolNulo", "Ingresa un tipo de usuario");
+	        return REGISTRO_STR;
+	    }
 
-		return LOGIN_STR;
+	    boolean registroExitoso;
+	    switch (rol) {
+	        case 1:
+	            registroExitoso = procesarRegistroCliente(usuario, apellidosCliente, dniCliente, model);
+	            break;
+	        case 2:
+	            registroExitoso = procesarRegistroRestaurante(usuario, codigoPostalRestaurante, calleRestaurante,
+	                    numeroRestaurante, complementoRestaurante, municipioRestaurante, cifRestaurante, model);
+	            break;
+	        case 3:
+	            registroExitoso = procesarRegistroRepartidor(usuario, apellidosRepartidor, nifRepartidor, model);
+	            break;
+	        default:
+	            model.addAttribute("rolNulo", "Ingresa un tipo de usuario válido");
+	            return REGISTRO_STR;
+	    }
+
+	    return registroExitoso ? LOGIN_STR : REGISTRO_STR;
+	}
+
+	private boolean procesarRegistroCliente(Usuario usuario, String apellidosCliente, String dniCliente, Model model) {
+	    if (clienteDAO.findById(usuario.getIdUsuario()).isPresent()) {
+	        model.addAttribute(ERROR_STR, USUARIO_EXISTE_STR);
+	        return false;
+	    }
+	    return registrarCliente(usuario, apellidosCliente, dniCliente, model) != 0;
+	}
+
+	private boolean procesarRegistroRestaurante(Usuario usuario, String codigoPostal, String calle, String numero,
+	                                            String complemento, String municipio, String cif, Model model) {
+	    if (restauranteDAO.findById(usuario.getIdUsuario()).isPresent()) {
+	        model.addAttribute(ERROR_STR, USUARIO_EXISTE_STR);
+	        return false;
+	    }
+	    return registrarRestaurante(usuario, codigoPostal, calle, numero, complemento, municipio, cif, model) != 0;
+	}
+
+	private boolean procesarRegistroRepartidor(Usuario usuario, String apellidosRepartidor, String nifRepartidor, Model model) {
+	    if (repartidorDAO.findById(usuario.getIdUsuario()).isPresent()) {
+	        model.addAttribute(ERROR_STR, USUARIO_EXISTE_STR);
+	        return false;
+	    }
+	    return registrarRepartidor(usuario, apellidosRepartidor, nifRepartidor, model) != 0;
 	}
 
 	private int registrarCliente(Usuario usuario, String apellidosCliente, String dniCliente, Model model) {
