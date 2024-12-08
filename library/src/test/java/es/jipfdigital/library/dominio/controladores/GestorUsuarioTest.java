@@ -294,7 +294,7 @@ public class GestorUsuarioTest {
 
         String result = gestorUsuario.registroSubmit(usuario, "", "", null, null, null, null, null, null, null, null, 1, model);
 
-        verify(model).addAttribute("error", "El nombre de usuario ya existe."); 
+        verify(model).addAttribute("error", "El nombre de usuario ya existe"); 
         assertEquals("registro", result);
     }
 
@@ -310,7 +310,7 @@ public class GestorUsuarioTest {
 
         String result = gestorUsuario.registroSubmit(usuario, null, null, null, null, null, null, null, null, null, null, 2, model);
 
-        verify(model).addAttribute("error", "El nombre de usuario ya existe."); 
+        verify(model).addAttribute("error", "El nombre de usuario ya existe"); 
         assertEquals("registro", result);
     }
 
@@ -326,7 +326,7 @@ public class GestorUsuarioTest {
 
         String result = gestorUsuario.registroSubmit(usuario, null, null, null, null, null, null, null, null, null, null, 3, model);
 
-        verify(model).addAttribute("error", "El nombre de usuario ya existe."); 
+        verify(model).addAttribute("error", "El nombre de usuario ya existe"); 
         assertEquals("registro", result);
     }
     
