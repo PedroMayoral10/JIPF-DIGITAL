@@ -83,7 +83,7 @@
         <h1>Registrar Recogida</h1>
 		<div th:if="${exito}" class="mensaje-exito" th:text="${exito}"></div>
         <div th:each="servicio : ${servicios}" class="servicio">
-            <h3 th:text="'Servicio ID: ' + ${servicio.id_servicioEntrega}"></h3>
+            <h3 th:text="'Servicio ID: ' + ${servicio.idServicioEntrega}"></h3>
             <p th:text="'ID del Pedido: ' + ${servicio.pedido.id_pedido}"></p>
             <p th:text="'Estado Actual: ' + ${servicio.pedido.estado}"></p>
             <form th:action="@{/registrar_recogida/{id}(id=${idRepartidor})}" method="post">
