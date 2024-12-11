@@ -146,47 +146,43 @@ class GestorPedidoTestTest {
                 direccion.getMunicipio().equals(municipio)));
     }
 
-    
-
     @Test
-public void testSubmitPagoValoresNoNulosDireccionExistente() {
-    String idCliente = "54321";
-    String idRestaurante = "98765";
-    Long idDireccion = 1L; // Dirección no nula, ahora tiene un valor válido
+    public void testSubmitPagoValoresNoNulosDireccionExistente() {
+        String idCliente = "54321";
+        String idRestaurante = "98765";
+        Long idDireccion = 1L;
 
-    // Mocks de la base de datos
-    Restaurante restaurante = new Restaurante();
-    Cliente cliente = new Cliente();
+        // Mocks de la base de datos
+        Restaurante restaurante = new Restaurante();
+        Cliente cliente = new Cliente();
 
-    // Creamos una dirección existente asociada al cliente
-    Direccion direccion = new Direccion("45600", "Calle Alcatraz", "98", "A", "Hervás");
-    direccion.setId(idDireccion);  // Asignamos un ID válido a la dirección existente
+        // Creamos una dirección existente asociada al cliente
+        Direccion direccion = new Direccion("45600", "Calle Alcatraz", "98", "A", "Hervás");
+        direccion.setId(idDireccion);
 
-    List<Direccion> direcciones = new ArrayList<>();
-    direcciones.add(direccion);
-    cliente.setDirecciones(direcciones);
+        List<Direccion> direcciones = new ArrayList<>();
+        direcciones.add(direccion);
+        cliente.setDirecciones(direcciones);
 
-    Repartidor repartidor = new Repartidor();
-    repartidor.setServicios(new ArrayList<>());
+        Repartidor repartidor = new Repartidor();
+        repartidor.setServicios(new ArrayList<>());
 
-    // Simula la base de datos
-    when(restauranteDAO.findById(idRestaurante)).thenReturn(Optional.of(restaurante));
-    when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(cliente));
-    
+        // Simula la base de datos
+        when(restauranteDAO.findById(idRestaurante)).thenReturn(Optional.of(restaurante));
+        when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(cliente));
 
-    
-    when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor));
+        when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor));
 
-    // Llamada al método
-    String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
-            "45600", MetodoPago.CREDIT_CARD, "Calle Alcatraz", "98", "A", "Hervás", idDireccion);
+        // Llamada al método
+        String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
+                "45600", MetodoPago.CREDIT_CARD, "Calle Alcatraz", "98", "A", "Hervás", idDireccion);
 
-    // Verificaciones
-    assertEquals("redirect:/confirmacionpago/" + idCliente, resultado);
-    verify(model).addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
-    verify(pedidoDAO).save(any(Pedido.class));
-    verify(direccionDAO, never()).save(any(Direccion.class)); // No se debe guardar la dirección, ya existe
-}
+        // Verificaciones
+        assertEquals("redirect:/confirmacionpago/" + idCliente, resultado);
+        verify(model).addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
+        verify(pedidoDAO).save(any(Pedido.class));
+        verify(direccionDAO, never()).save(any(Direccion.class));
+    }
 
     @Test
     public void testSubmitPagoSinRepartidorOptimo() {
@@ -198,29 +194,24 @@ public void testSubmitPagoValoresNoNulosDireccionExistente() {
         String numero = "98";
         String complemento = "A";
         String municipio = "Hervás";
-        Long idDireccion = null; // Dirección nula
+        Long idDireccion = null;
 
         Restaurante restaurante = new Restaurante();
         Cliente cliente = new Cliente();
 
-        // No hay repartidores disponibles (repartidor óptimo es null)
-        when(repartidorDAO.findAll()).thenReturn(Collections.emptyList()); // No hay repartidores disponibles
+        when(repartidorDAO.findAll()).thenReturn(Collections.emptyList());
         when(restauranteDAO.findById(idRestaurante)).thenReturn(Optional.of(restaurante));
         when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(cliente));
-
-        // Llamada al método
-        // Mocks de la base de datos
 
         String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
                 codigoPostal, MetodoPago.PAYPAL, calle, numero, complemento, municipio, idDireccion);
 
         // Verificaciones
-        assertEquals("realizarpago", resultado); // El flujo debería redirigir a realizarpago si no hay repartidor
-        verify(model).addAttribute("sinRepartidor", true); // Verifica que el atributo sinRepartidor sea true
-        verify(pedidoDAO, never()).save(any(Pedido.class)); // No se debe guardar el pedido si no hay repartidor
+        assertEquals("realizarpago", resultado);
+        verify(model).addAttribute("sinRepartidor", true);
+        verify(pedidoDAO, never()).save(any(Pedido.class));
     }
 
-    
     @Test
     void testRealizarPagoListaVacia() {
 
