@@ -97,7 +97,7 @@ class GestorClientesTest {
 	
 	
 	@Test
-	public void testAñadirFavoritoNull() {
+	public void testAnyadirFavoritoNull() {
 		
 		// Preparar datos de prueba
         String idCliente = "1";
@@ -113,9 +113,9 @@ class GestorClientesTest {
         String resultado = gestorClientes.favorito(model, idCliente, null);
 
         // Verificar comportamiento
-        assert cliente.getFavoritos().isEmpty(); // Restaurante fue eliminado de favoritos
+        assertTrue(cliente.getFavoritos().isEmpty()); // Restaurante fue eliminado de favoritos
         assert resultado.equals("redirect:/listarestaurantes/" + idCliente);
-		
+        verify(clienteDAO, never()).save(cliente);
 		
 	}
 	

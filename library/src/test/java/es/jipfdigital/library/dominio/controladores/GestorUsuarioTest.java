@@ -5,6 +5,8 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -238,46 +240,22 @@ public class GestorUsuarioTest {
         assertEquals("login", result);
     }
     
-    @Test
-    void testRegistroSubmitClienteCampoVacio() {
+    @ParameterizedTest
+    @CsvSource({
+        "1", // Cliente
+        "2", // Restaurante
+        "3"  // Repartidor
+    })
+    void testRegistroSubmitCampoVacio(int rolId) {
         Usuario usuario = new Usuario();
         usuario.setIdUsuario(null);
         usuario.setNombre(null);
         usuario.setPass(null);
+        
         Model model = new ConcurrentModel();
 
         String result = gestorUsuario.registroSubmit(
-                usuario, null, null, null, null, null, null, null, null, null, null, 1, model);
-
-        assertEquals("registro", result);
-    }
-
-    @Test
-    void testRegistroSubmitRolRestauranteCampoVacio() {
-
-        Usuario usuario = new Usuario();
-        usuario.setIdUsuario(null);
-        usuario.setNombre(null);
-        usuario.setPass(null);
-        Model model = new ConcurrentModel();
-
-        String result = gestorUsuario.registroSubmit(
-                usuario, null, null, null, null, null, null, null, null, null, null, 2,
-                model);
-
-        assertEquals("registro", result);
-    }
-
-    @Test
-    void testRegistroSubmitRolRepartidorCampoVacio() {
-        Usuario usuario = new Usuario();
-        usuario.setIdUsuario(null);
-        usuario.setNombre(null);
-        usuario.setPass(null);
-        Model model = new ConcurrentModel();
-
-        String result = gestorUsuario.registroSubmit(
-                usuario, null, null, null, null, null, null, null, null, null, null, 3, model);
+                usuario, null, null, null, null, null, null, null, null, null, null, rolId, model);
 
         assertEquals("registro", result);
     }

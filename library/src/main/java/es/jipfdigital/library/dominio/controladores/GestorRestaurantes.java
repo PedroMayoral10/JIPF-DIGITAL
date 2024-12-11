@@ -157,13 +157,14 @@ public class GestorRestaurantes {
 	public String postNuevoItem(@PathVariable("id") Long idMenu,
 			@RequestParam(value = "nombre", required = false) String nombreItem,
 			@RequestParam(value = "precio", required = false) Double precio,
-			@RequestParam(value = "tipo", required = false) String tipoItem,
-			RedirectAttributes redirectAttributes, Model model) {
-		if(precio!=null)
-			if(precio < 0){
+			@RequestParam(value = "tipo", required = false) String tipoItem, RedirectAttributes redirectAttributes,
+			Model model) {
+		if (precio != null) {
+			if (precio < 0) {
 				redirectAttributes.addFlashAttribute(ERROR, "Introduce un precio >= 0");
-				return "redirect:/nuevoitem/" +idMenu;
+				return REDIRIGIRNUEVOITEM + idMenu;
 			}
+		}
 		if (idMenu == null) {
 			redirectAttributes.addFlashAttribute(ERROR, "El ID del menú no puede ser nulo");
 			return "redirect:/error";
