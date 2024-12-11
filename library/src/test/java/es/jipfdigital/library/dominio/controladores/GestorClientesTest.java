@@ -37,7 +37,7 @@ class GestorClientesTest {
     }
 	
 	@Test
-	public void testFavorito() {
+	public void testEliminarFavorito() {
 		
 		// Preparar datos de prueba
         String idCliente = "1";
@@ -66,6 +66,60 @@ class GestorClientesTest {
 		
 		
 	}
+	
+	@Test
+	public void testAnyadirFavorito() {
+		
+		// Preparar datos de prueba
+        String idCliente = "1";
+        String idRestaurante = "100";
+        
+        Restaurante restaurante = new Restaurante();
+        restaurante.setIdUsuario(idRestaurante);
+        
+        Cliente cliente = new Cliente();
+        cliente.setIdUsuario(idCliente);
+
+        // Configurar mocks
+        when(restauranteDAO.findById(idRestaurante)).thenReturn(Optional.of(restaurante));
+        when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(cliente));
+
+        // Ejecutar el método
+        String resultado = gestorClientes.favorito(model, idCliente, idRestaurante);
+
+        // Verificar comportamiento
+        verify(clienteDAO, times(1)).save(cliente);
+        assert cliente.getFavoritos().contains(restaurante); // Restaurante fue anyadido a favoritos
+        assert resultado.equals("redirect:/listarestaurantes/" + idCliente);
+		
+		
+	}
+	
+	
+	@Test
+	public void testAñadirFavoritoNull() {
+		
+		// Preparar datos de prueba
+        String idCliente = "1";
+        
+        Cliente cliente = new Cliente();
+        cliente.setIdUsuario(idCliente);
+        
+
+        // Configurar mocks
+        when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(cliente));
+
+        // Ejecutar el método
+        String resultado = gestorClientes.favorito(model, idCliente, null);
+
+        // Verificar comportamiento
+        assert cliente.getFavoritos().isEmpty(); // Restaurante fue eliminado de favoritos
+        assert resultado.equals("redirect:/listarestaurantes/" + idCliente);
+		
+		
+	}
+	
+	
 	
 	
 	
