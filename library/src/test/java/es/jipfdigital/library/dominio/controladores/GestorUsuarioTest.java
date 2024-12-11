@@ -112,7 +112,7 @@ public class GestorUsuarioTest {
     }
     
     @Test
-    void testLoginSubmitContrasenaIncorrectaRetaurante() {
+    void testLoginSubmitContrasenaIncorrectaRestaurante() {
         Model model = new ConcurrentModel();
         Usuario usuario = new Usuario();
         usuario.setIdUsuario("restaurante1");
@@ -156,7 +156,7 @@ public class GestorUsuarioTest {
         Usuario usuario = new Usuario();
         usuario.setIdUsuario("usuario2");
         usuario.setNombre("usuario2");
-        usuario.setPass("pass");
+        usuario.setPass("password123");
 
         when(clienteDAO.findById("usuario2")).thenReturn(Optional.empty());
         when(restauranteDAO.findById("usuario2")).thenReturn(Optional.empty());

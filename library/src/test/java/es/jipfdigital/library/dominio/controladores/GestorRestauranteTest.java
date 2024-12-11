@@ -28,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
@@ -270,63 +271,66 @@ public class GestorRestauranteTest {
     public void testDeleteItemExiste() throws Exception {
 
         Long itemId = 1L;
-        ItemMenu mockItem = new ItemMenu(); // Asume que tienes un objeto ItemMenu
-        when(itemDAO.findById(itemId)).thenReturn(Optional.of(mockItem));
-
+        ItemMenu item = new ItemMenu(); 
+        when(itemDAO.findById(itemId)).thenReturn(Optional.of(item));
         ResponseEntity<Void> response = menuController.deleteItem(itemId);
-        assertEquals(200, response.getStatusCodeValue());
-        verify(itemDAO, times(1)).delete(mockItem);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(itemDAO, times(1)).findById(itemId);
+        verify(itemDAO, times(1)).delete(item);
     }
 
-    // Intentar eliminar un elemento inexistente
+
     @Test
     public void testDeleteItemNoExiste() throws Exception {
-        // Arrange
+
         Long itemId = 1L;
         when(itemDAO.findById(itemId)).thenReturn(Optional.empty());
-
-        // Act
         ResponseEntity<Void> response = menuController.deleteItem(itemId);
-
-        // Assert
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(itemDAO, times(1)).findById(itemId);
         verify(itemDAO, never()).delete(any());
+        
     }
 
     @Test
-    void testDeleteMenuConItems() {
+    void testDeleteMenu() {
 
         Long menuId = 1L;
 
-        CartaMenu mockMenu = new CartaMenu();
-        mockMenu.setId(menuId);
+        CartaMenu menu = new CartaMenu();
+        menu.setId(menuId);
         ItemMenu item1 = new ItemMenu();
         ItemMenu item2 = new ItemMenu();
-        mockMenu.setItems(Arrays.asList(item1, item2));
+        menu.setItems(Arrays.asList(item1, item2));
 
-        when(cartamenuDAO.findById(menuId)).thenReturn(Optional.of(mockMenu));
+        when(cartamenuDAO.findById(menuId)).thenReturn(Optional.of(menu));
 
         ResponseEntity<Void> response = menuController.deleteMenu(menuId);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(cartamenuDAO, times(1)).findById(menuId);
         verify(itemDAO, times(1)).delete(item1);
         verify(itemDAO, times(1)).delete(item2);
-        verify(cartamenuDAO, times(1)).delete(mockMenu);
+        verify(cartamenuDAO, times(1)).delete(menu);
     }
 
-
     @Test
-    void testDeleteMenuNoEncontrado() {
-        // El menuId no existe
-        Long menuId = 3L;
+    void testDeleteMenuNoMenu() {
+	
+        Long menuId = 2L;
+
+        CartaMenu menu = new CartaMenu();
+        menu.setId(menuId);
+        menu.setItems(Collections.emptyList());
 
         when(cartamenuDAO.findById(menuId)).thenReturn(Optional.empty());
 
         ResponseEntity<Void> response = menuController.deleteMenu(menuId);
 
-        assertEquals(404, response.getStatusCodeValue());
-        verify(itemDAO, never()).delete(any());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(cartamenuDAO, times(1)).findById(menuId);
         verify(cartamenuDAO, never()).delete(any());
+        
     }
 
     // TEST de los Getmapping

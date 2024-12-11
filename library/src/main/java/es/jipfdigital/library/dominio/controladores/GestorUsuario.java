@@ -104,10 +104,6 @@ public class GestorUsuario {
 	        @RequestParam(value = "rol", required = false) Integer rol,
 	        Model model) {
 
-	    if (rol == null) {
-	        model.addAttribute("rolNulo", "Ingresa un tipo de usuario");
-	        return REGISTRO_STR;
-	    }
 
 	    boolean registroExitoso;
 	    switch (rol) {
