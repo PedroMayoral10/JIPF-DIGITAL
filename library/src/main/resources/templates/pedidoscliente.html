@@ -126,8 +126,10 @@
 
 <body>
     <h1>Estado de sus Pedidos</h1>
-
     <div class="container">
+        <div th:if="${#lists.isEmpty(pedidos)}">
+            <p>No hay pedidos disponibles.</p>
+        </div>
         <div th:each="pedido : ${pedidos}" class="pedido">
             <div class="info-group">
                 <label>ID del Pedido:</label>

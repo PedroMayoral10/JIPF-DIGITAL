@@ -192,6 +192,9 @@
                             </option>
                         </select>
                     </div>
+                    <div th:if="${sinRepartidor}" style="margin: 20px; padding: 15px; border: 2px solid red; border-radius: 8px; background-color: #ffe6e6; color: #b71c1c;">
+                        <h2>Actualmente no tenemos repartidor para su pedido, inténtelo más tarde</h2>
+                    </div>
 
 
                     <!-- Formulario de Dirección -->
@@ -216,6 +219,7 @@
                         <input type="text" id="municipio" name="municipio" required>
                     </div>
                 </div>
+                
 
                 <div class="form-container">
                     <h2>Método de Pago:</h2>
@@ -236,7 +240,7 @@
                             </li>
                         </ul>
                         <h3>Total: <span th:text="${precioTotal}">0.0</span> €</h3>
-                        <button type="submit">Confirmar Pago</button>
+                        <button type="submit" th:disabled="${sinRepartidor}">Confirmar Pago</button>
                     </div>
                 </div>
             </div>

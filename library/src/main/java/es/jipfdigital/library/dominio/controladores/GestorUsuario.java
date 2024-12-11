@@ -104,10 +104,6 @@ public class GestorUsuario {
 	        @RequestParam(value = "rol", required = false) Integer rol,
 	        Model model) {
 
-	    if (rol == null) {
-	        model.addAttribute("rolNulo", "Ingresa un tipo de usuario");
-	        return REGISTRO_STR;
-	    }
 
 	    boolean registroExitoso;
 	    switch (rol) {
@@ -160,7 +156,7 @@ public class GestorUsuario {
 	}
 
 	private int registrarCliente(Usuario usuario, String apellidosCliente, String dniCliente, Model model) {
-		if (usuario != null && !apellidosCliente.isEmpty() && !dniCliente.isEmpty()) {
+		if (usuario != null && apellidosCliente != null && dniCliente != null) {
 			Cliente cliente = new Cliente(usuario.getIdUsuario(), usuario.getNombre(), usuario.getPass(),
 					apellidosCliente, dniCliente);
 			clienteDAO.save(cliente);
@@ -193,7 +189,7 @@ public class GestorUsuario {
 
 	private int registrarRepartidor(Usuario usuario, String apellidosRepartidor, String nifRepartidor, Model model) {
 
-		if (usuario != null && !apellidosRepartidor.isEmpty() && !nifRepartidor.isEmpty()) {
+		if (usuario != null && apellidosRepartidor != null && nifRepartidor != null) {
 			Repartidor repartidor = new Repartidor(usuario.getIdUsuario(), usuario.getNombre(),
 					usuario.getPass(), apellidosRepartidor, nifRepartidor);
 			repartidorDAO.save(repartidor);
@@ -210,10 +206,10 @@ public class GestorUsuario {
 
 		boolean correcto = true;
 
-		if (codigoPostal.isEmpty() || calle.isEmpty() || numero.isEmpty()) {
+		if (codigoPostal == null || calle == null || numero == null) {
 			correcto = false;
 		}
-		if (complemento.isEmpty() || municipio.isEmpty() || cif.isEmpty()) {
+		if (complemento == null || municipio == null || cif == null) {
 			correcto = false;
 		}
 

@@ -62,7 +62,7 @@ public class GestorPedidos {
 			@PathVariable("idRestaurante") String idRestaurante, @RequestParam Map<String, String> params,
 			Model model) {
 		Cliente cliente = clienteDAO.findById(idCliente).get();
-		
+
 		itemsPedidos = obtenerItems(params);
 
 		for (ItemMenu item : itemsPedidos) {
@@ -128,6 +128,17 @@ public class GestorPedidos {
 			@RequestParam(value = "complemento", required = false) String complemento,
 			@RequestParam(value = "municipio", required = false) String municipio,
 			@RequestParam(value = "direccionGuardada", required = false) Long idDireccion) {
+		Repartidor repartidorOptimo = calcularRepartidorOptimo();
+		if (repartidorOptimo == null) {
+			model.addAttribute("sinRepartidor", true);
+			Cliente cliente = clienteDAO.findById(idCliente).get();
+			Restaurante restaurante = restauranteDAO.findById(idRestaurante).get();
+			model.addAttribute("itemsPedidos", itemsPedidos);
+			model.addAttribute(IDCLIENTE, idCliente);
+			model.addAttribute("idRestaurante", idRestaurante);
+			model.addAttribute("direcciones", cliente.getDirecciones());
+			return "realizarpago";
+		}
 
 		LocalDate fechaTransaccion = LocalDate.now();
 
@@ -182,30 +193,29 @@ public class GestorPedidos {
 	}
 
 	public Repartidor calcularRepartidorOptimo() {
-	    List<Repartidor> repartidores = repartidorDAO.findAll();
-	    if (repartidores.isEmpty()) {
-	        return null; // Devuelve null si no hay repartidores
-	    }
+		List<Repartidor> repartidores = repartidorDAO.findAll();
+		if (repartidores.isEmpty()) {
+			return null;
+		}
 
-	    Repartidor repartidorOptimo = null;
-	    int minServicios = Integer.MAX_VALUE;
+		Repartidor repartidorOptimo = null;
+		int minServicios = Integer.MAX_VALUE;
 
-	    for (Repartidor repartidor : repartidores) {
-	        int cantidadServicios = repartidor.getServicios().size();
+		for (Repartidor repartidor : repartidores) {
+			int cantidadServicios = repartidor.getServicios().size();
 
-	        // Si encontramos un repartidor con menos servicios, lo seleccionamos
-	        if (cantidadServicios < minServicios) {
-	            minServicios = cantidadServicios;
-	            repartidorOptimo = repartidor;
-	        } 
-	        // Si hay empate en cantidad de servicios, usamos la eficiencia como criterio
-	        if (cantidadServicios == minServicios && 
-	                 (repartidorOptimo == null || repartidor.getEficiencia() > repartidorOptimo.getEficiencia())) {
-	            repartidorOptimo = repartidor;
-	        }
-	    }
+			if (cantidadServicios < minServicios) {
+				minServicios = cantidadServicios;
+				repartidorOptimo = repartidor;
+			}
 
-	    return repartidorOptimo;
+			if (cantidadServicios == minServicios &&
+					(repartidorOptimo == null || repartidor.getEficiencia() > repartidorOptimo.getEficiencia())) {
+				repartidorOptimo = repartidor;
+			}
+		}
+
+		return repartidorOptimo;
 	}
 
 }

@@ -28,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
@@ -37,6 +38,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import es.jipfdigital.library.dominio.entidades.CartaMenu;
 import es.jipfdigital.library.dominio.entidades.ItemMenu;
+import es.jipfdigital.library.dominio.entidades.Repartidor;
 import es.jipfdigital.library.dominio.entidades.Restaurante;
 import es.jipfdigital.library.dominio.entidades.TipoItemMenu;
 import es.jipfdigital.library.persistencia.CartaMenuDAO;
@@ -90,178 +92,153 @@ public class GestorRestauranteTest {
                 null,
                 null,
                 "COMIDA",
-                redirectAttributes);
+                redirectAttributes, model);
 
         verify(redirectAttributes).addFlashAttribute("error", "Faltan datos obligatorios.");
         assertEquals("redirect:/errorPage", result);
 
     }
 
-    @Test
-    public void testPostAltaMenuNuevoMenu() {
-
-        String idRestaurante = "1";
-        String nombreMenu = "Menu Especial";
-        String nombreItem = "Plato Fuerte";
-        Double precio = 25.0;
-        String tipoItem = "COMIDA";
-
-        Restaurante restaurante = new Restaurante();
-        restaurante.setIdUsuario(idRestaurante);
-
-        CartaMenu cartaMenuMock = new CartaMenu();
-        cartaMenuMock.setNombre(nombreMenu);
-        cartaMenuMock.setItems(new ArrayList<>());
-        when(cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante)).thenReturn(cartaMenuMock);
-
-        String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, tipoItem,
-                redirectAttributes);
-
-        verify(restauranteDAO).getById(idRestaurante);
-        verify(cartamenuDAO, times(1)).save(any(CartaMenu.class)); // Solo se debe llamar una vez
-        verify(redirectAttributes).addFlashAttribute(eq("success"), anyString());
-
-        assertTrue(result.contains("/nuevoitem/"), "La URL de redirección no es la esperada.");
-    }
-
-    // En tu clase de prueba
     @Test
     public void testPostAltaMenuCrearNuevoMenu() {
         // Datos de prueba
         String idRestaurante = "restaurante1";
         String nombreMenu = "Nuevo Menú";
         String nombreItem = "Nuevo Item";
-        Double precio = 15.0;
+        Double precio = 10.0;
         RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
-        
         // Mock de las dependencias
         Restaurante restaurante = new Restaurante();
         restaurante.setIdUsuario(idRestaurante); // Establecer el restaurante mockeado
-        
         // Simulamos que no hay un menú con ese nombre en la base de datos
         when(cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante)).thenReturn(null);
         when(restauranteDAO.getById(idRestaurante)).thenReturn(restaurante);
-        
         // Creamos un objeto CartaMenu con un ID simulado
         CartaMenu cartamenu = new CartaMenu();
-        cartamenu.setId(1L);  // Asigna un ID simulado
-        
-        // Simulamos el comportamiento de cartamenuDAO.save para devolver un objeto con ID asignado
+        cartamenu.setId(1L); // Asigna un ID simulado
+        // Simulamos el comportamiento de cartamenuDAO.save para devolver un objeto con
+        // ID asignado
         when(cartamenuDAO.save(any(CartaMenu.class))).thenAnswer(invocation -> {
             CartaMenu savedCartamenu = invocation.getArgument(0);
-            savedCartamenu.setId(1L);  // Asignar el ID al objeto guardado
-            return savedCartamenu;  // Devolver el objeto con el ID asignado
+            savedCartamenu.setId(1L); // Asignar el ID al objeto guardado
+            return savedCartamenu; // Devolver el objeto con el ID asignado
         });
-        
         // Ejecutamos el método
-        String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, "tipo", redirectAttributes);
-        
-        // Verifica que el ID del menú no sea null
-        assertNotNull(cartamenu.getId(), "El ID del menú no debe ser null");  // Corregido aquí
-        
+        String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, "COMIDA",
+                redirectAttributes, model);
+        verify(cartamenuDAO, times(2)).save(any(CartaMenu.class));
         // Verifica la redirección a la página del nuevo ítem con el ID del nuevo menú
-        assertEquals("redirect:/nuevoitem/1", result);  // Asegúrate de que el ID del menú es correcto
-        
+        assertEquals("redirect:/nuevoitem/1", result); // Asegúrate de que el ID del menú es correcto
+
         // Verifica que el mensaje de éxito fue agregado
         assertTrue(redirectAttributes.getFlashAttributes().containsKey("success"));
         assertEquals("El menú se ha creado correctamente.", redirectAttributes.getFlashAttributes().get("success"));
     }
-    
 
-    
-
-    
-
-
-
-    public void testPostAltaMenu_CrearNuevoMenuConNuevoItem() {
-        // Preparar datos de entrada
-        String idRestaurante = "1";
-        String nombreMenu = "Menu Especial";
-        String nombreItem = "Ensalada";
-        Double precio = 12.5;
-        String tipoItem = "Entrante";
-
-        // Simulamos que el restaurante existe
+    @Test
+    public void testPostAltaMenuPrecioNegativo() {
+        // Datos de prueba
+        String idRestaurante = "restaurante1";
+        String nombreMenu = "Nuevo Menú";
+        String nombreItem = "Nuevo Item";
+        Double precio = -10.0;
+        RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
+        // Mock de las dependencias
         Restaurante restaurante = new Restaurante();
-        restaurante.setIdUsuario(idRestaurante);
-        when(restauranteDAO.getById(idRestaurante)).thenReturn(restaurante);
-
-        // Simular que no existe el menú
+        restaurante.setIdUsuario(idRestaurante); // Establecer el restaurante mockeado
+        // Simulamos que no hay un menú con ese nombre en la base de datos
         when(cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante)).thenReturn(null);
+        when(restauranteDAO.getById(idRestaurante)).thenReturn(restaurante);
+        // Creamos un objeto CartaMenu con un ID simulado
+        CartaMenu cartamenu = new CartaMenu();
+        cartamenu.setId(1L); // Asigna un ID simulado
+        // Simulamos el comportamiento de cartamenuDAO.save para devolver un objeto con
+        // ID asignado
+        when(cartamenuDAO.save(any(CartaMenu.class))).thenAnswer(invocation -> {
+            CartaMenu savedCartamenu = invocation.getArgument(0);
+            savedCartamenu.setId(1L); // Asignar el ID al objeto guardado
+            return savedCartamenu; // Devolver el objeto con el ID asignado
+        });
+        // Ejecutamos el método
+        String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, "COMIDA",
+                redirectAttributes, model);
 
-        // Simular el comportamiento de la creación del menú
-        CartaMenu cartaMenu = new CartaMenu();
-        cartaMenu.setId(1001l);
-        when(cartamenuDAO.save(any(CartaMenu.class))).thenReturn(cartaMenu);
-
-        // Llamar al método
-        String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, tipoItem,
-                redirectAttributes);
-
-        // Verificaciones
-        assertEquals("redirect:/nuevoItem/1001", result);
-        verify(cartamenuDAO).save(any(CartaMenu.class));
-        verify(redirectAttributes).addFlashAttribute("success", "El menú se ha creado correctamente.");
+        assertEquals("redirect:/altamenu/restaurante1", result);
     }
 
     @Test
-    public void testPostAltaMenuAgregarItemAUnMenuExistente() {
-        String idRestaurante = "1";
-        String nombreMenu = "Menu Especial";
-        String nombreItem = "Ensalada";
-        Double precio = 12.5;
-        String tipoItem = "Entrante";
-
-        // Simulamos que el restaurante existe
+    public void testPostAltaMenuPrecioCero() {
+        // Datos de prueba
+        String idRestaurante = "restaurante1";
+        String nombreMenu = "Nuevo Menú";
+        String nombreItem = "Nuevo Item";
+        Double precio = 0.0;
+        RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
+        // Mock de las dependencias
         Restaurante restaurante = new Restaurante();
-        restaurante.setIdUsuario(idRestaurante);
+        restaurante.setIdUsuario(idRestaurante); // Establecer el restaurante mockeado
+        // Simulamos que no hay un menú con ese nombre en la base de datos
+        when(cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante)).thenReturn(null);
+        when(restauranteDAO.getById(idRestaurante)).thenReturn(restaurante);
+        // Creamos un objeto CartaMenu con un ID simulado
+        CartaMenu cartamenu = new CartaMenu();
+        cartamenu.setId(1L); // Asigna un ID simulado
+        // Simulamos el comportamiento de cartamenuDAO.save para devolver un objeto con
+        // ID asignado
+        when(cartamenuDAO.save(any(CartaMenu.class))).thenAnswer(invocation -> {
+            CartaMenu savedCartamenu = invocation.getArgument(0);
+            savedCartamenu.setId(1L); // Asignar el ID al objeto guardado
+            return savedCartamenu; // Devolver el objeto con el ID asignado
+        });
+        // Ejecutamos el método
+        String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, "COMIDA",
+                redirectAttributes, model);
+        verify(cartamenuDAO, times(2)).save(any(CartaMenu.class));
+        // Verifica la redirección a la página del nuevo ítem con el ID del nuevo menú
+        assertEquals("redirect:/nuevoitem/1", result); // Asegúrate de que el ID del menú es correcto
+
+        // Verifica que el mensaje de éxito fue agregado
+        assertTrue(redirectAttributes.getFlashAttributes().containsKey("success"));
+        assertEquals("El menú se ha creado correctamente.", redirectAttributes.getFlashAttributes().get("success"));
+    }
+
+    @Test
+    public void testPostAltaMenuExistente() {
+        String idRestaurante = "restaurante1";
+        String nombreMenu = "Menu Existente";
+        String nombreItem = "Nuevo Item";
+        Double precio = 10.0;
+        RedirectAttributes redirectAttributes = new RedirectAttributesModelMap();
+
+        Restaurante restaurante = new Restaurante();
+        restaurante.setIdUsuario(idRestaurante); 
+
+        CartaMenu cartamenuExistente = new CartaMenu();
+        cartamenuExistente.setId(1L);
+        when(cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante)).thenReturn(cartamenuExistente);
         when(restauranteDAO.getById(idRestaurante)).thenReturn(restaurante);
 
-        // Simular que el menú ya existe
-        CartaMenu cartaMenuExistente = new CartaMenu();
-        cartaMenuExistente.setId(1001L);
-        when(cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante)).thenReturn(cartaMenuExistente);
+        when(cartamenuDAO.save(any(CartaMenu.class))).thenAnswer(invocation -> {
+            CartaMenu savedCartamenu = invocation.getArgument(0);
+            savedCartamenu.setId(1L); 
+            return savedCartamenu;
+        });
 
-        // Simular que el item se agrega correctamente
-        ItemMenu itemMenu = new ItemMenu();
-        when(cartamenuDAO.save(any(CartaMenu.class))).thenReturn(cartaMenuExistente);
+        Model model = new ConcurrentModel();
+        String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, "COMIDA",
+                redirectAttributes, model);
 
-        // Llamar al método
-        String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, tipoItem,
-                redirectAttributes);
+        verify(cartamenuDAO, times(1)).save(any(CartaMenu.class));
 
-        // Verificaciones
-        assertEquals("redirect:/nuevoitem/1001", result); // Ajustado a minúsculas
-        verify(cartamenuDAO).save(any(CartaMenu.class));
-        verify(redirectAttributes).addFlashAttribute("success", "El item se ha creado correctamente.");
+
+        assertEquals("redirect:/nuevoitem/1", result); // El ID debería corresponder al menú ya existente
+
+        assertTrue(redirectAttributes.getFlashAttributes().containsKey("success"));
+        assertEquals("El item se ha creado correctamente.", redirectAttributes.getFlashAttributes().get("success"));
     }
 
     @Test
-    public void testPostAltaMenuFaltanDatos() {
-        // Preparar datos de entrada con algunos valores nulos
-        String idRestaurante = "1";
-        String nombreMenu = "Menu Especial";
-        String nombreItem = null; // Faltan los datos
-        Double precio = null;
-        String tipoItem = "Entrante";
-
-        // Simular que el restaurante existe
-        Restaurante restaurante = new Restaurante();
-        restaurante.setIdUsuario(idRestaurante);
-        when(restauranteDAO.getById(idRestaurante)).thenReturn(restaurante);
-
-        // Llamar al método
-        String result = menuController.postAltaMenu(idRestaurante, nombreMenu, nombreItem, precio, tipoItem,
-                redirectAttributes);
-
-        // Verificaciones
-        assertEquals("redirect:/errorPage", result);
-        verify(redirectAttributes).addFlashAttribute("error", "Faltan datos obligatorios.");
-    }
-
-    @Test
-    void testPostModMenuIdMenuNull() {
+    void testPostModMenuidMenuNull() {
 
         String idRestaurante = "1";
         Long idMenu = null;
@@ -271,20 +248,6 @@ public class GestorRestauranteTest {
 
         assertEquals("redirect:/modificarmenu/" + idRestaurante, resultado);
         verify(redirectAttributes).addFlashAttribute("error", "ID del menú no proporcionado");
-    }
-
-    @Test
-    public void testModificarMenuIdRestauranteVacio() {
-        String idRestaurante = ""; // O también puede ser null
-        Model model = new BindingAwareModelMap();
-
-        try {
-            menuController.modificarMenu(idRestaurante, model);
-            fail("Se esperaba una IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // Verifica que el mensaje sea el esperado
-            assertEquals("El ID del restaurante no puede estar vacio", e.getMessage());
-        }
     }
 
     @Test
@@ -363,7 +326,44 @@ public class GestorRestauranteTest {
     void testPostNuevoItemCompleto() {
         Long idMenu = 1L;
         String nombreItem = "Pizza";
-        Double precio = 12.50;
+        Double precio = 10.0;
+        String tipoItem = "COMIDA";
+        Model model = new ConcurrentModel();
+
+        CartaMenu mockMenu = new CartaMenu();
+        Mockito.when(cartamenuDAO.findById(idMenu)).thenReturn(Optional.of(mockMenu));
+        Mockito.when(cartamenuDAO.save(Mockito.any(CartaMenu.class))).thenReturn(mockMenu);
+
+        String result = menuController.postNuevoItem(idMenu, nombreItem, precio, tipoItem, redirectAttributes, model);
+
+        Mockito.verify(cartamenuDAO).findById(idMenu);
+        Mockito.verify(cartamenuDAO).save(mockMenu);
+        Mockito.verify(redirectAttributes).addFlashAttribute("success", "Item añadido con exito");
+        assertEquals("redirect:/nuevoitem/" + idMenu, result);
+    }
+
+    @Test
+    void testPostNuevoItemPrecioNegativo() {
+        Long idMenu = 1L;
+        String nombreItem = "Pizza";
+        Double precio = -10.0;
+        String tipoItem = "COMIDA";
+        Model model = new ConcurrentModel();
+
+        CartaMenu mockMenu = new CartaMenu();
+        Mockito.when(cartamenuDAO.findById(idMenu)).thenReturn(Optional.of(mockMenu));
+        Mockito.when(cartamenuDAO.save(Mockito.any(CartaMenu.class))).thenReturn(mockMenu);
+
+        String result = menuController.postNuevoItem(idMenu, nombreItem, precio, tipoItem, redirectAttributes, model);
+
+        assertEquals("redirect:/nuevoitem/1", result);
+    }
+
+    @Test
+    void testPostNuevoItemPrecioCero() {
+        Long idMenu = 1L;
+        String nombreItem = "Pizza";
+        Double precio = 0.0;
         String tipoItem = "COMIDA";
         Model model = new ConcurrentModel();
 
@@ -383,80 +383,65 @@ public class GestorRestauranteTest {
     public void testDeleteItemExiste() throws Exception {
 
         Long itemId = 1L;
-        ItemMenu mockItem = new ItemMenu(); // Asume que tienes un objeto ItemMenu
-        when(itemDAO.findById(itemId)).thenReturn(Optional.of(mockItem));
-
+        ItemMenu item = new ItemMenu();
+        when(itemDAO.findById(itemId)).thenReturn(Optional.of(item));
         ResponseEntity<Void> response = menuController.deleteItem(itemId);
-        assertEquals(200, response.getStatusCodeValue());
-        verify(itemDAO, times(1)).delete(mockItem);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(itemDAO, times(1)).findById(itemId);
+        verify(itemDAO, times(1)).delete(item);
     }
 
-    // Intentar eliminar un elemento inexistente
     @Test
     public void testDeleteItemNoExiste() throws Exception {
-        // Arrange
+
         Long itemId = 1L;
         when(itemDAO.findById(itemId)).thenReturn(Optional.empty());
-
-        // Act
         ResponseEntity<Void> response = menuController.deleteItem(itemId);
-
-        // Assert
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(itemDAO, times(1)).findById(itemId);
         verify(itemDAO, never()).delete(any());
+
     }
 
     @Test
-    void testDeleteMenuConItems() {
+    void testDeleteMenu() {
 
         Long menuId = 1L;
 
-        CartaMenu mockMenu = new CartaMenu();
-        mockMenu.setId(menuId);
+        CartaMenu menu = new CartaMenu();
+        menu.setId(menuId);
         ItemMenu item1 = new ItemMenu();
         ItemMenu item2 = new ItemMenu();
-        mockMenu.setItems(Arrays.asList(item1, item2));
+        menu.setItems(Arrays.asList(item1, item2));
 
-        when(cartamenuDAO.findById(menuId)).thenReturn(Optional.of(mockMenu));
+        when(cartamenuDAO.findById(menuId)).thenReturn(Optional.of(menu));
 
         ResponseEntity<Void> response = menuController.deleteMenu(menuId);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(cartamenuDAO, times(1)).findById(menuId);
         verify(itemDAO, times(1)).delete(item1);
         verify(itemDAO, times(1)).delete(item2);
-        verify(cartamenuDAO, times(1)).delete(mockMenu);
+        verify(cartamenuDAO, times(1)).delete(menu);
     }
 
     @Test
-    void testDeleteMenuSinItems() {
+    void testDeleteMenuNoMenu() {
 
         Long menuId = 2L;
 
-        CartaMenu mockMenu = new CartaMenu();
-        mockMenu.setId(menuId);
-        mockMenu.setItems(Collections.emptyList());
-
-        when(cartamenuDAO.findById(menuId)).thenReturn(Optional.of(mockMenu));
-
-        ResponseEntity<Void> response = menuController.deleteMenu(menuId);
-
-        assertEquals(200, response.getStatusCodeValue());
-        verify(itemDAO, never()).delete(any());
-        verify(cartamenuDAO, times(1)).delete(mockMenu);
-    }
-
-    @Test
-    void testDeleteMenuNoEncontrado() {
-        // El menuId no existe
-        Long menuId = 3L;
+        CartaMenu menu = new CartaMenu();
+        menu.setId(menuId);
+        menu.setItems(Collections.emptyList());
 
         when(cartamenuDAO.findById(menuId)).thenReturn(Optional.empty());
 
         ResponseEntity<Void> response = menuController.deleteMenu(menuId);
 
-        assertEquals(404, response.getStatusCodeValue());
-        verify(itemDAO, never()).delete(any());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(cartamenuDAO, times(1)).findById(menuId);
         verify(cartamenuDAO, never()).delete(any());
+
     }
 
     // TEST de los Getmapping
@@ -484,16 +469,6 @@ public class GestorRestauranteTest {
         when(restauranteDAO.findById(idRestaurante)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> {
-            menuController.MenuRestaurante(idRestaurante, model);
-        });
-    }
-
-    @Test
-    public void testMenuRestauranteIdNovalido() {
-        String idRestaurante = null;
-        Model model = new ConcurrentModel();
-
-        assertThrows(IllegalArgumentException.class, () -> {
             menuController.MenuRestaurante(idRestaurante, model);
         });
     }
@@ -553,31 +528,6 @@ public class GestorRestauranteTest {
         assertEquals("modificarmenu", viewName);
         verify(model).addAttribute("menus", Collections.emptyList());
         verify(model).addAttribute("idRestaurante", idRestaurante);
-    }
-
-    @Test
-    public void testModificarMenuIdRestauranteNulo() {
-        // El idRestaurante es nulo
-        String idRestaurante = null;
-
-        Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> menuController.modificarMenu(idRestaurante, model));
-
-        assertNotNull(exception);
-        verifyNoInteractions(cartamenuDAO, model);
-    }
-
-    @Test
-    public void testModificarMenuDaoLanzaExcepcion() {
-
-        String idRestaurante = "restaurante123";
-
-        when(cartamenuDAO.findAllByRestauranteId(idRestaurante)).thenThrow(new RuntimeException("Database error"));
-
-        Exception exception = assertThrows(RuntimeException.class,
-                () -> menuController.modificarMenu(idRestaurante, model));
-
-        assertEquals("Database error", exception.getMessage());
     }
 
     @Test

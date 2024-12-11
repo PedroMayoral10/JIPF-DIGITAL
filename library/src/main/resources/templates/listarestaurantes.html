@@ -118,6 +118,9 @@
 </head>
 <body>
     <h1>Lista de Restaurantes</h1>
+    <div th:if="${#lists.isEmpty(restaurantes)}">
+        <p>No hay restaurantes disponibles.</p>
+    </div>
     <ul class="restaurant-list" th:each="restaurante : ${restaurantes}">
         <li class="restaurant-item">
             <div class="restaurant-name" th:text="${restaurante.nombre}"></div>
