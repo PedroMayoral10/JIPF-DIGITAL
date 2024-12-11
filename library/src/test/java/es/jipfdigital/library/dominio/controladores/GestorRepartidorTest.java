@@ -57,7 +57,7 @@ class GestorRepartidorTest {
 	
 	
 	@Test
-    void testMostrarPedidosRepartidorValidoConServicios() {
+    void testMostrarPedidosConServicios() {
         
 		//Creamos el repartidor
         String idRepartidor = "1";
@@ -89,7 +89,7 @@ class GestorRepartidorTest {
     }
 	
 	@Test
-    void testMostrarPedidosServiciosNull() {
+    void testMostrarPedidosServiciosEmpty() {
         
 		//Creamos el repartidor, en este caso,no existirá un repartidor con ID 1.
         String idRepartidor = "1";
@@ -112,8 +112,6 @@ class GestorRepartidorTest {
 	@Test
 	void testMenuRegistroRecogidaServiciosEstadoPagado() {
 		
-		// Preparar modelo y dependencias
-	    Model model2 = new ConcurrentModel();
 
 	    // Repartidor con ID "1"
 	    String idRepartidor = "1";
@@ -132,43 +130,65 @@ class GestorRepartidorTest {
 	    when(repartidorDAO.findById(idRepartidor)).thenReturn(Optional.of(repartidor));
 
 	    // Llamar al método
-	    String resultado = controller.menuRegistroRecogida(idRepartidor, model2);
+	    String resultado = controller.menuRegistroRecogida(idRepartidor, model);
 
 	    // Validar resultados
 	    assertEquals("registrar_recogida", resultado);
+	    verify(model).addAttribute("servicios", servicios);
 	
 	}
 	
 	@Test
-	void testMenuRegistroRecogidaSinServiciosEstadoPagado() {
-		
-		// Preparar modelo y dependencias
-	    Model model2 = new ConcurrentModel();
+	void testMenuRegistroRecogidaSinServicios() {
 
 	    // Repartidor con ID "1"
 	    String idRepartidor = "1";
 
+	    List<ServicioEntrega> servicios = Arrays.asList();
+	        
 	    // Simular que los servicios del repartidor son null
 	    when(repartidor.getServicios()).thenReturn(null);
 	    when(repartidorDAO.findById(idRepartidor)).thenReturn(Optional.of(repartidor));
 
 	    // Llamar al método
-	    String resultado = controller.menuRegistroRecogida(idRepartidor, model2);
+	    String resultado = controller.menuRegistroRecogida(idRepartidor, model);
 
 	    // Validar resultados
 	    assertEquals("registrar_recogida", resultado);
-
+	    verify(model).addAttribute("servicios", servicios);
 	
 	}
 	
-	
+	@Test
+	void testMenuRegistroRecogidaServiciosEstadoRecogido() {
+		
+	    // Repartidor con ID "1"
+	    String idRepartidor = "1";
+
+	    // Servicios asociados al repartidor
+	    ServicioEntrega servicioRecogido = new ServicioEntrega();
+	    Pedido pedidoPagado = new Pedido();
+	    pedidoPagado.setEstado(EstadoPedido.RECOGIDO);
+	    servicioRecogido.setPedido(pedidoPagado);
+	    ServicioEntrega servicioRecogido2 = new ServicioEntrega();
+	    pedidoPagado.setEstado(EstadoPedido.RECOGIDO);
+	    servicioRecogido2.setPedido(pedidoPagado);
+
+	    List<ServicioEntrega> servicios = Arrays.asList(servicioRecogido, servicioRecogido2);
+	    when(repartidor.getServicios()).thenReturn(servicios);
+	    when(repartidorDAO.findById(idRepartidor)).thenReturn(Optional.of(repartidor));
+
+	    // Llamar al método
+	    String resultado = controller.menuRegistroRecogida(idRepartidor, model);
+
+	    // Validar resultados
+	    assertEquals("registrar_recogida", resultado);
+	    verify(model).addAttribute("servicios", Collections.emptyList());
+	}
 	
 	
 	@Test
-	void testMenuRegistroEntrega() {
-		
-		// Preparar modelo y dependencias
-	    Model model2 = new ConcurrentModel();
+	void testMenuRegistroEntregaEstadoPagado() {
 
 	    // Repartidor con ID "1"
 	    String idRepartidor = "1";
@@ -176,10 +196,10 @@ class GestorRepartidorTest {
 	    // Servicios asociados al repartidor
 	    ServicioEntrega servicioPagado = new ServicioEntrega();
 	    Pedido pedidoPagado = new Pedido();
-	    pedidoPagado.setEstado(EstadoPedido.RECOGIDO);
+	    pedidoPagado.setEstado(EstadoPedido.PAGADO);
 	    servicioPagado.setPedido(pedidoPagado);
 	    ServicioEntrega servicioPagado2 = new ServicioEntrega();
-	    pedidoPagado.setEstado(EstadoPedido.RECOGIDO);
+	    pedidoPagado.setEstado(EstadoPedido.PAGADO);
 	    servicioPagado2.setPedido(pedidoPagado);
 
 	    List<ServicioEntrega> servicios = Arrays.asList(servicioPagado, servicioPagado2);
@@ -187,33 +207,64 @@ class GestorRepartidorTest {
 	    when(repartidorDAO.findById(idRepartidor)).thenReturn(Optional.of(repartidor));
 
 	    // Llamar al método
-	    String resultado = controller.menuRegistroEntrega(idRepartidor, model2);
+	    String resultado = controller.menuRegistroEntrega(idRepartidor, model);
 
 	    // Validar resultados
 	    assertEquals("registrar_entrega", resultado);
-				
+	    verify(model).addAttribute("servicios", Collections.emptyList());
+	    
 	}
 	
 	@Test
 	void testMenuRegistroEntregaSinServicios() {
 		
-		// Preparar modelo y dependencias
-	    Model model2 = new ConcurrentModel();
-
-	    // Repartidor con ID "1"
+		 // Repartidor con ID "1"
 	    String idRepartidor = "1";
 
+	    List<ServicioEntrega> servicios = Arrays.asList();
+	        
 	    // Simular que los servicios del repartidor son null
 	    when(repartidor.getServicios()).thenReturn(null);
 	    when(repartidorDAO.findById(idRepartidor)).thenReturn(Optional.of(repartidor));
 
 	    // Llamar al método
-	    String resultado = controller.menuRegistroEntrega(idRepartidor, model2);
+	    String resultado = controller.menuRegistroEntrega(idRepartidor, model);
 
 	    // Validar resultados
 	    assertEquals("registrar_entrega", resultado);
-			
+	    verify(model).addAttribute("servicios", servicios);
+	    
 	}
+	
+	@Test
+	void testMenuRegistroEntrega() {
+
+	    // Repartidor con ID "1"
+	    String idRepartidor = "1";
+
+	    // Servicios asociados al repartidor
+	    ServicioEntrega servicioPagado = new ServicioEntrega();
+	    Pedido pedidoPagado = new Pedido();
+	    pedidoPagado.setEstado(EstadoPedido.RECOGIDO);
+	    servicioPagado.setPedido(pedidoPagado);
+	    ServicioEntrega servicioPagado2 = new ServicioEntrega();
+	    pedidoPagado.setEstado(EstadoPedido.RECOGIDO);
+	    servicioPagado2.setPedido(pedidoPagado);
+
+	    List<ServicioEntrega> servicios = Arrays.asList(servicioPagado, servicioPagado2);
+	    when(repartidor.getServicios()).thenReturn(servicios);
+	    when(repartidorDAO.findById(idRepartidor)).thenReturn(Optional.of(repartidor));
+
+	    // Llamar al método
+	    String resultado = controller.menuRegistroEntrega(idRepartidor, model);
+
+	    // Validar resultados
+	    assertEquals("registrar_entrega", resultado);
+	    verify(model).addAttribute("servicios", servicios);
+	    
+	}
+	
+	
 	
 	
 	

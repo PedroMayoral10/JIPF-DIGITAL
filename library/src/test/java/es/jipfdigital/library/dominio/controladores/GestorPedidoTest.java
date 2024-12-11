@@ -19,18 +19,16 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
+
 
 import es.jipfdigital.library.dominio.entidades.*;
 import es.jipfdigital.library.persistencia.*;
 
 
-@ExtendWith(MockitoExtension.class)
-class GestorPedidoTestTest {
+class GestorPedidoTest{
 
     @Mock
     private RestauranteDAO restauranteDAO;
@@ -251,6 +249,81 @@ class GestorPedidoTestTest {
         verify(pedidoDAO).save(any(Pedido.class));
         verify(direccionDAO).save(any(Direccion.class));
     }
+   
+    @Test
+public void testSubmitPagoSinRepartidorOptimo() {
+    // Preparación de datos
+    String idCliente = "12345";
+    String idRestaurante = "67890";
+    String codigoPostal = "45600";
+    String calle = "Calle Alcatraz";
+    String numero = "98";
+    String complemento = "A";
+    String municipio = "Hervás";
+    Long idDireccion = null; // Dirección nula
+
+    Restaurante restaurante = new Restaurante();
+    Cliente cliente = new Cliente();
+
+    // No hay repartidores disponibles (repartidor óptimo es null)
+    when(repartidorDAO.findAll()).thenReturn(Collections.emptyList());  // No hay repartidores disponibles
+    when(restauranteDAO.findById(idRestaurante)).thenReturn(Optional.of(restaurante));
+    when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(cliente));
+    
+
+    // Llamada al método
+    // Mocks de la base de datos
+
+    String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
+            codigoPostal, MetodoPago.PAYPAL, calle, numero, complemento, municipio, idDireccion);
+
+    // Verificaciones
+    assertEquals("realizarpago", resultado);  // El flujo debería redirigir a realizarpago si no hay repartidor
+    verify(model).addAttribute("sinRepartidor", true);  // Verifica que el atributo sinRepartidor sea true
+    verify(pedidoDAO, never()).save(any(Pedido.class));  // No se debe guardar el pedido si no hay repartidor
+}
+
+    
+@Test
+public void testSubmitPagoRepartidorOptimoNullYLuegoDisponible() {
+    // Preparación de datos
+    String idCliente = "12345";
+    String idRestaurante = "67890";
+    String codigoPostal = "45600";
+    String calle = "Calle Alcatraz";
+    String numero = "98";
+    String complemento = "A";
+    String municipio = "Hervás";
+    Long idDireccion = null; // Dirección nula
+ 
+    Restaurante restaurante = new Restaurante();
+    Cliente cliente = new Cliente();
+
+    // No hay repartidores disponibles inicialmente
+    
+    when(restauranteDAO.findById(idRestaurante)).thenReturn(Optional.of(restaurante));
+    when(clienteDAO.findById(idCliente)).thenReturn(Optional.of(cliente));
+    when(repartidorDAO.findAll()).thenReturn(new ArrayList<>());  // No hay repartidores disponibles inicialmente
+
+    // Simulamos que el repartidor óptimo es encontrado más tarde
+    Repartidor repartidor = new Repartidor();
+    repartidor.setServicios(new ArrayList<>());
+    when(repartidorDAO.findAll()).thenReturn(Arrays.asList(repartidor));  // Simulamos que ahora hay repartidores disponibles
+
+    // Mocks de la base de datos
+    when(direccionDAO.save(any(Direccion.class))).thenReturn(new Direccion()); // Se simula la creación de una nueva dirección
+
+    // Llamada al método
+    String resultado = gestorPedidos.submitPago(idCliente, idRestaurante, model,
+            codigoPostal, MetodoPago.PAYPAL, calle, numero, complemento, municipio, idDireccion);
+
+    // Verificaciones
+    assertEquals("redirect:/confirmacionpago/" + idCliente, resultado);  // La transacción continúa si el repartidor es encontrado
+    verify(model).addAttribute("mensajeExito", "El pago se ha realizado correctamente.");
+    verify(pedidoDAO).save(any(Pedido.class));
+    verify(direccionDAO).save(any(Direccion.class));  // Verificamos que la dirección es guardada
+}
+
 
     @Test
     void testRealizarPagoListaVacia() {
@@ -493,7 +566,7 @@ class GestorPedidoTestTest {
     }
 
     @Test
-    void testMostrarPedidosNull() {
+    void testMostrarPedidosClienteNull() {
 
         String idCliente = null;
 
