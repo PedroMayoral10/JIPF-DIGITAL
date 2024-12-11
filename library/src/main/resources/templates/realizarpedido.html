@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Realizar Pedido</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-		font-family: 'Arial', sans-serif;
-		margin: 0;
-		padding: 0;
-		background-color: #e0f7df;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		height: 100vh;
-		text-align: center;
-		box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1);
-	}
-	
-	h1 {
-		padding-top: 20px;
-		font-size: 56px;
-		color: #2e7d32;
-		border-bottom: 4px solid #4CAF50;
-		margin-bottom: 30px;
-		text-align: center;
-		width: 100%;
-		text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
-	}
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e0f7df;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            padding-top: 20px;
+            font-size: 56px;
+            color: #2e7d32;
+            border-bottom: 4px solid #4CAF50;
+            margin-bottom: 30px;
+            text-align: center;
+            width: 100%;
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+        }
 
         .container {
             display: flex;
@@ -35,6 +36,7 @@
             width: 100%;
             max-width: 1200px;
         }
+
         .realizar-pago-btn {
             display: inline-block;
             padding: 15px 30px;
@@ -50,12 +52,14 @@
             text-align: center;
             text-decoration: none;
         }
+
         .realizar-pago-btn:hover {
             background: linear-gradient(135deg, #2ecc71, #4CAF50);
             transform: scale(1.05);
         }
 
-        .menu-list, .item-list {
+        .menu-list,
+        .item-list {
             flex: 1;
             padding: 20px;
             border-radius: 8px;
@@ -207,6 +211,7 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Realizar Pedido</h1>
 
@@ -214,7 +219,9 @@
         <div class="menu-list">
             <h3>Menús Disponibles</h3>
             <div th:each="menu : ${menus}">
-                <form th:action="@{/realizarpedido/{clienteId}/{restauranteId}(clienteId=${cliente.idUsuario}, restauranteId=${restaurante.idUsuario})}" method="post">
+                <form
+                    th:action="@{/realizarpedido/{clienteId}/{restauranteId}(clienteId=${cliente.idUsuario}, restauranteId=${restaurante.idUsuario})}"
+                    method="post">
                     <input type="hidden" name="menuId" th:value="${menu.id}" />
                     <button type="submit" class="menu-item" th:text="${menu.nombre}"></button>
                 </form>
@@ -230,7 +237,7 @@
                             <span th:text="${item.nombre}" class="nombre_item"></span>
                             <span th:text="${item.tipo}" class="tipo_item"></span>
                             <span th:text="${item.precio} + ' €'" class="precio_item"></span>
-                            <input type="hidden" th:value="${item.id}" class="id_item"/>
+                            <input type="hidden" th:value="${item.id}" class="id_item" />
                             <button type="button" class="pedir-item-btn" onclick="agregarAPedido(this)">
                                 Pedir
                             </button>
@@ -258,35 +265,37 @@
                 </div>
             </div>
 
-            <button class="realizar-pago-btn" 
-                    th:data-id-cliente="${cliente.idUsuario}" 
-                    th:data-id-restaurante="${restaurante.idUsuario}" 
-                    onclick="realizarPago(this)">
+            <button class="realizar-pago-btn" th:data-id-cliente="${cliente.idUsuario}"
+                th:data-id-restaurante="${restaurante.idUsuario}" onclick="realizarPago(this)">
                 Realizar Pago
             </button>
-            
-            
+
+
         </div>
     </div>
-    
+
     <script>
+        function formatearPrecio(precio) {
+            return precio.replace('.', ',');
+        }
+
         function agregarAPedido(button) {
 
             const pedidosContainer = document.getElementById("pedidos-container");
-    
+
             const item = button.parentElement;
             const nombre = item.querySelector(".nombre_item")?.innerText || "";
             const tipo = item.querySelector(".tipo_item")?.innerText || "";
-            const precio = item.querySelector(".precio_item")?.innerText.replace(" €", "") || "";
-            const id =  item.querySelector(".id_item")?.value || "";
+            const precio = formatearPrecio(item.querySelector(".precio_item")?.innerText.replace(" €", "") || "");
+            const id = item.querySelector(".id_item")?.value || "";
             const pedidoItem = document.createElement("div");
             pedidoItem.classList.add("pedido-item");
-    
+
             pedidoItem.dataset.nombre = nombre;
             pedidoItem.dataset.tipo = tipo;
             pedidoItem.dataset.precio = precio;
             pedidoItem.dataset.id = id;
-    
+
             pedidoItem.innerHTML = `
                 <span>${nombre}</span>
                 <span>${tipo}</span>
@@ -295,11 +304,11 @@
                     <i class="fas fa-trash"></i>
                 </button>
             `;
-    
+
             // Añadir el nuevo item al contenedor
             pedidosContainer.appendChild(pedidoItem);
         }
-    
+
         function eliminarPedido(button) {
             // Eliminar el item pedido
             const pedidoItem = button.closest('.pedido-item');
@@ -307,8 +316,8 @@
                 pedidoItem.remove();
             }
         }
-    
-function realizarPago(button) {
+
+        function realizarPago(button) {
             const idCliente = button.dataset.idCliente;
             const idRestaurante = button.dataset.idRestaurante;
 
@@ -317,12 +326,21 @@ function realizarPago(button) {
             const itemsPedidos = Array.from(pedidosContainer.getElementsByClassName("pedido-item"));
 
             const queryString = itemsPedidos.map((pedido, index) => {
-				const id = encodeURIComponent(pedido.dataset.id || "");
+                const id = encodeURIComponent(pedido.dataset.id || "");
                 return `id${index}=${id}`;
             }).join("&");
 
             window.location.href = `/realizarpago/${idCliente}/${idRestaurante}?${queryString}`;
         }
+        window.onload = function () {
+            const precioItems = document.querySelectorAll('.precio_item');
+
+            precioItems.forEach(function (item) {
+                const precioTexto = item.innerText;
+                item.innerText = formatearPrecio(precioTexto);
+            });
+        }
     </script>
 </body>
+
 </html>

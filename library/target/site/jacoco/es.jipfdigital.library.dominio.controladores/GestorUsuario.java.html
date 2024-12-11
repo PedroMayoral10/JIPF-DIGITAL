@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestorUsuario.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">es.jipfdigital.library.dominio.controladores</a> &gt; <span class="el_source">GestorUsuario.java</span></div><h1>GestorUsuario.java</h1><pre class="source lang-java linenums">package es.jipfdigital.library.dominio.controladores;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import es.jipfdigital.library.dominio.entidades.Cliente;
+import es.jipfdigital.library.dominio.entidades.Direccion;
+import es.jipfdigital.library.dominio.entidades.Repartidor;
+import es.jipfdigital.library.dominio.entidades.Restaurante;
+import es.jipfdigital.library.dominio.entidades.Usuario;
+import es.jipfdigital.library.persistencia.ClienteDAO;
+import es.jipfdigital.library.persistencia.RepartidorDAO;
+import es.jipfdigital.library.persistencia.RestauranteDAO;
+
+import java.util.Optional;
+
+@Controller
+<span class="fc" id="L23">public class GestorUsuario {</span>
+	private static final String USUARIO_STR = &quot;usuario&quot;;
+	private static final String LOGIN_STR = &quot;login&quot;;
+	private static final String REGISTRO_STR = &quot;registro&quot;;
+	private static final String ERROR_STR = &quot;error&quot;;
+	private static final String CONTRASENA_STR = &quot;Contraseña incorrecta, pruebe otra vez&quot;;
+	private static final String RELLENA_CAMPOS = &quot;Rellena todos los campos&quot;;
+	@Autowired
+	private ClienteDAO clienteDAO;
+	@Autowired
+	private RestauranteDAO restauranteDAO;
+	@Autowired
+	private RepartidorDAO repartidorDAO;
+	
+
+	/*
+	 * GETMAPPINGS
+	 */
+
+	@GetMapping(&quot;/&quot;)
+	public String redirigirLogin(Model model) {
+<span class="nc" id="L44">		return &quot;redirect:/login&quot;;</span>
+	}
+
+	@GetMapping(&quot;/login&quot;)
+	public String loginForm(Model model) {
+<span class="nc" id="L49">		model.addAttribute(USUARIO_STR, new Usuario());</span>
+<span class="nc" id="L50">		return LOGIN_STR;</span>
+	}
+
+	@GetMapping(&quot;/registro&quot;)
+	public String registroForm(Model model) {
+<span class="nc" id="L55">		model.addAttribute(USUARIO_STR, new Usuario());</span>
+<span class="nc" id="L56">		return REGISTRO_STR;</span>
+	}
+
+	/*
+	 * POSTMAPPINGS
+	 */
+	
+	@PostMapping(&quot;/login&quot;)	
+	public String loginSubmit(Usuario usuario, Model model) {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">	    if (usuario == null) {</span>
+<span class="fc" id="L66">	        model.addAttribute(ERROR_STR, &quot;El usuario no existe, pruebe otra vez&quot;);</span>
+<span class="fc" id="L67">	        return LOGIN_STR;</span>
+	    }
+
+<span class="fc" id="L70">	    model.addAttribute(USUARIO_STR, usuario);</span>
+<span class="fc" id="L71">	    Optional&lt;Cliente&gt; clienteOpt = clienteDAO.findById(usuario.getIdUsuario());</span>
+<span class="fc" id="L72">	    Optional&lt;Restaurante&gt; restauranteOpt = restauranteDAO.findById(usuario.getIdUsuario());</span>
+<span class="fc" id="L73">	    Optional&lt;Repartidor&gt; repartidorOpt = repartidorDAO.findById(usuario.getIdUsuario());</span>
+
+<span class="fc" id="L75">	    String resultadoCliente = manejarCliente(clienteOpt, usuario, model);</span>
+<span class="fc" id="L76">	    String resultadoRestaurante = manejarRestaurante(restauranteOpt, usuario, model);</span>
+<span class="fc" id="L77">	    String resultadoRepartidor = manejarRepartidor(repartidorOpt, usuario, model);</span>
+	    
+<span class="fc bfc" id="L79" title="All 2 branches covered.">	    if (resultadoCliente != null) { </span>
+<span class="fc" id="L80">	    	return resultadoCliente;</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">	    }else if (resultadoRestaurante != null) { </span>
+<span class="fc" id="L82">	    	return resultadoRestaurante;</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">	    }else if (resultadoRepartidor != null) {</span>
+<span class="fc" id="L84">	    	return resultadoRepartidor;</span>
+	    } else {
+<span class="fc" id="L86">		    model.addAttribute(ERROR_STR, &quot;El usuario no existe, pruebe otra vez&quot;);</span>
+<span class="fc" id="L87">	    	return LOGIN_STR;</span>
+	    }
+	}
+
+	@PostMapping(&quot;/registro&quot;)
+	public String registroSubmit(
+			@ModelAttribute Usuario usuario,
+			@RequestParam(value = &quot;apellidosCliente&quot;, required = false) String apellidosCliente,
+			@RequestParam(value = &quot;dniCliente&quot;, required = false) String dniCliente,
+			@RequestParam(value = &quot;cifRestaurante&quot;, required = false) String cifRestaurante,
+			@RequestParam(value = &quot;codigoPostalRestaurante&quot;, required = false) String codigoPostalRestaurante,
+			@RequestParam(value = &quot;calleRestaurante&quot;, required = false) String calleRestaurante,
+			@RequestParam(value = &quot;numeroRestaurante&quot;, required = false) String numeroRestaurante,
+			@RequestParam(value = &quot;complementoRestaurante&quot;, required = false) String complementoRestaurante,
+			@RequestParam(value = &quot;municipioRestaurante&quot;, required = false) String municipioRestaurante,
+			@RequestParam(value = &quot;apellidosRepartidor&quot;, required = false) String apellidosRepartidor,
+			@RequestParam(value = &quot;nifRepartidor&quot;, required = false) String nifRepartidor,
+			@RequestParam(value = &quot;rol&quot;, required = false) Integer rol,
+			Model model) {
+<span class="fc" id="L106">		System.out.println(rol);</span>
+<span class="fc bfc" id="L107" title="All 4 branches covered.">		switch (rol) {</span>
+			case 1:
+<span class="fc bfc" id="L109" title="All 2 branches covered.">				if(registrarCliente(usuario, apellidosCliente, dniCliente, model) == 0)</span>
+<span class="fc" id="L110">					return REGISTRO_STR;</span>
+				break;
+			case 2:
+<span class="fc bfc" id="L113" title="All 2 branches covered.">				if(registrarRestaurante(usuario, codigoPostalRestaurante, calleRestaurante, numeroRestaurante,</span>
+						complementoRestaurante, municipioRestaurante, cifRestaurante, model) == 0)
+<span class="fc" id="L115">						return REGISTRO_STR;</span>
+				break;
+			case 3:
+<span class="fc bfc" id="L118" title="All 2 branches covered.">				if(registrarRepartidor(usuario, apellidosRepartidor, nifRepartidor, model) == 0)</span>
+<span class="fc" id="L119">					return REGISTRO_STR;</span>
+				break;
+			default:
+<span class="fc" id="L122">				model.addAttribute(&quot;rolNulo&quot;, &quot;Ingresa un tipo de usuario&quot;);</span>
+<span class="fc" id="L123">				return REGISTRO_STR;</span>
+		}
+
+<span class="fc" id="L126">		return LOGIN_STR;</span>
+	}
+
+	private int registrarCliente(Usuario usuario, String apellidosCliente, String dniCliente, Model model) {
+<span class="pc bpc" id="L130" title="2 of 6 branches missed.">		if (usuario != null &amp;&amp; !apellidosCliente.isEmpty() &amp;&amp; !dniCliente.isEmpty()) {</span>
+<span class="fc" id="L131">			Cliente cliente = new Cliente(usuario.getIdUsuario(), usuario.getNombre(), usuario.getPass(),</span>
+					apellidosCliente, dniCliente);
+<span class="fc" id="L133">			clienteDAO.save(cliente);</span>
+<span class="fc" id="L134">			return 1;</span>
+		} else {
+<span class="fc" id="L136">			model.addAttribute(ERROR_STR, RELLENA_CAMPOS);</span>
+<span class="fc" id="L137">			return 0;</span>
+		}
+
+	}
+
+	private int registrarRestaurante(Usuario usuario, String codigoPostalRestaurante, String calleRestaurante,
+			String numeroRestaurante,
+			String complementoRestaurante, String municipioRestaurante, String cifRestaurante,
+			Model model) {
+<span class="pc bpc" id="L146" title="1 of 4 branches missed.">		if (usuario != null &amp;&amp; comprobarCondicionesRegistrarRestaurante(codigoPostalRestaurante, calleRestaurante, </span>
+				numeroRestaurante, complementoRestaurante, municipioRestaurante, cifRestaurante)) {
+<span class="fc" id="L148">			Direccion dir = new Direccion(codigoPostalRestaurante, calleRestaurante, numeroRestaurante,</span>
+					complementoRestaurante, municipioRestaurante);
+<span class="fc" id="L150">			Restaurante restaurante = new Restaurante(usuario.getIdUsuario(), usuario.getNombre(),</span>
+<span class="fc" id="L151">					usuario.getPass(), dir, cifRestaurante);</span>
+<span class="fc" id="L152">			restauranteDAO.save(restaurante);</span>
+<span class="fc" id="L153">			return 1;</span>
+		} else {
+<span class="fc" id="L155">			model.addAttribute(ERROR_STR, RELLENA_CAMPOS);</span>
+<span class="fc" id="L156">			return 0;</span>
+		}
+
+	}
+
+	private int registrarRepartidor(Usuario usuario, String apellidosRepartidor, String nifRepartidor, Model model) {
+
+<span class="pc bpc" id="L163" title="2 of 6 branches missed.">		if (usuario != null &amp;&amp; !apellidosRepartidor.isEmpty() &amp;&amp; !nifRepartidor.isEmpty()) {</span>
+<span class="fc" id="L164">			Repartidor repartidor = new Repartidor(usuario.getIdUsuario(), usuario.getNombre(),</span>
+<span class="fc" id="L165">					usuario.getPass(), apellidosRepartidor, nifRepartidor);</span>
+<span class="fc" id="L166">			repartidorDAO.save(repartidor);</span>
+<span class="fc" id="L167">			return 1;</span>
+		}else{
+<span class="fc" id="L169">			model.addAttribute(ERROR_STR, RELLENA_CAMPOS);</span>
+<span class="fc" id="L170">			return 0;</span>
+		}
+
+	}
+	
+	private boolean comprobarCondicionesRegistrarRestaurante(String codigoPostal, String calle, String numero, 
+		String complemento, String municipio, String cif) {
+		
+<span class="fc" id="L178">		boolean correcto = true;</span>
+		
+<span class="pc bpc" id="L180" title="2 of 6 branches missed.">		if (codigoPostal.isEmpty() || calle.isEmpty() || numero.isEmpty()) {</span>
+<span class="fc" id="L181">			correcto = false;</span>
+		}
+<span class="pc bpc" id="L183" title="2 of 6 branches missed.">		if (complemento.isEmpty() || municipio.isEmpty() || cif.isEmpty()) {</span>
+<span class="fc" id="L184">		    correcto = false;</span>
+		}
+		
+<span class="fc" id="L187">		return correcto;</span>
+		
+	}
+	
+	
+	private String manejarCliente(Optional&lt;Cliente&gt; clienteOpt, Usuario usuario, Model model) {
+<span class="fc bfc" id="L193" title="All 2 branches covered.">	    if (clienteOpt.isPresent()) {</span>
+<span class="fc" id="L194">	        Cliente cliente = clienteOpt.get();</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">	        if (cliente.getPass().equals(usuario.getPass())) {</span>
+<span class="fc" id="L196">	            return &quot;redirect:/menucliente/&quot; + cliente.getIdUsuario();</span>
+	        } else {
+<span class="fc" id="L198">				model.addAttribute(ERROR_STR, CONTRASENA_STR);</span>
+<span class="fc" id="L199">				return LOGIN_STR;</span>
+			}
+	    }
+<span class="fc" id="L202">	    return null;</span>
+	}
+
+	private String manejarRestaurante(Optional&lt;Restaurante&gt; restauranteOpt, Usuario usuario, Model model) {
+<span class="fc bfc" id="L206" title="All 2 branches covered.">	    if (restauranteOpt.isPresent()) {</span>
+<span class="fc" id="L207">	        Restaurante restaurante = restauranteOpt.get();</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">	        if (restaurante.getPass().equals(usuario.getPass())) {</span>
+<span class="fc" id="L209">	            return &quot;redirect:/menurestaurante/&quot; + restaurante.getIdUsuario();</span>
+	        } else {
+<span class="fc" id="L211">				model.addAttribute(ERROR_STR, CONTRASENA_STR);</span>
+<span class="fc" id="L212">				return LOGIN_STR;</span>
+			}
+	    }
+<span class="fc" id="L215">	    return null;</span>
+	}
+
+	private String manejarRepartidor(Optional&lt;Repartidor&gt; repartidorOpt, Usuario usuario, Model model) {
+<span class="fc bfc" id="L219" title="All 2 branches covered.">	    if (repartidorOpt.isPresent()) {</span>
+<span class="fc" id="L220">	        Repartidor repartidor = repartidorOpt.get();</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">	        if (repartidor.getPass().equals(usuario.getPass())) {</span>
+<span class="fc" id="L222">	            return &quot;redirect:/menurepartidor/&quot; + repartidor.getIdUsuario();</span>
+	        } else {
+<span class="fc" id="L224">				model.addAttribute(ERROR_STR, CONTRASENA_STR);</span>
+<span class="fc" id="L225">				return LOGIN_STR;</span>
+			}
+	    }
+<span class="fc" id="L228">	    return null;</span>
+	}
+	
+	
+	
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

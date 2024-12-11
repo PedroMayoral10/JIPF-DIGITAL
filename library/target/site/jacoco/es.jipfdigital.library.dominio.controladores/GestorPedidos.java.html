@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestorPedidos.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">es.jipfdigital.library.dominio.controladores</a> &gt; <span class="el_source">GestorPedidos.java</span></div><h1>GestorPedidos.java</h1><pre class="source lang-java linenums">package es.jipfdigital.library.dominio.controladores;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import es.jipfdigital.library.dominio.entidades.*;
+import es.jipfdigital.library.persistencia.*;
+
+@Controller
+<span class="fc" id="L24">public class GestorPedidos {</span>
+
+	private static final String IDCLIENTE = &quot;idCliente&quot;;
+<span class="fc" id="L27">	private static List&lt;Long&gt; itemIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L28">	private static List&lt;ItemMenu&gt; itemsPedidos = new ArrayList&lt;&gt;();</span>
+
+	@Autowired
+	private ItemMenuDAO itemMenuDAO;
+	@Autowired
+	private RestauranteDAO restauranteDAO;
+	@Autowired
+	private ClienteDAO clienteDAO;
+	@Autowired
+	private CartaMenuDAO cartamenuDAO;
+	@Autowired
+	private PedidoDAO pedidoDAO;
+	@Autowired
+	private RepartidorDAO repartidorDAO;
+	@Autowired
+	private DireccionDAO direccionDAO;
+
+	/*
+	 * GETMAPPINGS
+	 */
+
+	@GetMapping(&quot;/realizarpedido/{id_cliente}/{id_restaurante}&quot;)
+	public String detalleRestaurante(@PathVariable(&quot;id_cliente&quot;) String idCliente,
+			@PathVariable(&quot;id_restaurante&quot;) String idRestaurante, Model model) {
+<span class="fc" id="L52">		Restaurante restaurante = restauranteDAO.findById(idRestaurante).get();</span>
+<span class="fc" id="L53">		Cliente cliente = clienteDAO.findById(idCliente).get();</span>
+<span class="fc" id="L54">		model.addAttribute(&quot;menus&quot;, cartamenuDAO.findAllByRestauranteId(idRestaurante));</span>
+<span class="fc" id="L55">		model.addAttribute(&quot;restaurante&quot;, restaurante);</span>
+<span class="fc" id="L56">		model.addAttribute(&quot;cliente&quot;, cliente);</span>
+<span class="fc" id="L57">		return &quot;realizarpedido&quot;;</span>
+	}
+
+	@GetMapping(&quot;/realizarpago/{idCliente}/{idRestaurante}&quot;)
+	public String realizarPago(@PathVariable(&quot;idCliente&quot;) String idCliente,
+			@PathVariable(&quot;idRestaurante&quot;) String idRestaurante, @RequestParam Map&lt;String, String&gt; params,
+			Model model) {
+<span class="fc" id="L64">		Cliente cliente = clienteDAO.findById(idCliente).get();</span>
+		
+<span class="fc" id="L66">		itemsPedidos = obtenerItems(params);</span>
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		for (ItemMenu item : itemsPedidos) {</span>
+<span class="fc" id="L69">			itemIds.add(item.getId());</span>
+<span class="fc" id="L70">		}</span>
+
+<span class="fc" id="L72">		double precioTotalPedido = 0.0;</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">		for (ItemMenu item : itemsPedidos) {</span>
+<span class="fc" id="L74">			precioTotalPedido += item.getPrecio();</span>
+<span class="fc" id="L75">		}</span>
+<span class="fc" id="L76">		BigDecimal precioTotalRedondeado = BigDecimal.valueOf(precioTotalPedido).setScale(2, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L77">		double precioTotal = precioTotalRedondeado.doubleValue();</span>
+
+<span class="fc" id="L79">		model.addAttribute(&quot;itemsPedidos&quot;, itemsPedidos);</span>
+<span class="fc" id="L80">		model.addAttribute(IDCLIENTE, idCliente);</span>
+<span class="fc" id="L81">		model.addAttribute(&quot;idRestaurante&quot;, idRestaurante);</span>
+<span class="fc" id="L82">		model.addAttribute(&quot;precioTotal&quot;, precioTotal);</span>
+<span class="fc" id="L83">		model.addAttribute(&quot;direcciones&quot;, cliente.getDirecciones());</span>
+
+<span class="fc" id="L85">		return &quot;realizarpago&quot;;</span>
+	}
+
+	@GetMapping(&quot;/confirmacionpago/{idCliente}&quot;)
+	public String confirmacionpago(@PathVariable(&quot;idCliente&quot;) String idCliente, Model model) {
+<span class="fc" id="L90">		model.addAttribute(IDCLIENTE, idCliente);</span>
+<span class="fc" id="L91">		return &quot;confirmacionPago&quot;;</span>
+	}
+
+	@GetMapping(&quot;/pedidoscliente/{idCliente}&quot;)
+	public String mostrarPedidos(@PathVariable(&quot;idCliente&quot;) String idCliente, Model model) {
+<span class="fc" id="L96">		List&lt;Pedido&gt; pedidos = pedidoDAO.findPedidosByCliente(idCliente);</span>
+<span class="fc" id="L97">		model.addAttribute(&quot;pedidos&quot;, pedidos);</span>
+<span class="fc" id="L98">		model.addAttribute(IDCLIENTE, idCliente);</span>
+
+<span class="fc" id="L100">		return &quot;pedidoscliente&quot;;</span>
+	}
+
+	/*
+	 * POSTMAPPINGS
+	 */
+
+	@PostMapping(&quot;/realizarpedido/{id_cliente}/{id_restaurante}&quot;)
+	public String procesarPedido(@PathVariable(&quot;id_cliente&quot;) String idCliente,
+			@PathVariable(&quot;id_restaurante&quot;) String idRestaurante, Model model,
+			@RequestParam(value = &quot;menuId&quot;, required = false) Long idMenu, RedirectAttributes redirectAttributes) {
+<span class="fc" id="L111">		CartaMenu cartamenu = cartamenuDAO.findById(idMenu).get();</span>
+<span class="fc" id="L112">		List&lt;CartaMenu&gt; menus = cartamenuDAO.findAll();</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">		if (!cartamenu.getItems().isEmpty())</span>
+<span class="fc" id="L114">			redirectAttributes.addFlashAttribute(&quot;items&quot;, cartamenu.getItems());</span>
+<span class="fc" id="L115">		redirectAttributes.addFlashAttribute(&quot;menus&quot;, menus);</span>
+<span class="fc" id="L116">		redirectAttributes.addFlashAttribute(&quot;menu_seleccionado&quot;, cartamenu.getId());</span>
+
+<span class="fc" id="L118">		return &quot;redirect:/realizarpedido/&quot; + idCliente + &quot;/&quot; + idRestaurante;</span>
+	}
+
+	@PostMapping(&quot;/realizarpago/{idCliente}/{idRestaurante}&quot;)
+	public String submitPago(@PathVariable(&quot;idCliente&quot;) String idCliente,
+			@PathVariable(&quot;idRestaurante&quot;) String idRestaurante, Model model,
+			@RequestParam(value = &quot;codigoPostal&quot;, required = false) String codigoPostal,
+			@RequestParam(&quot;metodoPago&quot;) MetodoPago tipo,
+			@RequestParam(value = &quot;calle&quot;, required = false) String calle,
+			@RequestParam(value = &quot;numero&quot;, required = false) String numero,
+			@RequestParam(value = &quot;complemento&quot;, required = false) String complemento,
+			@RequestParam(value = &quot;municipio&quot;, required = false) String municipio,
+			@RequestParam(value = &quot;direccionGuardada&quot;, required = false) Long idDireccion) {
+
+<span class="fc" id="L132">		LocalDate fechaTransaccion = LocalDate.now();</span>
+
+<span class="fc" id="L134">		Restaurante restaurante = restauranteDAO.findById(idRestaurante).get();</span>
+<span class="fc" id="L135">		Cliente cliente = clienteDAO.findById(idCliente).get();</span>
+<span class="fc" id="L136">		Pedido pedido = new Pedido();</span>
+
+<span class="fc" id="L138">		pedido.setCliente(cliente);</span>
+<span class="fc" id="L139">		pedido.setRestaurante(restaurante);</span>
+<span class="fc" id="L140">		pedido.setFecha(fechaTransaccion);</span>
+<span class="fc" id="L141">		pedido.setEstado(EstadoPedido.PAGADO);</span>
+<span class="fc" id="L142">		pedido.setItems(itemsPedidos);</span>
+<span class="fc" id="L143">		Pago pago = new Pago(pedido, tipo, fechaTransaccion);</span>
+<span class="fc" id="L144">		pedido.setPago(pago);</span>
+		Direccion direccion;
+<span class="fc bfc" id="L146" title="All 2 branches covered.">		if (idDireccion != null) {</span>
+<span class="fc" id="L147">			direccion = direccionDAO.getById(idDireccion);</span>
+		} else {
+<span class="fc" id="L149">			direccion = new Direccion(codigoPostal, calle, numero, complemento, municipio);</span>
+<span class="fc" id="L150">			direccionDAO.save(direccion);</span>
+<span class="fc" id="L151">			cliente.addDireccion(direccion);</span>
+
+<span class="fc" id="L153">			clienteDAO.save(cliente);</span>
+<span class="fc" id="L154">			System.out.println(idDireccion);</span>
+		}
+
+<span class="fc" id="L157">		ServicioEntrega servicioEntrega = new ServicioEntrega();</span>
+<span class="fc" id="L158">		servicioEntrega.setPedido(pedido);</span>
+<span class="fc" id="L159">		servicioEntrega.setDireccion(direccion);</span>
+<span class="fc" id="L160">		servicioEntrega.setRepartidor(calcularRepartidorOptimo());</span>
+<span class="fc" id="L161">		pedido.setEntrega(servicioEntrega);</span>
+
+<span class="fc" id="L163">		pedidoDAO.save(pedido);</span>
+<span class="fc" id="L164">		model.addAttribute(&quot;mensajeExito&quot;, &quot;El pago se ha realizado correctamente.&quot;);</span>
+<span class="fc" id="L165">		model.addAttribute(IDCLIENTE, idCliente);</span>
+
+<span class="fc" id="L167">		return &quot;redirect:/confirmacionpago/&quot; + idCliente;</span>
+	}
+
+	public List&lt;ItemMenu&gt; obtenerItems(Map&lt;String, String&gt; params) {
+<span class="fc" id="L171">		itemsPedidos.clear();</span>
+<span class="fc" id="L172">		int index = 0;</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">		while (params.containsKey(&quot;id&quot; + index)) {</span>
+<span class="fc" id="L174">			Long idItem = Long.parseLong(params.get(&quot;id&quot; + index));</span>
+<span class="fc" id="L175">			ItemMenu item = itemMenuDAO.findById(idItem).get();</span>
+<span class="fc" id="L176">			itemsPedidos.add(item);</span>
+<span class="fc" id="L177">			index++;</span>
+<span class="fc" id="L178">		}</span>
+
+<span class="fc" id="L180">		return itemsPedidos;</span>
+
+	}
+
+	public Repartidor calcularRepartidorOptimo() {
+<span class="fc" id="L185">	    List&lt;Repartidor&gt; repartidores = repartidorDAO.findAll();</span>
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">	    if (repartidores.isEmpty()) {</span>
+<span class="nc" id="L187">	        return null; // Devuelve null si no hay repartidores</span>
+	    }
+
+<span class="fc" id="L190">	    Repartidor repartidorOptimo = null;</span>
+<span class="fc" id="L191">	    int minServicios = Integer.MAX_VALUE;</span>
+
+<span class="fc bfc" id="L193" title="All 2 branches covered.">	    for (Repartidor repartidor : repartidores) {</span>
+<span class="fc" id="L194">	        int cantidadServicios = repartidor.getServicios().size();</span>
+
+	        // Si encontramos un repartidor con menos servicios, lo seleccionamos
+<span class="fc bfc" id="L197" title="All 2 branches covered.">	        if (cantidadServicios &lt; minServicios) {</span>
+<span class="fc" id="L198">	            minServicios = cantidadServicios;</span>
+<span class="fc" id="L199">	            repartidorOptimo = repartidor;</span>
+	        } 
+	        // Si hay empate en cantidad de servicios, usamos la eficiencia como criterio
+<span class="pc bpc" id="L202" title="1 of 4 branches missed.">	        if (cantidadServicios == minServicios &amp;&amp; </span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">	                 (repartidorOptimo == null || repartidor.getEficiencia() &gt; repartidorOptimo.getEficiencia())) {</span>
+<span class="fc" id="L204">	            repartidorOptimo = repartidor;</span>
+	        }
+<span class="fc" id="L206">	    }</span>
+
+<span class="fc" id="L208">	    return repartidorOptimo;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
