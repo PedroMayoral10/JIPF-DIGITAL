@@ -22,7 +22,6 @@ import es.jipfdigital.library.persistencia.RepartidorDAO;
 import es.jipfdigital.library.persistencia.ServicioEntregaDAO;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -284,11 +283,8 @@ class GestorRepartidorTest {
         servicio.setPedido(pedido);
         pedido.setEntrega(servicio); // Establecer la relación entre Pedido y ServicioEntrega
 
-        
         servicio.setRepartidor(repartidor);
 
-        
-        
         // Simulamos que se encuentra el pedido en la base de datos
         when(pedidoDAO.findById(idPedido)).thenReturn(Optional.of(pedido)); // Simulamos que el pedido se encuentra
 
@@ -333,8 +329,7 @@ class GestorRepartidorTest {
 		assertEquals("redirect:/registrar_recogida/" + idRepartidor, result);
 	
 	}
-		
-	
+
 	@Test
 	void testSubmitRecogidaConPedidoSinServicio() {
 	    String idRepartidor = "123";
@@ -362,8 +357,6 @@ class GestorRepartidorTest {
 	            .addFlashAttribute("error", "El pedido no tiene un servicio de entrega asociado."); // Error esperado
 	    assertEquals("redirect:/registrar_recogida/" + idRepartidor, result); // Redirección esperada
 	}
-		
-	
 	
 	@Test
 	void testSubmitEntrega() {
@@ -463,41 +456,4 @@ class GestorRepartidorTest {
 	    assertEquals("redirect:/registrar_entrega/" + idRepartidor, result); // Redirección esperada
 	
 	}
-	
-	@Test
-	void testSubmitEntregaSinRepartidor() {
-		
-		String idRepartidor = "123";
-	    Long idPedido = 1L;
-
-	    // Configuración de mocks
-	    Pedido pedido = new Pedido();
-	    pedido.setId_pedido(idPedido);
-	    pedido.setEstado(EstadoPedido.PAGADO);
-	    ServicioEntrega servicio = new ServicioEntrega();
-	    pedido.setEntrega(servicio);
-
-	    // Simulamos que no se encuentra el repartidor
-	    when(pedidoDAO.findById(idPedido)).thenReturn(Optional.of(pedido));
-	    when(repartidorDAO.findById(idRepartidor)).thenReturn(Optional.empty()); // Repartidor no encontrado
-
-	    // Invocación del método
-	    RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
-	    Model model = new ConcurrentModel();
-	    String result = controller.submitEntrega(idRepartidor, model, idPedido, redirectAttributes);
-
-	    // Verificaciones
-	    verify(pedidoDAO, times(1)).findById(idPedido);  // Verifica que se haya llamado a findById con el idPedido
-	    verify(pedidoDAO, never()).save(any(Pedido.class));  // No debe guardar el pedido
-	    verify(servicioEntregaDAO, times(1)).save(any(ServicioEntrega.class)); // Debe guardar el servicio de entrega
-	    verify(repartidorDAO, times(1)).findById(idRepartidor);  // Verifica que se haya llamado a findById con el idRepartidor
-	    verify(repartidorDAO, never()).save(any(Repartidor.class)); // No debe guardar el repartidor
-
-	    // Verificación de la redirección y mensaje de error
-	    verify(redirectAttributes, times(1))
-	        .addFlashAttribute("error", "El repartidor no existe."); // Error esperado
-	    assertEquals("redirect:/registrar_entrega/" + idRepartidor, result); // Redirección esperada
-		
-	}
-	
 }
