@@ -68,10 +68,6 @@ public class GestorRestaurantes {
 
 	@GetMapping("modificarmenu/{id}")
 	public String modificarMenu(@PathVariable("id") String idRestaurante, Model model) {
-		if(idRestaurante == null || idRestaurante.trim().isEmpty()){
-			throw new IllegalArgumentException("El ID del restaurante no puede estar vacio");
-		}
-		// Obtener todos los menús del restaurante por su ID, incluyendo los ítems
 		List<CartaMenu> menus = cartamenuDAO.findAllByRestauranteId(idRestaurante);
 		model.addAttribute("menus", menus);
 		model.addAttribute("idRestaurante", idRestaurante);
@@ -96,10 +92,15 @@ public class GestorRestaurantes {
 			@RequestParam(value = "nombreMenu", required = false) String nombreMenu,
 			@RequestParam(value = "nombre", required = false) String nombreItem,
 			@RequestParam(value = "precio", required = false) Double precio,
-			@RequestParam(value = "tipo", required = false) String tipoItem, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "tipo", required = false) String tipoItem, RedirectAttributes redirectAttributes,
+			Model model) {
         if (nombreMenu == null || nombreItem == null || precio == null) {
             redirectAttributes.addFlashAttribute(ERROR, "Faltan datos obligatorios.");
 			return "redirect:/errorPage"; 
+		}
+		if (precio < 0){
+			redirectAttributes.addFlashAttribute(ERROR, "Introduce un precio >=0");
+			return "redirect:/altamenu/"+idRestaurante;
 		}
 		Restaurante restaurante = restauranteDAO.getById(idRestaurante);
 		
