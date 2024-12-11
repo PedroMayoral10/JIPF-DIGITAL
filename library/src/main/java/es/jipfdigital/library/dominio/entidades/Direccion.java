@@ -56,4 +56,11 @@ public class Direccion {
 	public String getMunicipio() {
 		return municipio;
 	}
+
+	public void setId(Long idDireccion) {
+		this.idDireccion=idDireccion;
+		
+	}
+	
+	
 }
