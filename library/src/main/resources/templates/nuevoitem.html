@@ -121,6 +121,13 @@
     .return-button:hover::after {
         transform: translateX(-50%) scaleX(1.5);
     }
+
+    .error-message {
+            color: red;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+    }
+    
 </style>
 
 <body>
@@ -133,7 +140,7 @@
 
         <label for="nombre">Nombre del Ítem:</label>
         <input type="text" id="nombre" name="nombre" required />
-
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
         <label for="precio">Precio:</label>
         <input type="number" id="precio" name="precio" step="0.01" required />
 

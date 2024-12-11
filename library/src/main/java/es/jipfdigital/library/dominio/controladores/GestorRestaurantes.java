@@ -30,8 +30,7 @@ public class GestorRestaurantes {
 	private static final String ERROR = "error";
 	private static final String REDIRIGIRNUEVOITEM = "redirect:/nuevoitem/";
 	private static final String REDIRIGIRMODIFICARMENU = "redirect:/modificarmenu/";
-	
-	
+
 	@Autowired
 	private RestauranteDAO restauranteDAO;
 	@Autowired
@@ -39,27 +38,26 @@ public class GestorRestaurantes {
 	@Autowired
 	private ItemMenuDAO itemDAO;
 
-
 	/*
 	 * GETMAPPINGS
 	 */
 
 	@GetMapping("menurestaurante/{id}")
 	public String MenuRestaurante(@PathVariable("id") String idRestaurante, Model model) {
-		Optional <Restaurante> restauranteOptional = restauranteDAO.findById(idRestaurante);
-		if(restauranteOptional.isPresent()){
+		Optional<Restaurante> restauranteOptional = restauranteDAO.findById(idRestaurante);
+		if (restauranteOptional.isPresent()) {
 			model.addAttribute(restauranteOptional.get());
 			return "menurestaurante";
-		}else{
+		} else {
 			throw new IllegalArgumentException("Restaurante no encontrado");
 		}
 	}
 
 	@GetMapping("altamenu/{id}")
 	public String darAltaMenu(@PathVariable("id") String idRestaurante, Model model) {
-		Optional <Restaurante> restauranteOptional = restauranteDAO.findById(idRestaurante);
-		if(restauranteOptional.isEmpty()){
-			return ERROR; 
+		Optional<Restaurante> restauranteOptional = restauranteDAO.findById(idRestaurante);
+		if (restauranteOptional.isEmpty()) {
+			return ERROR;
 		}
 		Restaurante restaurante = restauranteOptional.get();
 		model.addAttribute(restaurante);
@@ -71,16 +69,15 @@ public class GestorRestaurantes {
 		List<CartaMenu> menus = cartamenuDAO.findAllByRestauranteId(idRestaurante);
 		model.addAttribute("menus", menus);
 		model.addAttribute("idRestaurante", idRestaurante);
-		return "modificarmenu"; 
+		return "modificarmenu";
 	}
 
 	@GetMapping("nuevoitem/{id}")
 	public String nuevoItem(@PathVariable("id") Long idMenu, Model model) {
-		// Obtener todos los menús del restaurante por su ID, incluyendo los ítems
 		CartaMenu menu = cartamenuDAO.findById(idMenu).get();
 		model.addAttribute("menu", menu);
 		model.addAttribute("idRestaurante", menu.getRestaurante().getIdUsuario());
-		return "nuevoitem"; 
+		return "nuevoitem";
 	}
 
 	/*
@@ -94,16 +91,16 @@ public class GestorRestaurantes {
 			@RequestParam(value = "precio", required = false) Double precio,
 			@RequestParam(value = "tipo", required = false) String tipoItem, RedirectAttributes redirectAttributes,
 			Model model) {
-        if (nombreMenu == null || nombreItem == null || precio == null) {
-            redirectAttributes.addFlashAttribute(ERROR, "Faltan datos obligatorios.");
-			return "redirect:/errorPage"; 
+		if (nombreMenu == null || nombreItem == null || precio == null) {
+			redirectAttributes.addFlashAttribute(ERROR, "Faltan datos obligatorios.");
+			return "redirect:/errorPage";
 		}
-		if (precio < 0){
+		if (precio < 0) {
 			redirectAttributes.addFlashAttribute(ERROR, "Introduce un precio >=0");
-			return "redirect:/altamenu/"+idRestaurante;
+			return "redirect:/altamenu/" + idRestaurante;
 		}
 		Restaurante restaurante = restauranteDAO.getById(idRestaurante);
-		
+
 		if (!comprobarSiNoExiste(nombreMenu, idRestaurante)) {
 			CartaMenu cartamenu = cartamenuDAO.findByNombreAndRestauranteId(nombreMenu, idRestaurante);
 			ItemMenu item = crearItem(nombreItem, tipoItem, precio);
@@ -132,23 +129,22 @@ public class GestorRestaurantes {
 	public String postModMenu(@PathVariable("id") String idRestaurante,
 			@RequestParam(value = "menuId", required = false) Long idMenu, Model model,
 			RedirectAttributes redirectAttributes) {
-				
+
 		if (idMenu == null) {
 			redirectAttributes.addFlashAttribute(ERROR, "ID del menú no proporcionado");
 			return REDIRIGIRMODIFICARMENU + idRestaurante;
 		}
 
 		Optional<CartaMenu> optionalCartaMenu = cartamenuDAO.findById(idMenu);
-    
-				
+
 		if (optionalCartaMenu.isEmpty()) {
 			redirectAttributes.addFlashAttribute(ERROR, "Menú no encontrado");
 			return REDIRIGIRMODIFICARMENU + idRestaurante;
 		}
-		
+
 		CartaMenu cartamenu = optionalCartaMenu.get();
 		List<CartaMenu> menus = cartamenuDAO.findAll();
-		
+
 		if (!cartamenu.getItems().isEmpty())
 			redirectAttributes.addFlashAttribute("items", cartamenu.getItems());
 		redirectAttributes.addFlashAttribute("menus", menus);
@@ -163,16 +159,21 @@ public class GestorRestaurantes {
 			@RequestParam(value = "precio", required = false) Double precio,
 			@RequestParam(value = "tipo", required = false) String tipoItem,
 			RedirectAttributes redirectAttributes, Model model) {
+		if(precio!=null)
+			if(precio < 0){
+				redirectAttributes.addFlashAttribute(ERROR, "Introduce un precio >= 0");
+				return "redirect:/nuevoitem/" +idMenu;
+			}
 		if (idMenu == null) {
 			redirectAttributes.addFlashAttribute(ERROR, "El ID del menú no puede ser nulo");
-			return "redirect:/error"; 
+			return "redirect:/error";
 		}
 		ItemMenu item = crearItem(nombreItem, tipoItem, precio);
-		
+
 		CartaMenu menu = cartamenuDAO.findById(idMenu).get();
 		menu.getItems().add(item);
 		cartamenuDAO.save(menu);
-		redirectAttributes.addFlashAttribute(SUCCESS,"Item añadido con exito");
+		redirectAttributes.addFlashAttribute(SUCCESS, "Item añadido con exito");
 		return REDIRIGIRNUEVOITEM + idMenu;
 	}
 
@@ -182,26 +183,26 @@ public class GestorRestaurantes {
 
 	@DeleteMapping("/eliminaritem/{itemId}")
 	public ResponseEntity<Void> deleteItem(@PathVariable("itemId") Long itemId) {
-		Optional <ItemMenu> item = itemDAO.findById(itemId);
+		Optional<ItemMenu> item = itemDAO.findById(itemId);
 		if (item.isPresent()) {
 			itemDAO.delete(item.get());
 			return ResponseEntity.ok().build(); // Responde con 200 OK si se eliminó correctamente
 		} else {
-			return ResponseEntity.notFound().build(); 
+			return ResponseEntity.notFound().build();
 		}
 	}
-	
+
 	@DeleteMapping("/eliminarmenu/{menuId}")
 	public ResponseEntity<Void> deleteMenu(@PathVariable("menuId") Long menuId) {
-		Optional <CartaMenu> optionalMenu = cartamenuDAO.findById(menuId);
+		Optional<CartaMenu> optionalMenu = cartamenuDAO.findById(menuId);
 		if (optionalMenu.isPresent()) {
 			CartaMenu menu = optionalMenu.get();
-			Collection <ItemMenu> items = menu.getItems();
+			Collection<ItemMenu> items = menu.getItems();
 			for (ItemMenu item : items) {
 				itemDAO.delete(item);
 			}
 			cartamenuDAO.delete(menu);
-			
+
 			return ResponseEntity.ok().build(); // Responde con 200 OK si se eliminó correctamente
 		} else {
 			return ResponseEntity.notFound().build(); // Responde con 404 si el ítem no existe
@@ -218,7 +219,7 @@ public class GestorRestaurantes {
 		}
 	}
 
-	private ItemMenu crearItem(String nombreItem, String tipoItem, Double precio){
+	private ItemMenu crearItem(String nombreItem, String tipoItem, Double precio) {
 		if (precio == null) {
 			precio = 0.0;
 		}
